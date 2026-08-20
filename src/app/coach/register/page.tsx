@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
 import { useLocale } from "@/lib/i18n/provider";
+import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 
@@ -12,10 +13,10 @@ export default function CoachRegisterPage() {
   const { t } = useLocale();
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
-  const [sport, setSport] = useState("野球");
+  const [sport, setSport] = useState("baseball");
   const [specialty, setSpecialty] = useState<string>(SPECIALTIES[0]);
   const [location, setLocation] = useState<string>(LOCATIONS[0]);
-  const [languages, setLanguages] = useState<string[]>(["English"]);
+  const [languages, setLanguages] = useState<string[]>(["english"]);
   const [price, setPrice] = useState("80");
   const [bio, setBio] = useState("");
 
@@ -77,7 +78,7 @@ export default function CoachRegisterPage() {
             <Select id="sport" value={sport} onChange={(e) => setSport(e.target.value)}>
               {SPORTS.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {sportLabel(t, s)}
                 </option>
               ))}
             </Select>
@@ -91,7 +92,7 @@ export default function CoachRegisterPage() {
             >
               {SPECIALTIES.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {specialtyLabel(t, s)}
                 </option>
               ))}
             </Select>
@@ -140,7 +141,7 @@ export default function CoachRegisterPage() {
                         : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400"
                     }`}
                   >
-                    {lang}
+                    {languageLabel(t, lang)}
                   </button>
                 );
               })}

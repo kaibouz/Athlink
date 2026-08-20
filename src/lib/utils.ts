@@ -15,30 +15,30 @@ export function formatPrice(amountUsd: number): string {
 }
 
 export function formatLabel(format: LessonFormat): string {
-  return format === "in_person" ? "対面" : "オンライン";
+  return format === "in_person" ? "In person" : "Online";
 }
 
 export function packageLabel(type: PackageType): string {
   switch (type) {
     case "single":
-      return "単発";
+      return "Single";
     case "pack":
-      return "パック（5回）";
+      return "5-pack";
     case "subscription":
-      return "月額サブスク";
+      return "Monthly subscription";
   }
 }
 
 export function statusLabel(status: BookingStatus): string {
   switch (status) {
     case "pending":
-      return "確認待ち";
+      return "Pending";
     case "confirmed":
-      return "予約確定";
+      return "Confirmed";
     case "completed":
-      return "完了";
+      return "Completed";
     case "cancelled":
-      return "キャンセル";
+      return "Cancelled";
   }
 }
 

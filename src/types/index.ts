@@ -1,7 +1,10 @@
+import type { Localized } from "@/lib/i18n/localize";
+
 export type UserRole = "athlete" | "coach" | "parent";
 export type LessonFormat = "in_person" | "online";
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 export type PackageType = "single" | "pack" | "subscription";
+export type { Localized };
 
 export interface User {
   id: string;
@@ -18,7 +21,7 @@ export interface CoachProfile {
   email: string;
   sport: string;
   specialties: string[];
-  bio: string;
+  bio: Localized;
   location: string;
   city: string;
   prefecture: string;
@@ -30,7 +33,7 @@ export interface CoachProfile {
   formats: LessonFormat[];
   avatarUrl: string;
   coverGradient: string;
-  career: string[];
+  career: Localized[];
   languages: string[];
   availabilityNote: string;
 }
@@ -40,7 +43,7 @@ export interface Review {
   coachId: string;
   authorName: string;
   rating: number;
-  comment: string;
+  comment: Localized;
   date: string;
   athleteLevel: string;
 }
@@ -77,7 +80,7 @@ export interface MessageThread {
   coachName: string;
   athleteId: string;
   athleteName: string;
-  lastMessage: string;
+  lastMessage: Localized;
   updatedAt: string;
   unread: number;
 }
@@ -87,7 +90,9 @@ export interface Message {
   threadId: string;
   senderId: string;
   senderName: string;
-  body: string;
+  /** Demo seed may be Localized; user-typed messages are plain strings */
+  senderNameKey?: "you";
+  body: Localized | string;
   createdAt: string;
 }
 

@@ -1,57 +1,49 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Calendar,
   CalendarDays,
+  ChevronDown,
   DollarSign,
   MessageSquare,
   QrCode,
   Star,
-  TrendingUp,
-  Users,
 } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
+import { getReviewsByCoach } from "@/lib/data";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
+import { loc, sportLabel } from "@/lib/i18n/localize";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
   DashboardGoalRings,
-  RevenueLineChart,
 } from "@/components/coach/DashboardCharts";
-import { MyAthletesPanel } from "@/components/coach/MyAthletesPanel";
 import type { BookingStatus } from "@/types";
-
-const statusKey: Record<BookingStatus, MessageKey> = {
-  pending: "status_pending",
-  confirmed: "status_confirmed",
-  completed: "status_completed",
-  cancelled: "status_cancelled",
-};
 
 export default function CoachDashboardPage() {
   const { user, bookings } = useAuth();
   const { t, locale } = useLocale();
+  const [bookingsExpanded, setBookingsExpanded] = useState(false);
+  const [reviewsExpanded, setReviewsExpanded] = useState(false);
   const sampleCoach = getDemoCoach();
+  const coachReviews = getReviewsByCoach(sampleCoach.id);
   const coachBookings = bookingsForCoach(bookings, sampleCoach.id);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const upcoming = coachBookings.filter(
     (b) => b.status === "pending" || b.status === "confirmed",
   );
 
-  const stats = [
-    { label: t("dash_stat_bookings"), value: String(coachBookings.length), icon: Calendar },
-    {
-      label: t("dash_stat_revenue"),
-      value: formatPrice(coachBookings.reduce((s, b) => s + b.price, 0)),
-      icon: DollarSign,
-    },
-    { label: t("dash_stat_rating"), value: String(sampleCoach.rating), icon: Star },
-    { label: t("dash_stat_reviews"), value: String(sampleCoach.reviewCount), icon: Users },
-  ];
+  const statusKey: Record<BookingStatus, MessageKey> = {
+    pending: "status_pending",
+    confirmed: "status_confirmed",
+    completed: "status_completed",
+    cancelled: "status_cancelled",
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -73,30 +65,173 @@ export default function CoachDashboardPage() {
         <DashboardGoalRings bookings={coachBookings} />
       </div>
 
-      <div className="mt-6">
-        <RevenueLineChart bookings={coachBookings} />
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-brand-500">{s.label}</p>
-                <Icon className="h-4 w-4 text-brand-400" />
-              </div>
-              <p className="mt-2 text-2xl font-bold text-brand-950">{s.value}</p>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <button
+          type="button"
+          aria-expanded={bookingsExpanded}
+          onClick={() => setBookingsExpanded((v) => !v)}
+          className={`rounded-2xl border bg-surface p-5 text-left shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 ${
+            bookingsExpanded ? "sm:col-span-2 lg:col-span-3" : ""
+          } ${
+            bookingsExpanded
+              ? "border-brand-300 ring-2 ring-brand-200"
+              : "border-brand-100 hover:border-brand-200 hover:bg-brand-50/40"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-brand-500">{t("dash_stat_bookings")}</p>
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4 text-brand-400" />
+              <ChevronDown
+                className={`h-4 w-4 text-brand-400 transition-transform ${
+                  bookingsExpanded ? "rotate-180" : ""
+                }`}
+                aria-hidden
+              />
             </div>
-          );
-        })}
-      </div>
+          </div>
+          <p className="mt-2 text-2xl font-bold text-brand-950">{coachBookings.length}</p>
 
-      <div className="mt-10 rounded-3xl border border-brand-100 bg-gradient-to-b from-brand-50/80 to-surface p-5 shadow-sm sm:p-6">
-        <MyAthletesPanel />
+          {bookingsExpanded && (
+            <div className="mt-4 border-t border-brand-100 pt-4">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-bold text-brand-950">{t("dash_upcoming")}</h3>
+                <Link
+                  href="/coach/calendar"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold text-brand-600"
+                >
+                  {t("coach_nav_calendar")}
+                </Link>
+              </div>
+              <ul className="mt-3 max-h-64 divide-y divide-brand-100 overflow-y-auto rounded-xl border border-brand-100 bg-brand-50/40">
+                {upcoming.length === 0 && (
+                  <li className="px-4 py-6 text-center text-sm text-brand-500">
+                    {t("dash_no_bookings")}
+                  </li>
+                )}
+                {upcoming.map((b) => (
+                  <li
+                    key={b.id}
+                    className="flex items-center justify-between gap-3 px-4 py-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-semibold text-brand-900">{b.athleteName}</p>
+                      <p className="text-sm text-brand-600">
+                        {formatDateJa(b.date, dateLocale)} · {b.startTime}
+                      </p>
+                      {b.note && (
+                        <p className="mt-0.5 line-clamp-1 text-xs text-brand-500">{b.note}</p>
+                      )}
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <Badge>{t(statusKey[b.status])}</Badge>
+                      <p className="mt-1 text-sm font-medium tabular-nums text-brand-800">
+                        {formatPrice(b.price)}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </button>
+
+        <div className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-brand-500">{t("dash_stat_revenue")}</p>
+            <DollarSign className="h-4 w-4 text-brand-400" />
+          </div>
+          <p className="mt-2 text-2xl font-bold text-brand-950">
+            {formatPrice(coachBookings.reduce((s, b) => s + b.price, 0))}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          aria-expanded={reviewsExpanded}
+          onClick={() => setReviewsExpanded((v) => !v)}
+          className={`rounded-2xl border bg-surface p-5 text-left shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 sm:col-span-2 lg:col-span-1 ${
+            reviewsExpanded ? "sm:col-span-2 lg:col-span-3" : ""
+          } ${
+            reviewsExpanded
+              ? "border-brand-300 ring-2 ring-brand-200"
+              : "border-brand-100 hover:border-brand-200 hover:bg-brand-50/40"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-brand-500">
+              {t("dash_stat_rating")} · {t("dash_stat_reviews")}
+            </p>
+            <div className="flex items-center gap-1.5">
+              <Star className="h-4 w-4 text-brand-400" />
+              <ChevronDown
+                className={`h-4 w-4 text-brand-400 transition-transform ${
+                  reviewsExpanded ? "rotate-180" : ""
+                }`}
+                aria-hidden
+              />
+            </div>
+          </div>
+          <div className="mt-2 flex items-end gap-5">
+            <div>
+              <p className="text-2xl font-bold text-brand-950">{sampleCoach.rating}</p>
+              <p className="mt-0.5 text-xs text-brand-500">{t("dash_stat_rating")}</p>
+            </div>
+            <div className="mb-2 h-8 w-px bg-brand-100" aria-hidden />
+            <div>
+              <p className="text-2xl font-bold text-brand-950">{sampleCoach.reviewCount}</p>
+              <p className="mt-0.5 text-xs text-brand-500">{t("dash_stat_reviews")}</p>
+            </div>
+          </div>
+
+          {reviewsExpanded && (
+            <div className="mt-4 border-t border-brand-100 pt-4">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-bold text-brand-950">{t("dash_reviews_voice")}</h3>
+                <Link
+                  href={`/coaches/${sampleCoach.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold text-brand-600"
+                >
+                  {t("dash_reviews_view_all")}
+                </Link>
+              </div>
+              <ul className="mt-3 max-h-72 divide-y divide-brand-100 overflow-y-auto rounded-xl border border-brand-100 bg-brand-50/40">
+                {coachReviews.length === 0 && (
+                  <li className="px-4 py-6 text-center text-sm text-brand-500">
+                    {t("coach_no_reviews")}
+                  </li>
+                )}
+                {coachReviews.map((r) => (
+                  <li key={r.id} className="px-4 py-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-brand-900">{r.authorName}</span>
+                      <span className="flex items-center gap-0.5 text-sm text-amber-500">
+                        <Star className="h-3.5 w-3.5 fill-amber-400" />
+                        {r.rating}
+                      </span>
+                      <Badge variant="neutral">{r.athleteLevel}</Badge>
+                      <span className="text-xs text-brand-400">
+                        {formatDateJa(r.date, dateLocale)}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-brand-700">
+                      {loc(locale, r.comment)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+              {coachReviews.length > 0 && coachReviews.length < sampleCoach.reviewCount && (
+                <p className="mt-2 text-center text-xs text-brand-500">
+                  {t("dash_reviews_more", {
+                    n: sampleCoach.reviewCount - coachReviews.length,
+                  })}
+                </p>
+              )}
+            </div>
+          )}
+        </button>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -132,43 +267,7 @@ export default function CoachDashboardPage() {
         </Link>
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-brand-600" />
-              <h2 className="font-bold text-brand-950">{t("dash_upcoming")}</h2>
-            </div>
-            <Link href="/coach/calendar" className="text-sm font-semibold text-brand-600">
-              {t("coach_nav_calendar")}
-            </Link>
-          </div>
-          <div className="mt-4 space-y-3">
-            {upcoming.length === 0 && (
-              <p className="text-sm text-brand-500">{t("dash_no_bookings")}</p>
-            )}
-            {upcoming.slice(0, 5).map((b) => (
-              <div
-                key={b.id}
-                className="flex items-center justify-between rounded-xl bg-brand-50/80 px-4 py-3"
-              >
-                <div>
-                  <p className="font-semibold text-brand-900">{b.athleteName}</p>
-                  <p className="text-sm text-brand-600">
-                    {formatDateJa(b.date, dateLocale)} · {b.startTime}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <Badge>{t(statusKey[b.status])}</Badge>
-                  <p className="mt-1 text-sm font-medium text-brand-800">
-                    {formatPrice(b.price)}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
+      <div className="mt-8">
         <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
           <h2 className="font-bold text-brand-950">{t("dash_sample")}</h2>
           <div className="mt-4 flex items-center gap-4">
@@ -181,12 +280,14 @@ export default function CoachDashboardPage() {
             <div>
               <p className="font-bold text-brand-950">{sampleCoach.name}</p>
               <p className="text-sm text-brand-600">
-                {sampleCoach.sport} · {formatPrice(sampleCoach.pricePerHour)}
+                {sportLabel(t, sampleCoach.sport)} · {formatPrice(sampleCoach.pricePerHour)}
                 {t("per_hr")}
               </p>
             </div>
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-brand-700">{sampleCoach.bio}</p>
+          <p className="mt-4 text-sm leading-relaxed text-brand-700">
+            {loc(locale, sampleCoach.bio)}
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href={`/coaches/${sampleCoach.id}`}>
               <Button variant="secondary" size="sm">

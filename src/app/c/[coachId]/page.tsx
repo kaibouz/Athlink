@@ -7,6 +7,7 @@ import { coaches } from "@/lib/data";
 import { BookingForm } from "@/components/coaches/BookingForm";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
+import { specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
@@ -45,7 +46,7 @@ export default function QuickBookPage({
             <div>
               <h1 className="text-xl font-black">{coach.name}</h1>
               <p className="text-sm text-white/75">
-                {coach.sport} · {coach.city}
+                {sportLabel(t, coach.sport)} · {coach.city}
               </p>
             </div>
           </div>
@@ -56,7 +57,7 @@ export default function QuickBookPage({
             </Badge>
             {coach.specialties.slice(0, 2).map((s) => (
               <Badge key={s} className="bg-white/15 text-white">
-                {s}
+                {specialtyLabel(t, s)}
               </Badge>
             ))}
           </div>

@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Next 16 defaults to Turbopack; keep empty config alongside webpack watchOptions.
+  turbopack: {},
   // Avoid EMFILE (too many open files) from watching unrelated dirs
   webpack: (config, { dev }) => {
     if (dev) {

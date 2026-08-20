@@ -16,7 +16,7 @@ export async function generateMetadata({
   if (!coach) return { title: "Coach" };
   return {
     title: `${coach.name} — ${coach.sport}`,
-    description: coach.bio,
+    description: coach.bio.en,
   };
 }
 

@@ -5,13 +5,14 @@ import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star } from "lucide-r
 import type { CoachProfile, Review } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
+import { languageLabel, loc, locList, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { Badge } from "@/components/ui/Badge";
 import { BookingForm } from "@/components/coaches/BookingForm";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
-function regionFromLocation(loc: string): CaRegionId {
-  const l = loc.toLowerCase();
+function regionFromLocation(locStr: string): CaRegionId {
+  const l = locStr.toLowerCase();
   if (l.includes("orange")) return "oc";
   if (l.includes("diego")) return "sd";
   if (l.includes("francisco") || l.includes("bay") || l.includes("jose")) return "bay";
@@ -28,7 +29,7 @@ export function CoachDetailView({
   coach: CoachProfile;
   reviews: Review[];
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -61,7 +62,7 @@ export function CoachDetailView({
               )}
             </div>
             <p className="mt-1 text-white/90">
-              {coach.sport} · {t("coach_years", { n: coach.experienceYears })}
+              {sportLabel(t, coach.sport)} · {t("coach_years", { n: coach.experienceYears })}
             </p>
             <div className="mt-3 flex flex-wrap gap-4 text-sm text-white/85">
               <span className="inline-flex items-center gap-1">
@@ -70,7 +71,7 @@ export function CoachDetailView({
               </span>
               <span className="inline-flex items-center gap-1">
                 <Star className="h-4 w-4 fill-amber-300 text-amber-300" />
-                {coach.rating}（{coach.reviewCount}）
+                {coach.rating} ({coach.reviewCount})
               </span>
               <span className="inline-flex items-center gap-1">
                 <Clock className="h-4 w-4" />
@@ -92,10 +93,10 @@ export function CoachDetailView({
         <div className="space-y-8">
           <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
             <h2 className="text-lg font-bold text-brand-950">{t("coach_profile")}</h2>
-            <p className="mt-3 leading-relaxed text-brand-700">{coach.bio}</p>
+            <p className="mt-3 leading-relaxed text-brand-700">{loc(locale, coach.bio)}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {coach.specialties.map((s) => (
-                <Badge key={s}>{s}</Badge>
+                <Badge key={s}>{specialtyLabel(t, s)}</Badge>
               ))}
               {coach.formats.map((f) => (
                 <Badge key={f} variant="neutral">
@@ -110,7 +111,7 @@ export function CoachDetailView({
           <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
             <h2 className="text-lg font-bold text-brand-950">{t("coach_career")}</h2>
             <ul className="mt-3 space-y-2">
-              {coach.career.map((item) => (
+              {locList(locale, coach.career).map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-brand-700">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
                   {item}
@@ -119,7 +120,7 @@ export function CoachDetailView({
             </ul>
             <div className="mt-4 flex items-center gap-2 text-sm text-brand-600">
               <Languages className="h-4 w-4" />
-              {coach.languages.join(" · ")}
+              {coach.languages.map((l) => languageLabel(t, l)).join(" · ")}
             </div>
           </section>
 
@@ -145,7 +146,9 @@ export function CoachDetailView({
                       <Badge variant="neutral">{r.athleteLevel}</Badge>
                       <span className="text-xs text-brand-400">{r.date}</span>
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-brand-700">{r.comment}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-brand-700">
+                      {loc(locale, r.comment)}
+                    </p>
                   </div>
                 ))}
               </div>

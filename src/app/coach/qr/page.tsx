@@ -7,6 +7,7 @@ import { CoachGate } from "@/components/coach/CoachGate";
 import { getDemoCoach } from "@/lib/coach-bookings";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
+import { sportLabel } from "@/lib/i18n/localize";
 import { useAuth } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -53,7 +54,7 @@ function QrInner() {
             <div>
               <p className="text-xl font-black">{user?.name ?? coach.name}</p>
               <p className="text-sm text-white/75">
-                {coach.sport} · {coach.location}
+                {sportLabel(t, coach.sport)} · {coach.location}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 <Badge className="bg-white/20 text-white">{formatPrice(coach.pricePerHour)}/hr</Badge>

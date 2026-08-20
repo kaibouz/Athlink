@@ -41,7 +41,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <LocaleSwitcher compact />
           </div>
         </header>

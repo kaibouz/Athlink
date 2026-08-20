@@ -2,21 +2,24 @@
 
 import { cn } from "@/lib/utils";
 
-/** AthLink wordmark with theme-aware “Link” contrast */
+/** AthLink wordmark — Manrope brand face, theme-aware “Link” contrast */
 export function AthLinkMark({
   className,
   athClassName,
   linkClassName,
   variant = "default",
   size = "default",
+  animated = false,
 }: {
   className?: string;
   athClassName?: string;
   linkClassName?: string;
   /** default = light/dark UI surfaces; hero = always on dark blue gradient */
   variant?: "default" | "hero";
-  /** hero = giant landing wordmark */
+  /** hero = giant landing wordmark (only h1 on the home viewport) */
   size?: "default" | "hero";
+  /** soft color shimmer on Link (landing hero) */
+  animated?: boolean;
 }) {
   return (
     <span
@@ -38,7 +41,9 @@ export function AthLinkMark({
       </span>
       <span
         className={cn(
-          variant === "hero" ? "text-[var(--athlink-link-hero)]" : "text-[var(--athlink-link)]",
+          !animated &&
+            (variant === "hero" ? "text-[var(--athlink-link-hero)]" : "text-[var(--athlink-link)]"),
+          animated && "athlink-link-shimmer",
           linkClassName,
         )}
       >

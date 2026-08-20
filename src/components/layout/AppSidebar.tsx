@@ -74,7 +74,7 @@ export function AppSidebar({
 
   function isActive(item: NavItem) {
     if (item.exact) return pathname === item.href;
-    return pathname.startsWith(item.href);
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }
 
   function go(href: string) {

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, Brain, ClipboardList, MessageSquare, Sparkles } from "lucide-react";
 import { getStudentById } from "@/lib/coach-students";
 import { useLocale } from "@/lib/i18n/provider";
+import { specialtyLabel } from "@/lib/i18n/localize";
 import { CoachGate } from "@/components/coach/CoachGate";
 import { MetricBar, TrendChart } from "@/components/coach/AiCharts";
 import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
@@ -79,7 +80,7 @@ export default function StudentDetailPage() {
             )}
             <div className="mt-2 flex flex-wrap gap-1.5">
               {student.focusAreas.map((f) => (
-                <Badge key={f}>{f}</Badge>
+                <Badge key={f}>{specialtyLabel(t, f)}</Badge>
               ))}
             </div>
           </div>

@@ -28,6 +28,23 @@ function applyTheme(theme: ThemeMode) {
   root.style.colorScheme = theme;
 }
 
+export function useForceLightTheme() {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    applyTheme("light");
+    return () => {
+      applyTheme(theme);
+    };
+  }, [theme]);
+}
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  return ctx;
+}
+
 function readStoredTheme(): ThemeMode {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -48,7 +65,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initial = readStoredTheme();
     setThemeState(initial);
-    applyTheme(initial);
+    // Homepage locks to light; avoid a dark flash before the page effect runs.
+    if (window.location.pathname === "/") {
+      applyTheme("light");
+    } else {
+      applyTheme(initial);
+    }
     setReady(true);
   }, []);
 
@@ -72,10 +94,4 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
-
-export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
-  return ctx;
 }

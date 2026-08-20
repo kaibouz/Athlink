@@ -66,7 +66,7 @@ export default function SnsPage() {
   }, [profiles]);
 
   return (
-    <div className="mx-auto max-w-xl border-x border-brand-100 min-h-[70vh] bg-surface">
+    <div className="mx-auto w-full max-w-6xl min-h-[70vh] border-x border-brand-100 bg-surface">
       <header className="sticky top-14 z-20 border-b border-brand-100 bg-surface/90 backdrop-blur-md md:top-0">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           <div>

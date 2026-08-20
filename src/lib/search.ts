@@ -20,11 +20,13 @@ export function filterCoaches(
 ): CoachProfile[] {
   const result = source.filter((c) => {
     const q = filters.query.trim().toLowerCase();
+    const bioText = `${c.bio.en} ${c.bio.ja} ${c.bio.es}`.toLowerCase();
     const matchesQuery =
       !q ||
       c.name.toLowerCase().includes(q) ||
-      c.bio.toLowerCase().includes(q) ||
+      bioText.includes(q) ||
       c.specialties.some((s) => s.toLowerCase().includes(q)) ||
+      c.sport.toLowerCase().includes(q) ||
       c.location.toLowerCase().includes(q) ||
       c.languages.some((l) => l.toLowerCase().includes(q));
     return (

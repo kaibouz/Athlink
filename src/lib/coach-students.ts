@@ -12,7 +12,7 @@ export const students: StudentAthlete[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ethan",
     lessonsCompleted: 12,
     nextLesson: "2026-08-02",
-    focusAreas: ["バッティング", "走塁"],
+    focusAreas: ["hitting", "baserunning"],
     aiSummary:
       "Bat speed +4 mph over 6 weeks. Attack angle still shallow on outside pitches — prioritize path drills.",
     strengths: ["Load timing", "Lower-half drive", "Competitive at-bats"],
@@ -50,7 +50,7 @@ export const students: StudentAthlete[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Sofia",
     lessonsCompleted: 8,
     nextLesson: "2026-07-31",
-    focusAreas: ["ピッチング", "フィジカル"],
+    focusAreas: ["pitching", "physical"],
     aiSummary:
       "Arm slot consistency improved. Peak velo 64 mph. Focus next block on hip-shoulder separation.",
     strengths: ["Command of FB", "Work ethic", "Recovery habits"],
@@ -88,7 +88,7 @@ export const students: StudentAthlete[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Kenji",
     lessonsCompleted: 5,
     nextLesson: "2026-08-03",
-    focusAreas: ["守備", "バッティング"],
+    focusAreas: ["defense", "hitting"],
     aiSummary:
       "Early footwork improved on ground balls. Swing is long — shorten path with tee constraints.",
     strengths: ["Hands soft", "Game IQ", "Coachable"],
@@ -124,7 +124,7 @@ export const students: StudentAthlete[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Maya",
     lessonsCompleted: 15,
     nextLesson: "2026-08-05",
-    focusAreas: ["キャッチャー", "メンタル"],
+    focusAreas: ["catcher", "mental"],
     aiSummary:
       "Pop time average 2.05s. Framing gains noted. Mental routine before 2-strike counts is sticky.",
     strengths: ["Receiving", "Leadership", "Block technique"],

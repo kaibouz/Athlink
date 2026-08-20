@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/store";
 import { messageThreads, messages as seedMessages } from "@/lib/data";
 import type { Message } from "@/types";
 import { useLocale } from "@/lib/i18n/provider";
+import { loc } from "@/lib/i18n/localize";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CommSwitcher } from "@/components/layout/CommSwitcher";
@@ -16,7 +17,7 @@ export default function MessagesPage() {
   const [activeId, setActiveId] = useState(messageThreads[0]?.id ?? "");
   const [localMessages, setLocalMessages] = useState<Message[]>(seedMessages);
   const [draft, setDraft] = useState("");
-  const activeThread = messageThreads.find((t) => t.id === activeId);
+  const activeThread = messageThreads.find((th) => th.id === activeId);
   const threadMessages = useMemo(
     () =>
       localMessages
@@ -77,7 +78,9 @@ export default function MessagesPage() {
                   </span>
                 )}
               </div>
-              <span className="truncate text-sm text-brand-500">{thread.lastMessage}</span>
+              <span className="truncate text-sm text-brand-500">
+                {loc(locale, thread.lastMessage)}
+              </span>
             </button>
           ))}
         </aside>
@@ -94,7 +97,10 @@ export default function MessagesPage() {
               </div>
               <div className="flex-1 space-y-3 overflow-y-auto p-4">
                 {threadMessages.map((m) => {
-                  const mine = m.senderId === user.id || m.senderName === "あなた";
+                  const mine =
+                    m.senderId === user.id ||
+                    m.senderNameKey === "you" ||
+                    m.senderName === "you";
                   return (
                     <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                       <div
@@ -102,7 +108,7 @@ export default function MessagesPage() {
                           mine ? "bg-brand-600 text-white" : "bg-brand-50 text-brand-900"
                         }`}
                       >
-                        <p>{m.body}</p>
+                        <p>{loc(locale, m.body)}</p>
                         <p
                           className={`mt-1 text-[10px] ${mine ? "text-brand-200" : "text-brand-400"}`}
                         >

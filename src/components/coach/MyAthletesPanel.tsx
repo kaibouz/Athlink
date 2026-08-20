@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Brain, MessageSquare, Search } from "lucide-react";
 import { students } from "@/lib/coach-students";
 import { useLocale } from "@/lib/i18n/provider";
+import { specialtyLabel } from "@/lib/i18n/localize";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -12,9 +13,11 @@ import { Input } from "@/components/ui/Input";
 /** Compact / full My Athletes roster for dashboard (and optional standalone). */
 export function MyAthletesPanel({
   compact = false,
+  embedded = false,
   id = "my-athletes",
 }: {
   compact?: boolean;
+  embedded?: boolean;
   id?: string;
 }) {
   const { t } = useLocale();
@@ -32,27 +35,35 @@ export function MyAthletesPanel({
     );
   }, [q]);
 
-  const shown = compact ? filtered.slice(0, 4) : filtered;
+  const shown = compact && !embedded ? filtered.slice(0, 4) : filtered;
 
   return (
     <section id={id} className="scroll-mt-20">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-            <Brain className="h-3.5 w-3.5" />
-            {t("students_ai_badge")}
+      {!embedded && (
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+              <Brain className="h-3.5 w-3.5" />
+              {t("students_ai_badge")}
+            </div>
+            <h2 className="text-xl font-bold text-brand-950 sm:text-2xl">
+              {t("my_athletes_title")}
+            </h2>
+            <p className="mt-1 text-sm text-brand-600">{t("my_athletes_sub")}</p>
           </div>
-          <h2 className="text-xl font-bold text-brand-950 sm:text-2xl">
-            {t("my_athletes_title")}
-          </h2>
-          <p className="mt-1 text-sm text-brand-600">{t("my_athletes_sub")}</p>
+          <p className="text-sm font-medium text-brand-500">
+            {t("students_count", { n: filtered.length })}
+          </p>
         </div>
-        <p className="text-sm font-medium text-brand-500">
+      )}
+
+      {embedded && (
+        <p className="mb-3 text-xs font-medium text-brand-500">
           {t("students_count", { n: filtered.length })}
         </p>
-      </div>
+      )}
 
-      <div className="relative mt-4 max-w-md">
+      <div className={`relative max-w-md ${embedded ? "" : "mt-4"}`}>
         <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-brand-400" />
         <Input
           className="pl-9"
@@ -82,7 +93,7 @@ export function MyAthletesPanel({
                 </p>
                 <div className="mt-1.5 flex flex-wrap gap-1">
                   {s.focusAreas.slice(0, 3).map((f) => (
-                    <Badge key={f}>{f}</Badge>
+                    <Badge key={f}>{specialtyLabel(t, f)}</Badge>
                   ))}
                 </div>
               </div>
@@ -112,7 +123,7 @@ export function MyAthletesPanel({
         ))}
       </div>
 
-      {compact && filtered.length > shown.length && (
+      {compact && !embedded && filtered.length > shown.length && (
         <p className="mt-3 text-center text-sm text-brand-500">
           {t("dash_athletes_more", { n: filtered.length - shown.length })}
         </p>

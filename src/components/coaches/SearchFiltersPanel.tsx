@@ -5,6 +5,7 @@ import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
 import { defaultFilters } from "@/lib/search";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
+import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { Input, Label, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
@@ -45,7 +46,7 @@ export function SearchFiltersPanel({
           <option value="">{t("search_all")}</option>
           {SPORTS.map((s) => (
             <option key={s} value={s}>
-              {s}
+              {sportLabel(t, s)}
             </option>
           ))}
         </Select>
@@ -75,7 +76,7 @@ export function SearchFiltersPanel({
           <option value="">{t("search_all")}</option>
           {LANGUAGES.map((l) => (
             <option key={l} value={l}>
-              {l}
+              {languageLabel(t, l)}
             </option>
           ))}
         </Select>
@@ -90,7 +91,7 @@ export function SearchFiltersPanel({
           <option value="">{t("search_all")}</option>
           {SPECIALTIES.map((s) => (
             <option key={s} value={s}>
-              {s}
+              {specialtyLabel(t, s)}
             </option>
           ))}
         </Select>
