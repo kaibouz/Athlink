@@ -1,10 +1,11 @@
+import { SignUp } from "@clerk/nextjs";
 import { ClerkAuthShell } from "@/components/auth/ClerkAuthShell";
-import { ClerkSignUpWithIdentifierToggle } from "@/components/auth/ClerkSignUpWithIdentifierToggle";
+import { clerkAuthAppearance } from "@/components/auth/clerkAppearance";
 
 export default function SignUpPage() {
   return (
     <ClerkAuthShell>
-      <ClerkSignUpWithIdentifierToggle />
+      <SignUp appearance={clerkAuthAppearance} />
     </ClerkAuthShell>
   );
 }
