@@ -42,11 +42,6 @@ const DEMO_VIDEOS = [
   "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
 ];
 
-function stepAfter(step: OnboardingStep): OnboardingStep | null {
-  const idx = ONBOARDING_STEPS.indexOf(step);
-  return idx < ONBOARDING_STEPS.length - 1 ? ONBOARDING_STEPS[idx + 1]! : null;
-}
-
 function stepBefore(step: OnboardingStep): OnboardingStep | null {
   const idx = ONBOARDING_STEPS.indexOf(step);
   return idx > 0 ? ONBOARDING_STEPS[idx - 1]! : null;
@@ -258,7 +253,9 @@ export function OnboardingClient() {
             school: draft.school.trim(),
             position: draft.position,
             classYear: draft.classYear,
-            avatarUrl: user.avatarUrl,
+            avatarUrl:
+              user.avatarUrl ??
+              `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(user.name)}`,
             type: draft.postType as SocialPostType,
             caption: draft.postCaption.trim(),
             videoUrl: DEMO_VIDEOS[0]!,
@@ -792,11 +789,7 @@ export function OnboardingClient() {
               </Button>
             )}
             <Button size="lg" onClick={() => void goNext()}>
-              {draft.role === "athlete" && !draft.postCaption.trim()
-                ? t("onboard_next")
-                : draft.role === "athlete"
-                  ? t("onboard_next")
-                  : t("onboard_next")}
+              {t("onboard_next")}
             </Button>
           </div>
         </div>
