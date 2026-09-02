@@ -25,7 +25,6 @@ import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { useForceLightTheme } from "@/lib/theme";
 
 export default function HomePage() {
   const { t } = useLocale();
@@ -35,7 +34,6 @@ export default function HomePage() {
     staticCoaches.filter((c) => c.verified).slice(0, 3),
   );
   const [intro, setIntro] = useState<"pending" | "crossfade" | "ready">("pending");
-  useForceLightTheme();
 
   useEffect(() => {
     void fetch("/api/coaches")
@@ -148,13 +146,10 @@ export default function HomePage() {
         <header className="relative z-20">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
             <Link href="/" className="text-lg" aria-label="AthLink">
-              <AthLinkMark athClassName="text-slate-900" />
+              <AthLinkMark athClassName="text-brand-950" />
             </Link>
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link
-                href="/login"
-                className="rounded-lg px-3 py-1.5 text-sm font-semibold text-brand-800 hover:bg-white/50"
-              >
+              <Link href="/login" className="landing-nav-link">
                 {t("nav_login")}
               </Link>
               <LocaleSwitcher compact />
@@ -169,7 +164,7 @@ export default function HomePage() {
             {t("hero_locations")}
           </p>
           <h1 className="land-fade land-fade-delay-1 mt-5">
-            <AthLinkMark size="hero" athClassName="text-slate-900" animated />
+            <AthLinkMark size="hero" athClassName="text-brand-950" animated />
           </h1>
           <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-xl text-base font-medium leading-snug text-brand-800 sm:text-lg">
             {t("hero_tagline")}
@@ -347,55 +342,60 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="land-footer border-t border-slate-200/80">
+      <footer className="land-footer border-t border-brand-200/20">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
           <div>
             <div className="text-lg">
-              <AthLinkMark athClassName="text-slate-900" linkClassName="text-slate-700" />
+              <AthLinkMark athClassName="text-brand-950" linkClassName="text-brand-700" />
             </div>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-600">
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-brand-600">
               {t("land_footer_tag")}
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">{t("footer_product")}</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <h4 className="text-sm font-semibold text-brand-950">{t("footer_product")}</h4>
+            <ul className="mt-3 space-y-2 text-sm text-brand-600">
               <li>
-                <a href="#how" className="hover:text-slate-900">
+                <a href="#how" className="hover:text-brand-800">
                   {t("land_how_title")}
                 </a>
               </li>
               <li>
-                <Link href="/search" className="hover:text-slate-900">
+                <Link href="/search" className="hover:text-brand-800">
                   {t("footer_find")}
                 </Link>
               </li>
               <li>
-                <Link href="/coach/register" className="hover:text-slate-900">
+                <Link href="/coach/register" className="hover:text-brand-800">
                   {t("footer_register")}
                 </Link>
               </li>
               <li>
-                <Link href="/dns" className="hover:text-slate-900">
+                <Link href="/dns" className="hover:text-brand-800">
                   {t("land_footer_dns")}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">{t("footer_support")}</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <h4 className="text-sm font-semibold text-brand-950">{t("footer_support")}</h4>
+            <ul className="mt-3 space-y-2 text-sm text-brand-600">
               <li>
-                <Link href="/login" className="hover:text-slate-900">
+                <Link href="/login" className="hover:text-brand-800">
                   {t("nav_login")}
                 </Link>
               </li>
               <li>
-                <Link href="/join" className="hover:text-slate-900">
+                <Link href="/join" className="hover:text-brand-800">
                   {t("nav_signup")}
                 </Link>
               </li>
-              <li className="text-slate-500">© 2026 AthLink</li>
+              <li>
+                <Link href="/admin" className="hover:text-brand-800">
+                  {t("nav_admin")}
+                </Link>
+              </li>
+              <li className="text-brand-500">© 2026 AthLink</li>
             </ul>
           </div>
         </div>

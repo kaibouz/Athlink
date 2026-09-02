@@ -37,6 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isIosPreview = pathname === "/ios";
   const isHome = pathname === "/" && !user;
   const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
+  const isAdminFlow = pathname.startsWith("/admin");
   const isAuthForm =
     pathname === "/login" || pathname === "/signup" || pathname === "/dns";
 
@@ -44,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isJoinFlow) {
+  if (isJoinFlow || isAdminFlow) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 

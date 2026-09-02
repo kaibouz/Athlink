@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1d4ed8",
+  themeColor: "#070b14",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -56,9 +56,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
+      className={`dark ${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("athlink_theme");if(t==="light"){document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}else{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`,
+          }}
+        />
+      </head>
       <body
         className="flex min-h-full flex-col bg-background font-sans text-foreground"
         suppressHydrationWarning

@@ -36,8 +36,8 @@ export function OnboardingShell({
   const isFinish = step === "finish";
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-brand-50/80 to-surface">
-      <header className="flex h-14 items-center justify-between gap-3 border-b border-brand-100/80 bg-surface/90 px-4 backdrop-blur-md sm:px-6">
+    <div className="onboarding-scene flex min-h-screen flex-col">
+      <header className="onboarding-scene-header flex h-14 items-center justify-between gap-3 border-b px-4 backdrop-blur-md sm:px-6">
         <Link href="/join" className="inline-flex items-center gap-2">
           <span
             className={cn(

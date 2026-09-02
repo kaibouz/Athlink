@@ -106,6 +106,7 @@ export function shouldEnterOnboarding(userId: string | null): boolean {
 }
 
 export function destinationFor(role: UserRole): string {
+  if (role === "executive") return "/admin";
   return role === "coach" ? "/coach/dashboard" : "/bookings";
 }
 

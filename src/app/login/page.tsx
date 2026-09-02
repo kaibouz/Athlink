@@ -43,6 +43,10 @@ function LoginForm() {
 
   useEffect(() => {
     if (!hydrated || !user) return;
+    if (user.role === "executive") {
+      router.replace("/admin");
+      return;
+    }
     if (shouldEnterOnboarding(user.id)) {
       router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
       return;

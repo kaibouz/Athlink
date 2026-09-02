@@ -52,25 +52,17 @@ function readStoredTheme(): ThemeMode {
   } catch {
     /* ignore */
   }
-  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    return "dark";
-  }
-  return "light";
+  return "dark";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("light");
+  const [theme, setThemeState] = useState<ThemeMode>("dark");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const initial = readStoredTheme();
     setThemeState(initial);
-    // Homepage locks to light; avoid a dark flash before the page effect runs.
-    if (window.location.pathname === "/") {
-      applyTheme("light");
-    } else {
-      applyTheme(initial);
-    }
+    applyTheme(initial);
     setReady(true);
   }, []);
 

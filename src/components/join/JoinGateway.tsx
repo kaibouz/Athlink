@@ -8,13 +8,15 @@ import {
   MessageSquare,
   Radar,
   Search,
+  UserRound,
   Users,
   Wallet,
 } from "lucide-react";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/provider";
-import { cn } from "@/lib/utils";
 
 type Feature = { icon: React.ComponentType<{ className?: string }>; text: string };
 
@@ -26,7 +28,7 @@ function JoinCard({
   href,
   cta,
   footnote,
-  accent,
+  role,
 }: {
   eyebrow: string;
   title: string;
@@ -35,32 +37,22 @@ function JoinCard({
   href: string;
   cta: string;
   footnote: string;
-  accent: "coach" | "athlete";
+  role: "coach" | "athlete";
 }) {
-  const isCoach = accent === "coach";
+  const isCoach = role === "coach";
+  const RoleIcon = isCoach ? UserRound : Users;
 
   return (
-    <article
-      className={cn(
-        "join-card flex flex-col rounded-2xl border p-6 sm:p-8",
-        isCoach ? "join-card-coach" : "join-card-athlete",
-      )}
-    >
-      <p className="text-xs font-semibold uppercase tracking-wider text-white/45">{eyebrow}</p>
-      <h2 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-[1.65rem]">
-        {title}
-      </h2>
-      <p className="mt-3 text-sm leading-relaxed text-white/60">{body}</p>
+    <article className="land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8">
+      <p className="text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase">{eyebrow}</p>
+      <RoleIcon className="mt-4 h-7 w-7 text-brand-600" />
+      <h2 className="mt-3 text-xl font-black tracking-tight text-brand-950 sm:text-2xl">{title}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-brand-600">{body}</p>
 
-      <ul className="mt-6 flex-1 space-y-4">
+      <ul className="mt-6 flex flex-1 flex-col gap-3">
         {features.map(({ icon: Icon, text }) => (
-          <li key={text} className="flex gap-3 text-sm leading-snug text-white/75">
-            <span
-              className={cn(
-                "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
-                isCoach ? "bg-brand-500/20 text-sky-300" : "bg-amber-400/15 text-amber-300",
-              )}
-            >
+          <li key={text} className="flex gap-3 text-sm leading-snug text-brand-700">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-600">
               <Icon className="h-4 w-4" />
             </span>
             {text}
@@ -68,21 +60,21 @@ function JoinCard({
         ))}
       </ul>
 
-      <div className="mt-8">
-        <Link href={href} className="group inline-flex w-full sm:w-auto">
-          <span
-            className={cn(
-              "inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold transition sm:w-auto",
+      <div className="mt-auto pt-6">
+        <Link href={href} className="group inline-block">
+          <Button
+            variant={isCoach ? "primary" : "outline"}
+            className={
               isCoach
-                ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25 hover:bg-brand-400"
-                : "bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20 hover:bg-amber-300",
-            )}
+                ? "btn-landing-primary border-0"
+                : "btn-landing-secondary font-bold"
+            }
           >
             {cta}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </span>
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Button>
         </Link>
-        <p className="mt-3 text-xs text-white/40">{footnote}</p>
+        <p className="mt-3 text-xs text-brand-500">{footnote}</p>
       </div>
     </article>
   );
@@ -105,63 +97,75 @@ export function JoinGateway() {
   ];
 
   return (
-    <div className="join-gateway min-h-screen">
-      <header className="join-gateway-header mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-        <Link href="/" className="inline-flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-sm font-black text-white">
-            A
-          </span>
-          <span className="text-lg text-white">
-            <AthLinkMark athClassName="text-white" linkClassName="text-sky-300" />
-          </span>
-        </Link>
-        <div className="flex items-center gap-3 sm:gap-5">
-          <Link
-            href="/search"
-            className="hidden text-sm font-medium text-white/55 hover:text-white sm:inline"
-          >
-            {t("nav_find")}
-          </Link>
-          <Link href="/login" className="text-sm font-medium text-white/55 hover:text-white">
-            {t("nav_login")}
-          </Link>
-          <LocaleSwitcher compact />
+    <div className="landing-page flex min-h-screen flex-col">
+      <div className="landing-hero-bg relative flex flex-1 flex-col overflow-hidden">
+        <div className="landing-hero-wind" aria-hidden>
+          <div className="landing-hero-wash landing-hero-wash-a" />
+          <div className="landing-hero-wash landing-hero-wash-b" />
+          <div className="landing-hero-wash landing-hero-wash-c" />
         </div>
-      </header>
+        <HeroCoastline className="landing-coast" />
 
-      <main className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="font-brand text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
-            {t("join_gateway_title")}
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
-            {t("join_gateway_sub")}
-          </p>
-        </div>
+        <header className="relative z-20">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+            <Link href="/" className="text-lg" aria-label="AthLink">
+              <AthLinkMark athClassName="text-brand-950" />
+            </Link>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link href="/login" className="landing-nav-link">
+                {t("nav_login")}
+              </Link>
+              <LocaleSwitcher compact />
+            </div>
+          </div>
+        </header>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-2 lg:gap-6">
-          <JoinCard
-            accent="coach"
-            eyebrow={t("join_coach_eyebrow")}
-            title={t("join_coach_title")}
-            body={t("join_coach_body")}
-            features={coachFeatures}
-            href="/join/coach"
-            cta={t("join_coach_cta")}
-            footnote={t("join_coach_footnote")}
-          />
-          <JoinCard
-            accent="athlete"
-            eyebrow={t("join_athlete_eyebrow")}
-            title={t("join_athlete_title")}
-            body={t("join_athlete_body")}
-            features={athleteFeatures}
-            href="/join/athlete"
-            cta={t("join_athlete_cta")}
-            footnote={t("join_athlete_footnote")}
-          />
+        <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
+          <div className="mx-auto max-w-2xl shrink-0 text-center">
+            <h1 className="land-fade font-brand text-3xl font-bold tracking-tight text-brand-950 sm:text-4xl">
+              {t("join_gateway_title")}
+            </h1>
+            <p className="land-fade land-fade-delay-1 mt-4 text-base leading-relaxed text-brand-600 sm:text-lg">
+              {t("join_gateway_sub")}
+            </p>
+            <p className="land-fade land-fade-delay-2 mt-4 text-xs font-medium tracking-wide text-brand-500 sm:text-sm">
+              {t("land_trust_compact")}
+            </p>
+          </div>
+
+          <div className="land-fade land-fade-delay-3 mt-10 grid flex-1 grid-cols-1 gap-5 md:grid-cols-2">
+            <JoinCard
+              role="coach"
+              eyebrow={t("join_coach_eyebrow")}
+              title={t("join_coach_title")}
+              body={t("join_coach_body")}
+              features={coachFeatures}
+              href="/join/coach"
+              cta={t("join_coach_cta")}
+              footnote={t("join_coach_footnote")}
+            />
+            <JoinCard
+              role="athlete"
+              eyebrow={t("join_athlete_eyebrow")}
+              title={t("join_athlete_title")}
+              body={t("join_athlete_body")}
+              features={athleteFeatures}
+              href="/join/athlete"
+              cta={t("join_athlete_cta")}
+              footnote={t("join_athlete_footnote")}
+            />
+          </div>
+        </main>
+      </div>
+
+      <footer className="land-footer border-t border-slate-200/80">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
+          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
+            ← {t("nav_home")}
+          </Link>
+          <p className="text-xs text-slate-500">{t("land_footer_tag")}</p>
         </div>
-      </main>
+      </footer>
     </div>
   );
 }
