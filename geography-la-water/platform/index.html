@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LA Water Security Atlas</title>
+    <meta
+      name="description"
+      content="Research platform: Understanding the Spatial Vulnerability of Southern California’s Water System."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Noto+Sans+JP:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#app">Skip to atlas</a>
+
+    <section id="gate" class="gate" aria-label="Entry">
+      <div class="gate-bg" aria-hidden="true"></div>
+      <div class="gate-inner">
+        <p class="gate-kicker" data-i18n="brand"></p>
+        <h1 data-i18n="entryQ"></h1>
+        <p class="gate-sub" data-i18n="subtitle"></p>
+        <p class="gate-hint" data-i18n="entryHint"></p>
+        <div class="gate-actions">
+          <button type="button" class="btn primary" id="enterBtn" data-i18n="enter"></button>
+          <a class="btn ghost" href="../site/" data-i18n="essay"></a>
+        </div>
+        <div class="gate-lang">
+          <button type="button" class="lang-toggle" data-set-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-toggle" data-set-lang="ja" aria-pressed="false">日本語</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="app" class="app" hidden>
+      <div id="map" role="application" aria-label="Los Angeles water security map"></div>
+
+      <header class="topbar">
+        <div class="brand-block">
+          <span class="brand" data-i18n="brand"></span>
+          <span class="chip" data-i18n="live"></span>
+        </div>
+        <div class="top-actions">
+          <button type="button" class="btn mini" id="resetView" data-i18n="resetView"></button>
+          <button type="button" class="btn mini" id="overviewView" data-i18n="overview"></button>
+          <button type="button" class="lang-toggle" data-set-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-toggle" data-set-lang="ja" aria-pressed="false">日本語</button>
+        </div>
+      </header>
+
+      <aside class="panel left" aria-label="Layers">
+        <h2 data-i18n="layers"></h2>
+        <div class="layer-list" id="layerList"></div>
+        <div class="process-box" id="processBox" hidden>
+          <h3 data-i18n="processTitle"></h3>
+          <p data-i18n="processLead"></p>
+          <ol class="process-steps" id="processSteps"></ol>
+        </div>
+        <div class="climate-box" id="climateBox" hidden>
+          <h3 data-i18n="layer4"></h3>
+          <canvas id="snowChart" width="280" height="120" aria-label="Snowpack index chart"></canvas>
+          <p class="tiny">Index (100 ≈ long-run average). Illustrative series for literacy.</p>
+        </div>
+        <div class="drought-box" id="droughtBox" hidden>
+          <h3 data-i18n="layer5"></h3>
+          <ol class="drought-path" id="droughtPath"></ol>
+        </div>
+      </aside>
+
+      <aside class="panel right" aria-label="Detail">
+        <h2 data-i18n="detail"></h2>
+        <div id="detailEmpty" class="empty" data-i18n="selectHint"></div>
+        <div id="detailCard" class="detail-card" hidden></div>
+
+        <section class="why-block">
+          <h3 data-i18n="whyTitle"></h3>
+          <div id="whyTabs" class="why-tabs"></div>
+          <p id="whyBody" class="why-body"></p>
+        </section>
+
+        <section class="cites-block">
+          <h3 data-i18n="citesTitle"></h3>
+          <ul id="citeList" class="cites"></ul>
+        </section>
+      </aside>
+
+      <footer class="sim-dock">
+        <div class="sim-head">
+          <div>
+            <h2 data-i18n="simTitle"></h2>
+            <p data-i18n="simLead"></p>
+          </div>
+          <p class="scenario-note" data-i18n="scenarioNote"></p>
+        </div>
+        <div class="sim-grid">
+          <label>
+            <span data-i18n="snowLabel"></span>
+            <input type="range" id="snowSlider" min="20" max="140" value="80" />
+            <output id="snowOut">80%</output>
+          </label>
+          <label>
+            <span data-i18n="coloradoLabel"></span>
+            <input type="range" id="coloradoSlider" min="40" max="110" value="85" />
+            <output id="coloradoOut">85%</output>
+          </label>
+          <label>
+            <span data-i18n="popLabel"></span>
+            <input type="range" id="popSlider" min="0" max="25" value="8" />
+            <output id="popOut">+8%</output>
+          </label>
+          <label>
+            <span data-i18n="recycledLabel"></span>
+            <input type="range" id="recycledSlider" min="0" max="30" value="10" />
+            <output id="recycledOut">+10%</output>
+          </label>
+        </div>
+        <div class="metrics" id="metrics">
+          <div class="metric"><span data-i18n="stressIndex"></span><strong id="mStress">—</strong></div>
+          <div class="metric"><span data-i18n="importDep"></span><strong id="mImport">—</strong></div>
+          <div class="metric"><span data-i18n="localShare"></span><strong id="mLocal">—</strong></div>
+          <div class="metric"><span data-i18n="energyRisk"></span><strong id="mEnergy">—</strong></div>
+        </div>
+        <p class="attr" data-i18n="attribution"></p>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script src="./data.js"></script>
+    <script src="./i18n.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

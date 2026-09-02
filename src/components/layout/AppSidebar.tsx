@@ -23,6 +23,7 @@ import { useMyCoach } from "@/lib/use-my-coach";
 import { formatDateJa, formatPrice, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { Button } from "@/components/ui/Button";
 import { AppSettingsDialog } from "@/components/layout/AppSettingsPanel";
 
@@ -210,18 +211,7 @@ export function AppSidebar({
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            <Link href="/login" onClick={() => onClose?.()}>
-              <Button variant="ghost" size="sm" className="w-full">
-                {t("nav_login")}
-              </Button>
-            </Link>
-            <Link href="/signup" onClick={() => onClose?.()}>
-              <Button size="sm" className="w-full">
-                {t("nav_signup")}
-              </Button>
-            </Link>
-          </div>
+          <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} />
         )}
       </div>
     </aside>

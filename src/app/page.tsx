@@ -25,6 +25,7 @@ import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 
 export default function HomePage() {
   const { t } = useLocale();
@@ -149,9 +150,7 @@ export default function HomePage() {
               <AthLinkMark athClassName="text-brand-950" />
             </Link>
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link href="/login" className="landing-nav-link">
-                {t("nav_login")}
-              </Link>
+              <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} />
               <LocaleSwitcher compact />
             </div>
           </div>

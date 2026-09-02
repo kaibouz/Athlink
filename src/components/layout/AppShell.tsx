@@ -9,6 +9,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { Footer } from "@/components/layout/Footer";
+import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
@@ -41,7 +42,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
   const isAuthForm =
-    pathname === "/login" || pathname === "/signup" || pathname === "/dns";
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/dns" ||
+    pathname === "/sign-in" ||
+    pathname.startsWith("/sign-in/") ||
+    pathname === "/sign-up" ||
+    pathname.startsWith("/sign-up/");
 
   if (isIosPreview || isMarketing || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
@@ -64,6 +71,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="flex items-center gap-2">
+            <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
             <LocaleSwitcher compact />
           </div>
         </header>
@@ -99,6 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
             </Link>
             <div className="flex items-center gap-1">
+              <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
               <ThemeToggle />
               <LocaleSwitcher compact />
             </div>

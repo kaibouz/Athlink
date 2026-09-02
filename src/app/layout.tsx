@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
@@ -70,24 +71,26 @@ export default function RootLayout({
         className="flex min-h-full flex-col bg-background font-sans text-foreground"
         suppressHydrationWarning
       >
-        <ThemeProvider>
-          <LocaleProvider>
-            <AuthProvider>
-              <CoachToolsProvider>
-                <SocialProvider>
-                  <GrowthProvider>
-                    <ScoutProvider>
-                      <AppShell>
-                        <main className="flex-1 pb-20 md:pb-0">{children}</main>
-                      </AppShell>
-                      <MobileNav />
-                    </ScoutProvider>
-                  </GrowthProvider>
-                </SocialProvider>
-              </CoachToolsProvider>
-            </AuthProvider>
-          </LocaleProvider>
-        </ThemeProvider>
+        <ClerkProvider>
+          <ThemeProvider>
+            <LocaleProvider>
+              <AuthProvider>
+                <CoachToolsProvider>
+                  <SocialProvider>
+                    <GrowthProvider>
+                      <ScoutProvider>
+                        <AppShell>
+                          <main className="flex-1 pb-20 md:pb-0">{children}</main>
+                        </AppShell>
+                        <MobileNav />
+                      </ScoutProvider>
+                    </GrowthProvider>
+                  </SocialProvider>
+                </CoachToolsProvider>
+              </AuthProvider>
+            </LocaleProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
