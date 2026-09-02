@@ -1,10 +1,11 @@
 import { SignIn } from "@clerk/nextjs";
 import { ClerkAuthShell } from "@/components/auth/ClerkAuthShell";
+import { clerkAuthAppearance } from "@/components/auth/clerkAppearance";
 
 export default function SignInPage() {
   return (
     <ClerkAuthShell>
-      <SignIn />
+      <SignIn appearance={clerkAuthAppearance} />
     </ClerkAuthShell>
   );
 }
