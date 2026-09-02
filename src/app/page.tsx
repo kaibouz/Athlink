@@ -162,7 +162,7 @@ export default function HomePage() {
             {t("hero_locations")}
           </p>
           <h1 className="land-fade land-fade-delay-1 mt-5">
-            <AthlinkProMark size="hero" baseClassName="text-brand-950" animated />
+            <AthlinkProMark size="hero" variant="hero" animated />
           </h1>
           <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-xl text-base font-medium leading-snug text-brand-800 sm:text-lg">
             {t("hero_tagline")}

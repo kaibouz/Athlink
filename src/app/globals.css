@@ -32,7 +32,7 @@
   --athlink-link-hero: #bae6fd;
 
   --landing-bg: #0a1220;
-  --landing-hero: #0f1a2e;
+  --landing-hero: #000000;
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
@@ -86,7 +86,7 @@
   --athlink-link-hero: #bae6fd;
 
   --landing-bg: #0a1220;
-  --landing-hero: #0f1a2e;
+  --landing-hero: #000000;
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
@@ -420,9 +420,10 @@ body {
 /* Join gateway — cinematic atmosphere + role card accents */
 .join-gateway-page .landing-hero-bg {
   background-image:
-    linear-gradient(155deg, #0f1a2e 0%, #0d1525 35%, #0a1220 68%, #070b14 100%),
-    radial-gradient(ellipse 50% 40% at 82% 58%, rgba(224, 164, 88, 0.12), transparent 55%),
-    radial-gradient(ellipse 45% 35% at 18% 42%, rgba(37, 99, 235, 0.1), transparent 50%);
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
+    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
+    linear-gradient(155deg, #000000 0%, #030712 32%, #0a1628 55%, #051018 78%, #000000 100%);
 }
 
 .join-card-coach {
@@ -442,13 +443,18 @@ body {
 .landing-hero-bg {
   isolation: isolate;
   background-color: var(--landing-hero);
-  background-image: linear-gradient(
-    155deg,
-    #0f1a2e 0%,
-    #0d1525 35%,
-    #0a1220 68%,
-    #070b14 100%
-  );
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% -8%, rgba(37, 99, 235, 0.32), transparent 55%),
+    radial-gradient(ellipse 48% 42% at 88% 42%, rgba(59, 130, 246, 0.2), transparent 52%),
+    radial-gradient(ellipse 42% 38% at 10% 58%, rgba(14, 165, 233, 0.14), transparent 48%),
+    linear-gradient(
+      155deg,
+      #000000 0%,
+      #030712 28%,
+      #0a1628 52%,
+      #051018 78%,
+      #000000 100%
+    );
 }
 
 .landing-coast {
@@ -478,8 +484,8 @@ body {
   animation: land-coast-node-in 0.55s ease forwards;
 }
 .landing-coast-label {
-  fill: #64748b;
-  fill-opacity: 0.72;
+  fill: #cbd5e1;
+  fill-opacity: 0.82;
   font-size: 11px;
   font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
@@ -525,7 +531,7 @@ body {
 @media (max-width: 768px) {
   .landing-coast-label {
     font-size: 9px;
-    fill-opacity: 0.55;
+    fill-opacity: 0.72;
   }
   .landing-coast-diamond {
     opacity: 0.08;
@@ -560,12 +566,12 @@ body {
 .landing-hero-wash-a {
   background: linear-gradient(
     90deg,
-    rgba(186, 230, 253, 0.12) 0%,
-    rgba(125, 211, 252, 0.28) 18%,
-    rgba(147, 197, 253, 0.18) 36%,
-    rgba(186, 230, 253, 0.1) 54%,
-    rgba(165, 243, 252, 0.24) 72%,
-    rgba(186, 230, 253, 0.12) 100%
+    rgba(37, 99, 235, 0.06) 0%,
+    rgba(59, 130, 246, 0.18) 18%,
+    rgba(96, 165, 250, 0.12) 36%,
+    rgba(37, 99, 235, 0.05) 54%,
+    rgba(14, 165, 233, 0.16) 72%,
+    rgba(37, 99, 235, 0.06) 100%
   );
   animation: land-wash-flow 9s linear infinite;
 }
@@ -573,11 +579,11 @@ body {
 .landing-hero-wash-b {
   background: linear-gradient(
     90deg,
-    rgba(191, 219, 254, 0.08) 0%,
-    rgba(125, 211, 252, 0.2) 25%,
+    rgba(59, 130, 246, 0.05) 0%,
+    rgba(37, 99, 235, 0.14) 25%,
     transparent 50%,
-    rgba(186, 230, 253, 0.18) 75%,
-    rgba(191, 219, 254, 0.08) 100%
+    rgba(96, 165, 250, 0.12) 75%,
+    rgba(59, 130, 246, 0.05) 100%
   );
   opacity: 0.85;
   animation: land-wash-flow 13s linear infinite;
@@ -587,11 +593,11 @@ body {
 .landing-hero-wash-c {
   background: linear-gradient(
     90deg,
-    rgba(240, 249, 255, 0.35) 0%,
-    rgba(224, 242, 254, 0.4) 30%,
+    rgba(147, 197, 253, 0.14) 0%,
+    rgba(96, 165, 250, 0.2) 30%,
     transparent 55%,
-    rgba(239, 246, 255, 0.35) 80%,
-    rgba(240, 249, 255, 0.35) 100%
+    rgba(125, 211, 252, 0.16) 80%,
+    rgba(147, 197, 253, 0.14) 100%
   );
   animation: land-wash-flow 11s linear infinite;
   animation-delay: -7s;
