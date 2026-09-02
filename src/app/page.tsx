@@ -20,8 +20,8 @@ import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboar
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { CoachCard } from "@/components/coaches/CoachCard";
-import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
+import { AthlinkProMark } from "@/components/brand/AthlinkProMark";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { Button } from "@/components/ui/Button";
@@ -162,7 +162,7 @@ export default function HomePage() {
             {t("hero_locations")}
           </p>
           <h1 className="land-fade land-fade-delay-1 mt-5">
-            <AthLinkMark size="hero" athClassName="text-brand-950" animated />
+            <AthlinkProMark size="hero" baseClassName="text-brand-950" animated />
           </h1>
           <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-xl text-base font-medium leading-snug text-brand-800 sm:text-lg">
             {t("hero_tagline")}
@@ -344,7 +344,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
           <div>
             <div className="text-lg">
-              <AthLinkMark athClassName="text-brand-950" linkClassName="text-brand-700" />
+              <AthlinkProMark baseClassName="text-brand-950" proClassName="text-brand-700" />
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-brand-600">
               {t("land_footer_tag")}
@@ -393,7 +393,7 @@ export default function HomePage() {
                   {t("nav_admin")}
                 </Link>
               </li>
-              <li className="text-brand-500">© 2026 AthLink</li>
+              <li className="text-brand-500">© 2026 AthlinkPro</li>
             </ul>
           </div>
         </div>
