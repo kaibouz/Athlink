@@ -32,7 +32,7 @@ export default function CoachRegisterPage() {
   useEffect(() => {
     if (!hydrated) return;
     if (!user) {
-      router.replace("/onboarding?role=coach");
+      router.replace("/join/coach");
       return;
     }
     if (user.role !== "coach") {

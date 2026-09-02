@@ -1206,13 +1206,59 @@ body {
   color: white;
 }
 
+.join-gateway {
+  background: #070b14;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(37, 99, 235, 0.18), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 100% 50%, rgba(6, 182, 212, 0.08), transparent 50%);
+  color: white;
+}
+
+.join-gateway-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.join-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.3s ease;
+}
+
+.join-card:hover {
+  transform: translateY(-3px);
+}
+
+.join-card-coach {
+  border-color: rgba(59, 130, 246, 0.22);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.06) inset;
+}
+
+.join-card-coach:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.12) inset,
+    0 24px 48px rgba(37, 99, 235, 0.12);
+}
+
+.join-card-athlete {
+  border-color: rgba(251, 191, 36, 0.2);
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.05) inset;
+}
+
+.join-card-athlete:hover {
+  border-color: rgba(251, 191, 36, 0.42);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.1) inset,
+    0 24px 48px rgba(245, 158, 11, 0.1);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .onboarding-bow-wrap {
-    animation: none;
-  }
-  .onboarding-role-card:hover,
-  .onboarding-role-card.is-selected {
+  .join-card:hover {
     transform: none;
   }
 }
+
 

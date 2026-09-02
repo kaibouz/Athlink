@@ -11,7 +11,7 @@ import { Input, Label } from "@/components/ui/Input";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { cn } from "@/lib/utils";
 
-import { setOnboardingPending } from "@/lib/onboarding";
+import { joinPathFor, setOnboardingPending } from "@/lib/onboarding";
 
 export default function SignupPage() {
   const { signup } = useAuth();
@@ -36,7 +36,7 @@ export default function SignupPage() {
       return;
     }
     setOnboardingPending();
-    router.push("/onboarding");
+    router.push(joinPathFor(role));
   }
 
   return (

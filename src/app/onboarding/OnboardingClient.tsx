@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   CalendarDays,
   Check,
@@ -12,7 +12,7 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
-import { OnboardingShell, OnboardingWelcomeHero } from "@/components/onboarding/OnboardingShell";
+import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
@@ -22,9 +22,10 @@ import {
   clearDraft,
   defaultDraft,
   destinationFor,
+  joinPathFor,
   loadDraft,
   markOnboardingComplete,
-  ONBOARDING_STEPS,
+  ONBOARDING_WIZARD_STEPS,
   saveDraft,
   setOnboardingPending,
   type OnboardingDraft,
@@ -43,22 +44,23 @@ const DEMO_VIDEOS = [
 ];
 
 function stepBefore(step: OnboardingStep): OnboardingStep | null {
-  const idx = ONBOARDING_STEPS.indexOf(step);
-  return idx > 0 ? ONBOARDING_STEPS[idx - 1]! : null;
+  const idx = ONBOARDING_WIZARD_STEPS.indexOf(step as (typeof ONBOARDING_WIZARD_STEPS)[number]);
+  if (idx <= 0) return null;
+  return ONBOARDING_WIZARD_STEPS[idx - 1] ?? null;
 }
 
-export function OnboardingClient() {
+export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { t } = useLocale();
   const { user, hydrated, signup } = useAuth();
   const { createProfile, addPost } = useSocial();
 
-  const roleParam = searchParams.get("role");
-  const initialRole = roleParam === "coach" || roleParam === "athlete" ? roleParam : "athlete";
-
-  const [step, setStep] = useState<OnboardingStep>("welcome");
-  const [draft, setDraft] = useState<OnboardingDraft>(() => loadDraft() ?? defaultDraft(initialRole));
+  const [step, setStep] = useState<OnboardingStep>("account");
+  const [draft, setDraft] = useState<OnboardingDraft>(() => {
+    const saved = loadDraft();
+    if (saved?.role === role) return saved;
+    return defaultDraft(role);
+  });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [coachId, setCoachId] = useState<string | null>(null);
@@ -70,10 +72,10 @@ export function OnboardingClient() {
   }, []);
 
   useEffect(() => {
-    if (roleParam === "coach" || roleParam === "athlete") {
-      patchDraft({ role: roleParam });
-    }
-  }, [roleParam, patchDraft]);
+    setOnboardingPending();
+    patchDraft({ role });
+    trackEvent("onboarding_start", { role });
+  }, [role, patchDraft]);
 
   useEffect(() => {
     saveDraft(draft);
@@ -81,12 +83,16 @@ export function OnboardingClient() {
 
   useEffect(() => {
     if (!hydrated || !user) return;
+    if (user.role !== role && user.role !== "parent") {
+      router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
+      return;
+    }
     patchDraft({
       name: draft.name || user.name,
       email: draft.email || user.email,
-      role: user.role === "coach" ? "coach" : "athlete",
+      role,
     });
-  }, [hydrated, user, patchDraft, draft.name, draft.email]);
+  }, [hydrated, user, patchDraft, draft.name, draft.email, role, router]);
 
   const bookUrl = useMemo(() => {
     if (!coachId) return "";
@@ -100,8 +106,12 @@ export function OnboardingClient() {
 
   function goBack() {
     setError("");
+    if (step === "account") {
+      router.push("/join");
+      return;
+    }
     const prev = stepBefore(step);
-    if (prev) setStep(prev);
+    if (prev && prev !== "welcome") setStep(prev);
   }
 
   async function saveCoachProfile(): Promise<boolean> {
@@ -174,13 +184,6 @@ export function OnboardingClient() {
 
   async function goNext() {
     setError("");
-
-    if (step === "welcome") {
-      setOnboardingPending();
-      trackEvent("onboarding_start", { role: draft.role });
-      setStep("account");
-      return;
-    }
 
     if (step === "account") {
       if (!user) {
@@ -310,7 +313,7 @@ export function OnboardingClient() {
 
   if (!hydrated) {
     return (
-      <OnboardingShell step="welcome">
+      <OnboardingShell step="account" role={role} wizardMode>
         <div className="text-center text-brand-500">{t("loading")}</div>
       </OnboardingShell>
     );
@@ -324,65 +327,7 @@ export function OnboardingClient() {
   ];
 
   return (
-    <OnboardingShell step={step}>
-      {step === "welcome" && (
-        <OnboardingWelcomeHero>
-          <div className="text-center">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-500">
-              {t("onboard_step_welcome")}
-            </p>
-            <h1 className="mt-3 font-brand text-3xl font-black tracking-tight text-brand-950 sm:text-4xl">
-              {t("onboard_welcome_title")}
-            </h1>
-            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-brand-600">
-              {t("onboard_welcome_sub")}
-            </p>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {(["coach", "athlete"] as const).map((role) => {
-                const Icon = role === "coach" ? Users : UserRound;
-                const selected = draft.role === role;
-                return (
-                  <button
-                    key={role}
-                    type="button"
-                    onClick={() => patchDraft({ role })}
-                    className={cn("onboarding-role-card", selected && "is-selected")}
-                  >
-                    <span className="onboarding-role-icon">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <p className="mt-3 text-sm font-bold text-brand-950">
-                      {role === "coach" ? t("role_coach") : t("role_athlete")}
-                    </p>
-                    <p className="mt-1.5 text-xs leading-relaxed text-brand-600">
-                      {role === "coach"
-                        ? t("onboard_role_coach_desc")
-                        : t("onboard_role_athlete_desc")}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-
-            <Button
-              className="btn-landing-primary mt-8 w-full border-0 sm:w-auto"
-              size="lg"
-              onClick={() => void goNext()}
-            >
-              {t("onboard_continue")}
-            </Button>
-
-            <p className="mt-5 text-xs text-brand-500">
-              {t("signup_have_account")}{" "}
-              <Link href="/login" className="font-semibold text-brand-600 hover:underline">
-                {t("nav_login")}
-              </Link>
-            </p>
-          </div>
-        </OnboardingWelcomeHero>
-      )}
-
+    <OnboardingShell step={step} role={role} wizardMode>
       {step === "account" && (
         <div>
           <h1 className="text-2xl font-bold text-brand-950">{t("onboard_account_title")}</h1>

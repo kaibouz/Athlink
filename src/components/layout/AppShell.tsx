@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/lib/store";
-import { shouldEnterOnboarding } from "@/lib/onboarding";
+import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 
 /** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
@@ -23,26 +23,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!hydrated || !user) return;
-    if (pathname === "/onboarding" || pathname === "/" || pathname === "/login") return;
+    const exempt =
+      pathname === "/" ||
+      pathname === "/login" ||
+      pathname === "/join" ||
+      pathname.startsWith("/join/");
+    if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
-      router.replace("/onboarding");
+      router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
     }
   }, [hydrated, user, pathname, router]);
 
   const isIosPreview = pathname === "/ios";
   const isHome = pathname === "/" && !user;
+  const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
   const isAuthForm =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/onboarding" ||
-    pathname === "/dns";
-  const isOnboarding = pathname === "/onboarding";
+    pathname === "/login" || pathname === "/signup" || pathname === "/dns";
 
   if (isIosPreview || isHome || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isOnboarding) {
+  if (isJoinFlow) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 

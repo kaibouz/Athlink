@@ -1,18 +1,6 @@
-import { Suspense } from "react";
-import { OnboardingClient } from "./OnboardingClient";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default function OnboardingPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center text-brand-500">
-          Loading…
-        </div>
-      }
-    >
-      <OnboardingClient />
-    </Suspense>
-  );
+/** Legacy URL — gateway moved to /join */
+export default function OnboardingRedirectPage() {
+  redirect("/join");
 }

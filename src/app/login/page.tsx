@@ -11,7 +11,7 @@ import { Input, Label } from "@/components/ui/Input";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { cn } from "@/lib/utils";
 
-import { destinationFor, shouldEnterOnboarding } from "@/lib/onboarding";
+import { joinPathFor, destinationFor, shouldEnterOnboarding } from "@/lib/onboarding";
 
 function dashboardFor(role: UserRole) {
   return destinationFor(role);
@@ -44,7 +44,7 @@ function LoginForm() {
   useEffect(() => {
     if (!hydrated || !user) return;
     if (shouldEnterOnboarding(user.id)) {
-      router.replace("/onboarding");
+      router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
       return;
     }
     router.replace(next || dashboardFor(user.role));
@@ -132,7 +132,7 @@ function LoginForm() {
 
       <p className="mt-8 text-center text-sm text-brand-500">
         {t("login_no_account")}{" "}
-        <Link href="/onboarding" className="font-semibold text-brand-600 hover:underline">
+        <Link href="/join" className="font-semibold text-brand-600 hover:underline">
           {t("login_signup_link")}
         </Link>
       </p>

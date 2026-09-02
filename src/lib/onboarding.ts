@@ -109,6 +109,21 @@ export function destinationFor(role: UserRole): string {
   return role === "coach" ? "/coach/dashboard" : "/bookings";
 }
 
+/** Role-specific signup / onboarding entry (after /join gateway). */
+export function joinPathFor(role: UserRole | "coach" | "athlete"): string {
+  return role === "coach" ? "/join/coach" : "/join/athlete";
+}
+
+/** Wizard steps shown on /join/coach and /join/athlete (no gateway pick). */
+export const ONBOARDING_WIZARD_STEPS: OnboardingStep[] = [
+  "account",
+  "intro",
+  "profile",
+  "details",
+  "social",
+  "finish",
+];
+
 export function loadDraft(): OnboardingDraft | null {
   if (typeof window === "undefined") return null;
   try {
