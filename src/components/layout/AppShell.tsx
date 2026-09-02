@@ -62,7 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="app-page-bg flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
-          <AthlinkProLogo href="/" size="sm" priority />
+          <AthlinkProLogo href="/" size="header" variant="monogram" priority />
           <div className="flex items-center gap-2">
             <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
             <LocaleSwitcher compact />
@@ -90,7 +90,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </button>
             <AthlinkProLogo
               href={user?.role === "coach" ? "/coach/dashboard" : "/bookings"}
-              size="sm"
+              size="header"
+              variant="monogram"
             />
             <div className="flex items-center gap-1">
               <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />

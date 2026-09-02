@@ -83,7 +83,7 @@ export function AppSidebar({
     <aside className="app-glass-solid flex h-full w-64 flex-col border-r border-white/10">
       <div className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
         <Link href="/" onClick={() => onClose?.()} className="inline-flex shrink-0">
-          <AthlinkProLogo href={null} size="sm" />
+          <AthlinkProLogo href={null} size="header" variant="monogram" />
         </Link>
         {onClose && (
           <button

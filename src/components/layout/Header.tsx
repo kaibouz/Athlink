@@ -40,7 +40,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-brand-100/80 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <AthlinkProLogo href="/" size="sm" />
+        <AthlinkProLogo href="/" size="header" variant="monogram" />
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => (

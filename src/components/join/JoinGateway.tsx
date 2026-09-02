@@ -126,7 +126,7 @@ export function JoinGateway() {
 
         <header className="relative z-20">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-            <AthlinkProLogo href="/" size="sm" priority />
+            <AthlinkProLogo href="/" size="header" variant="monogram" priority />
             <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/login" className="landing-nav-link">
                 {t("nav_login")}

@@ -70,7 +70,7 @@ export function AthleteHomeLanding() {
     <div className="athlete-landing min-h-full">
       <header className="ah-site">
         <div className="ah-wrap ah-in">
-          <AthlinkProLogo className="rounded-lg" href="/for-athletes" size="sm" priority />
+          <AthlinkProLogo href="/for-athletes" size="header" variant="monogram" priority />
           <nav className="ah-links">
             <Link className="ah-hide-m" href="#features">
               Features
