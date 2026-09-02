@@ -150,7 +150,7 @@ export function JoinGateway() {
               title={t("join_athlete_title")}
               body={t("join_athlete_body")}
               features={athleteFeatures}
-              href="/join/athlete"
+              href="/for-athletes"
               cta={t("join_athlete_cta")}
               footnote={t("join_athlete_footnote")}
             />

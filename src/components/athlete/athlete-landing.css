@@ -1,0 +1,1455 @@
+/* AthlinkPro for Athletes — reference-matched landing (always dark) */
+.athlete-landing {
+  --ah-bg: #05070c;
+  --ah-panel: #0b0f1a;
+  --ah-panel-2: #10162a;
+  --ah-border: rgba(255, 255, 255, 0.08);
+  --ah-border-strong: rgba(255, 255, 255, 0.16);
+  --ah-text: #f5f7fa;
+  --ah-dim: #9aa3b2;
+  --ah-dimmer: #5f6773;
+  --ah-blue-1: #3b6ef6;
+  --ah-blue-2: #22c7e0;
+  --ah-clay-1: #e0a458;
+  --ah-clay-2: #f2c94c;
+  --ah-green: #3ddc97;
+
+  background: var(--ah-bg);
+  color: var(--ah-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.athlete-landing *,
+.athlete-landing *::before,
+.athlete-landing *::after {
+  box-sizing: border-box;
+}
+
+.athlete-landing a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.athlete-landing button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.athlete-landing .ah-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing .ah-wrap {
+    padding: 0 22px;
+  }
+}
+
+/* header */
+.athlete-landing header.ah-site {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(5, 7, 12, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+}
+
+.athlete-landing header.ah-site .ah-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.athlete-landing .ah-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.athlete-landing .ah-logo-mark {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--ah-text);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.athlete-landing .ah-logo-word {
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--ah-dim);
+  letter-spacing: 0.03em;
+}
+
+.athlete-landing .ah-logo-word b {
+  display: block;
+  color: var(--ah-text);
+  font-size: 12.5px;
+}
+
+.athlete-landing nav.ah-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 15px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing nav.ah-links a:hover {
+  color: var(--ah-text);
+}
+
+.athlete-landing .ah-for-coaches {
+  font-size: 13px;
+  color: var(--ah-dimmer);
+  border: 1px solid var(--ah-border);
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+
+.athlete-landing .ah-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.athlete-landing .ah-btn:hover {
+  filter: brightness(1.06);
+}
+
+.athlete-landing .ah-btn-clay {
+  background: linear-gradient(90deg, var(--ah-clay-1), var(--ah-clay-2));
+  color: #1a1206;
+}
+
+.athlete-landing .ah-btn-ghost {
+  background: var(--ah-panel);
+  border-color: var(--ah-border-strong);
+  color: var(--ah-text);
+}
+
+.athlete-landing .ah-btn-sm {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.athlete-landing .ah-theme-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 100px;
+  border: 1px solid var(--ah-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ah-dim);
+  font-size: 15px;
+  background: transparent;
+  padding: 0;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing nav.ah-links a.ah-hide-m,
+  .athlete-landing .ah-for-coaches,
+  .athlete-landing .ah-theme-dot {
+    display: none;
+  }
+}
+
+/* hero */
+.athlete-landing .ah-hero {
+  padding: 72px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.athlete-landing .ah-hero-inner {
+  max-width: 720px;
+  position: relative;
+  z-index: 2;
+}
+
+.athlete-landing .ah-hero h1 {
+  font-size: 80px;
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 800;
+}
+
+.athlete-landing .ah-hero h2 {
+  font-size: 44px;
+  line-height: 1.05;
+  margin: 10px 0 26px;
+  font-weight: 600;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-hero p {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ah-dim);
+  max-width: 560px;
+  margin: 0 0 34px;
+}
+
+.athlete-landing .ah-cta-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.athlete-landing .ah-badges {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-badges span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.athlete-landing .ah-badges svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.85;
+}
+
+.athlete-landing .ah-deco {
+  position: absolute;
+  top: 0;
+  right: -20px;
+  width: 48%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.athlete-landing .ah-deco text {
+  font-size: 12.5px;
+  fill: var(--ah-dimmer);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (max-width: 1000px) {
+  .athlete-landing .ah-deco {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .athlete-landing .ah-hero {
+    padding: 44px 0 40px;
+  }
+  .athlete-landing .ah-hero h1 {
+    font-size: 46px;
+  }
+  .athlete-landing .ah-hero h2 {
+    font-size: 26px;
+  }
+}
+
+/* band */
+.athlete-landing .ah-band {
+  background: linear-gradient(90deg, var(--ah-clay-1), var(--ah-clay-2));
+  color: #241a08;
+  font-size: 14.5px;
+  font-weight: 600;
+  padding: 15px 24px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.athlete-landing .ah-band > div {
+  padding: 4px 20px;
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.athlete-landing .ah-band > div:last-child {
+  border-right: none;
+}
+
+.athlete-landing .ah-band b {
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing .ah-band > div {
+    border-right: none;
+    width: 100%;
+  }
+}
+
+.athlete-landing section.ah-block {
+  padding: 100px 0;
+}
+
+.athlete-landing section.ah-block.ah-tight {
+  padding: 72px 0;
+}
+
+.athlete-landing .ah-sec-head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+.athlete-landing .ah-sec-head h3 {
+  font-size: 40px;
+  margin: 0 0 12px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+.athlete-landing .ah-sec-head p {
+  color: var(--ah-dim);
+  font-size: 17px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing section.ah-block {
+    padding: 64px 0;
+  }
+  .athlete-landing .ah-sec-head h3 {
+    font-size: 30px;
+  }
+}
+
+/* how it works */
+.athlete-landing .ah-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1000px) {
+  .athlete-landing .ah-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .athlete-landing .ah-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.athlete-landing .ah-step {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border);
+  border-radius: 16px;
+  padding: 30px 26px;
+}
+
+.athlete-landing .ah-step .ah-ic {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(242, 201, 76, 0.1);
+  color: var(--ah-clay-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.athlete-landing .ah-step .ah-n {
+  font-size: 12.5px;
+  color: var(--ah-dimmer);
+  margin-bottom: 8px;
+}
+
+.athlete-landing .ah-step h4 {
+  font-size: 19px;
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.athlete-landing .ah-step p {
+  font-size: 14.5px;
+  color: var(--ah-dim);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* feature rows */
+.athlete-landing .ah-feat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  padding: 56px 0;
+  border-top: 1px solid var(--ah-border);
+}
+
+.athlete-landing .ah-feat:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.athlete-landing .ah-feat.ah-flip .ah-copy {
+  order: 2;
+}
+
+@media (max-width: 900px) {
+  .athlete-landing .ah-feat {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .athlete-landing .ah-feat.ah-flip .ah-copy {
+    order: 0;
+  }
+}
+
+.athlete-landing .ah-feat .ah-kicker {
+  font-size: 14px;
+  color: var(--ah-clay-2);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.athlete-landing .ah-feat h3 {
+  font-size: 34px;
+  margin: 0 0 16px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+.athlete-landing .ah-feat p {
+  font-size: 16.5px;
+  color: var(--ah-dim);
+  line-height: 1.65;
+  margin: 0 0 22px;
+  max-width: 460px;
+}
+
+.athlete-landing .ah-feat ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.athlete-landing .ah-feat li {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--ah-dim);
+  align-items: flex-start;
+}
+
+.athlete-landing .ah-feat li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: var(--ah-clay-2);
+  flex: none;
+  margin-top: 8px;
+}
+
+/* mock UI */
+.athlete-landing .ah-mock {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border-strong);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.8);
+}
+
+.athlete-landing .ah-mock-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--ah-dimmer);
+  margin-bottom: 14px;
+}
+
+.athlete-landing .ah-mock-top b {
+  color: var(--ah-text);
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.athlete-landing .ah-coach-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--ah-border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: var(--ah-panel-2);
+}
+
+.athlete-landing .ah-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--ah-blue-1), var(--ah-blue-2));
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.athlete-landing .ah-avatar.ah-c {
+  background: linear-gradient(135deg, var(--ah-clay-1), var(--ah-clay-2));
+  color: #1a1206;
+}
+
+.athlete-landing .ah-coach-row .ah-who {
+  flex: 1;
+  min-width: 0;
+}
+
+.athlete-landing .ah-coach-row .ah-who b {
+  display: block;
+  font-size: 14px;
+}
+
+.athlete-landing .ah-coach-row .ah-who span {
+  font-size: 12px;
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-coach-row .ah-price {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.athlete-landing .ah-coach-row .ah-price span {
+  display: block;
+  font-size: 11px;
+  color: var(--ah-green);
+  font-weight: 500;
+}
+
+.athlete-landing .ah-slots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.athlete-landing .ah-slot {
+  font-size: 12.5px;
+  padding: 8px 12px;
+  border: 1px solid var(--ah-border-strong);
+  border-radius: 8px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-slot.ah-on {
+  background: rgba(242, 201, 76, 0.14);
+  border-color: var(--ah-clay-2);
+  color: var(--ah-clay-2);
+  font-weight: 600;
+}
+
+.athlete-landing .ah-post {
+  border: 1px solid var(--ah-border);
+  border-radius: 12px;
+  background: var(--ah-panel-2);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.athlete-landing .ah-post .ah-ph {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.athlete-landing .ah-post .ah-ph b {
+  font-size: 13.5px;
+  display: block;
+}
+
+.athlete-landing .ah-post .ah-ph span {
+  font-size: 11.5px;
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-post .ah-vid {
+  height: 120px;
+  background: linear-gradient(180deg, #141b30, #0b0f1a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ah-dimmer);
+  font-size: 12px;
+  position: relative;
+}
+
+.athlete-landing .ah-post .ah-vid::before {
+  content: "▶";
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+}
+
+.athlete-landing .ah-post .ah-cap {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-post .ah-meta {
+  padding: 0 12px 12px;
+  font-size: 12px;
+  color: var(--ah-dimmer);
+  display: flex;
+  gap: 16px;
+}
+
+.athlete-landing .ah-bio {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.athlete-landing .ah-bio .ah-fig {
+  background: var(--ah-panel-2);
+  border: 1px solid var(--ah-border);
+  border-radius: 12px;
+  height: 210px;
+  position: relative;
+  overflow: hidden;
+}
+
+.athlete-landing .ah-bio .ah-fig svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.athlete-landing .ah-bio .ah-metrics {
+  display: grid;
+  gap: 8px;
+}
+
+.athlete-landing .ah-metric {
+  background: var(--ah-panel-2);
+  border: 1px solid var(--ah-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-metric b {
+  display: block;
+  font-size: 16px;
+  color: var(--ah-text);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.athlete-landing .ah-metric .ah-flag {
+  display: inline-block;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 100px;
+  margin-left: 6px;
+  vertical-align: middle;
+  font-weight: 600;
+}
+
+.athlete-landing .ah-flag.ah-warn {
+  background: rgba(245, 166, 35, 0.15);
+  color: #f5a623;
+}
+
+.athlete-landing .ah-flag.ah-ok {
+  background: rgba(61, 220, 151, 0.15);
+  color: var(--ah-green);
+}
+
+.athlete-landing .ah-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.athlete-landing .ah-msg {
+  max-width: 78%;
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  background: var(--ah-panel-2);
+  border: 1px solid var(--ah-border);
+}
+
+.athlete-landing .ah-msg.ah-me {
+  align-self: flex-end;
+  background: rgba(242, 201, 76, 0.14);
+  border-color: rgba(242, 201, 76, 0.3);
+}
+
+.athlete-landing .ah-msg small {
+  display: block;
+  font-size: 11px;
+  color: var(--ah-dimmer);
+  margin-top: 4px;
+}
+
+.athlete-landing .ah-msg .ah-clip {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* progress */
+.athlete-landing .ah-progress-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .athlete-landing .ah-progress-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.athlete-landing .ah-chart-card {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border);
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.athlete-landing .ah-chart-card h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.athlete-landing .ah-chart-card .ah-sub {
+  font-size: 13px;
+  color: var(--ah-dimmer);
+  margin-bottom: 16px;
+}
+
+.athlete-landing .ah-goals {
+  display: grid;
+  gap: 12px;
+}
+
+.athlete-landing .ah-goal {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.athlete-landing .ah-goal .ah-t {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.athlete-landing .ah-goal .ah-t span {
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.athlete-landing .ah-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--ah-clay-1), var(--ah-clay-2));
+}
+
+/* coaches near you */
+.athlete-landing .ah-coaches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .athlete-landing .ah-coaches {
+    grid-template-columns: 1fr;
+  }
+}
+
+.athlete-landing .ah-coach-card {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.athlete-landing .ah-coach-card .ah-top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.athlete-landing .ah-coach-card .ah-top b {
+  display: block;
+  font-size: 16px;
+}
+
+.athlete-landing .ah-coach-card .ah-top span {
+  font-size: 12.5px;
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-coach-card .ah-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.athlete-landing .ah-tag {
+  font-size: 11.5px;
+  padding: 4px 9px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-tag.ah-v {
+  background: rgba(59, 110, 246, 0.18);
+  color: #8db0ff;
+}
+
+.athlete-landing .ah-coach-card .ah-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.athlete-landing .ah-coach-card .ah-bottom b {
+  font-size: 15px;
+}
+
+.athlete-landing .ah-coach-card .ah-bottom span {
+  font-size: 12px;
+  color: var(--ah-dimmer);
+}
+
+/* pricing */
+.athlete-landing .ah-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing .ah-plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+.athlete-landing .ah-plan {
+  background: var(--ah-panel);
+  border: 1px solid var(--ah-border);
+  border-radius: 18px;
+  padding: 32px;
+}
+
+.athlete-landing .ah-plan.ah-pro {
+  border-color: rgba(242, 201, 76, 0.45);
+  position: relative;
+}
+
+.athlete-landing .ah-plan.ah-pro::before {
+  content: "Most popular";
+  position: absolute;
+  top: -12px;
+  left: 32px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--ah-clay-1), var(--ah-clay-2));
+  color: #1a1206;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.athlete-landing .ah-plan h4 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.athlete-landing .ah-plan .ah-price {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 10px 0 4px;
+}
+
+.athlete-landing .ah-plan .ah-price span {
+  font-size: 15px;
+  color: var(--ah-dimmer);
+  font-weight: 500;
+}
+
+.athlete-landing .ah-plan .ah-desc {
+  font-size: 14px;
+  color: var(--ah-dim);
+  margin-bottom: 22px;
+}
+
+.athlete-landing .ah-plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 26px;
+  display: grid;
+  gap: 10px;
+}
+
+.athlete-landing .ah-plan li {
+  display: flex;
+  gap: 10px;
+  font-size: 14.5px;
+  color: var(--ah-dim);
+}
+
+.athlete-landing .ah-plan li::before {
+  content: "✓";
+  color: var(--ah-green);
+  font-weight: 700;
+}
+
+.athlete-landing .ah-plan li.ah-no {
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-plan li.ah-no::before {
+  content: "–";
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing .ah-plan .ah-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* FAQ */
+.athlete-landing .ah-faq {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.athlete-landing details {
+  border-bottom: 1px solid var(--ah-border);
+  padding: 18px 0;
+}
+
+.athlete-landing details:first-child {
+  border-top: 1px solid var(--ah-border);
+}
+
+.athlete-landing summary {
+  cursor: pointer;
+  font-size: 16.5px;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.athlete-landing summary::-webkit-details-marker {
+  display: none;
+}
+
+.athlete-landing summary::after {
+  content: "+";
+  color: var(--ah-dimmer);
+  font-size: 20px;
+  font-weight: 400;
+  transition: transform 0.2s;
+}
+
+.athlete-landing details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.athlete-landing details p {
+  color: var(--ah-dim);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 12px 0 0;
+  max-width: 640px;
+}
+
+/* final CTA */
+.athlete-landing .ah-final {
+  text-align: center;
+  padding: 110px 0;
+  border-top: 1px solid var(--ah-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.athlete-landing .ah-final::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid var(--ah-border-strong);
+  pointer-events: none;
+}
+
+.athlete-landing .ah-final h3 {
+  font-size: 52px;
+  margin: 0 0 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  position: relative;
+}
+
+.athlete-landing .ah-final p {
+  color: var(--ah-dim);
+  font-size: 17px;
+  margin: 0 0 30px;
+  position: relative;
+}
+
+.athlete-landing .ah-final .ah-cta-row {
+  justify-content: center;
+  position: relative;
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .athlete-landing .ah-final {
+    padding: 72px 0;
+  }
+  .athlete-landing .ah-final h3 {
+    font-size: 36px;
+  }
+}
+
+.athlete-landing footer.ah-footer {
+  border-top: 1px solid var(--ah-border);
+  padding: 36px 0;
+  font-size: 13px;
+  color: var(--ah-dimmer);
+}
+
+.athlete-landing footer.ah-footer .ah-in {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.athlete-landing footer.ah-footer a:hover {
+  color: var(--ah-text);
+}
+
+.athlete-landing footer.ah-footer .ah-cols {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+/* animations */
+.athlete-landing .ah-anim .ah-msg {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-msg.ah-in {
+  opacity: 1;
+  transform: none;
+}
+
+.athlete-landing .ah-typing {
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--ah-panel-2);
+  border: 1px solid var(--ah-border);
+  display: none;
+  gap: 4px;
+  align-items: center;
+  height: 36px;
+}
+
+.athlete-landing .ah-typing.ah-show {
+  display: flex;
+}
+
+.athlete-landing .ah-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: var(--ah-dimmer);
+  animation: ah-tdot 1s infinite;
+}
+
+.athlete-landing .ah-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.athlete-landing .ah-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes ah-tdot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.athlete-landing .ah-anim .ah-post {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-post.ah-in {
+  opacity: 1;
+  transform: none;
+}
+
+.athlete-landing .ah-heart {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.athlete-landing .ah-heart.ah-pop {
+  animation: ah-pop 0.45s ease;
+  color: #ff5f6d;
+}
+
+@keyframes ah-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.athlete-landing .ah-post .ah-vid .ah-scrub {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--ah-clay-2);
+  width: 0;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-post.ah-in .ah-vid .ah-scrub {
+  animation: ah-scrub 3s linear infinite;
+}
+
+@keyframes ah-scrub {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.athlete-landing .ah-newpost {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, -30px);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--ah-clay-2);
+  color: #1a1206;
+  padding: 5px 12px;
+  border-radius: 100px;
+  opacity: 0;
+  transition: all 0.4s;
+}
+
+.athlete-landing .ah-newpost.ah-show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.athlete-landing .ah-bio .ah-fig svg .body {
+  transform-box: fill-box;
+  transform-origin: 92px 110px;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-bio .ah-fig svg .body {
+  animation: ah-swing 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ah-swing {
+  0%,
+  15% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-14deg);
+  }
+  55% {
+    transform: rotate(22deg);
+  }
+  75% {
+    transform: rotate(14deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.athlete-landing .ah-bio .ah-fig svg .arms {
+  transform-box: fill-box;
+  transform-origin: 95px 60px;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-bio .ah-fig svg .arms {
+  animation: ah-arms 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ah-arms {
+  0%,
+  15% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-30deg);
+  }
+  55% {
+    transform: rotate(60deg);
+  }
+  75% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.athlete-landing .ah-bio .ah-fig svg .angle {
+  opacity: 0;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-bio .ah-fig svg .angle {
+  animation: ah-angle 2.4s infinite;
+}
+
+@keyframes ah-angle {
+  0%,
+  30% {
+    opacity: 0;
+  }
+  40%,
+  65% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.athlete-landing .ah-bio .ah-fig .ah-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ah-clay-2), transparent);
+  top: 0;
+  opacity: 0;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-bio .ah-fig .ah-scan {
+  animation: ah-scan 2.4s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes ah-scan {
+  from {
+    top: 0;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+.athlete-landing .ah-anim .ah-metric {
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-metric.ah-in {
+  opacity: 1;
+  transform: none;
+}
+
+.athlete-landing .ah-anim .ah-metric .ah-flag {
+  opacity: 0;
+  transition: opacity 0.3s 0.3s;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-metric.ah-in .ah-flag {
+  opacity: 1;
+}
+
+.athlete-landing .ah-chart-line {
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-chart-line {
+  animation: ah-draw 1.8s ease forwards;
+}
+
+@keyframes ah-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.athlete-landing .ah-anim .ah-chart-dot {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+}
+
+.athlete-landing .ah-anim.ah-play .ah-chart-dot {
+  animation: ah-dotin 0.3s ease forwards;
+}
+
+.athlete-landing .ah-anim .ah-chart-val {
+  opacity: 0;
+}
+
+.athlete-landing .ah-anim.ah-play .ah-chart-val {
+  animation: ah-fade 0.4s 1.7s forwards;
+}
+
+@keyframes ah-dotin {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ah-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+.athlete-landing .ah-anim .ah-bar i {
+  width: 0 !important;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.athlete-landing .ah-anim.ah-play .ah-bar i {
+  width: var(--w) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .athlete-landing .ah-anim .ah-msg,
+  .athlete-landing .ah-anim .ah-post,
+  .athlete-landing .ah-anim .ah-metric,
+  .athlete-landing .ah-anim .ah-chart-dot,
+  .athlete-landing .ah-anim .ah-chart-val {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .athlete-landing .ah-chart-line {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .athlete-landing .ah-anim .ah-bar i {
+    width: var(--w) !important;
+    transition: none;
+  }
+  .athlete-landing .ah-typing {
+    display: none !important;
+  }
+  .athlete-landing .ah-anim.ah-play .ah-bio .ah-fig svg *,
+  .athlete-landing .ah-anim.ah-play .ah-bio .ah-fig .ah-scan,
+  .athlete-landing .ah-anim.ah-play .ah-post .ah-vid .ah-scrub {
+    animation: none !important;
+  }
+  .athlete-landing .ah-bio .ah-fig svg .angle {
+    opacity: 1;
+  }
+}

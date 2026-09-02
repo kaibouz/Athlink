@@ -20,7 +20,14 @@ export function MobileNav() {
   const { user } = useAuth();
   const { t } = useLocale();
 
-  if (!user || pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname === "/ios") {
+  if (
+    !user ||
+    pathname === "/" ||
+    pathname === "/for-athletes" ||
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/ios"
+  ) {
     return null;
   }
 
