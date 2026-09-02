@@ -36,6 +36,22 @@
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
+  /* Coaches band — Pattern A: diagonal black → navy → cyan glow */
+  --landing-coaches-pattern-a: linear-gradient(
+    168deg,
+    #000000 0%,
+    #030712 24%,
+    #0a1628 52%,
+    #051a28 76%,
+    rgba(14, 165, 233, 0.2) 92%,
+    rgba(34, 211, 238, 0.14) 100%
+  );
+  /* Coaches band — Pattern B: soft 水色 radial highlights */
+  --landing-coaches-pattern-b:
+    radial-gradient(ellipse 62% 48% at 12% 88%, rgba(34, 211, 238, 0.18), transparent 58%),
+    radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.15), transparent 54%),
+    radial-gradient(ellipse 68% 44% at 50% 105%, rgba(14, 165, 233, 0.24), transparent 56%);
+
   --athlete-clay-1: #e0a458;
   --athlete-clay-2: #f2c94c;
   --athlete-clay-text: #1a1206;
@@ -889,9 +905,20 @@ body {
   color: #fff;
 }
 
-/* Featured coaches — dark navy band (site landing palette) */
+/* Featured coaches — black + cyan layered gradients (hero-adjacent, distinct band) */
 .landing-coaches-section {
-  background: var(--landing-bg);
+  isolation: isolate;
+  background-color: #000000;
+  background-image: var(--landing-coaches-pattern-b), var(--landing-coaches-pattern-a);
+}
+
+/* Alt layout: horizontal top band + side glows (swap by adding this class) */
+.landing-coaches-section-alt {
+  background-image:
+    radial-gradient(ellipse 78% 30% at 50% 0%, rgba(56, 189, 248, 0.2), transparent 62%),
+    radial-gradient(ellipse 46% 52% at 100% 55%, rgba(34, 211, 238, 0.14), transparent 58%),
+    radial-gradient(ellipse 46% 52% at 0% 45%, rgba(96, 165, 250, 0.12), transparent 58%),
+    linear-gradient(180deg, #000000 0%, #030712 38%, #0a1628 68%, rgba(14, 165, 233, 0.14) 100%);
 }
 
 .landing-coaches-section .land-panel {
