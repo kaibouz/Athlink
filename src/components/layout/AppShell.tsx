@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
 import { AppSidebar } from "@/components/layout/AppSidebar";
@@ -10,25 +10,43 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/lib/store";
+import { shouldEnterOnboarding } from "@/lib/onboarding";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 
 /** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useLocale();
-  const { user } = useAuth();
+  const { user, hydrated } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!hydrated || !user) return;
+    if (pathname === "/onboarding" || pathname === "/" || pathname === "/login") return;
+    if (shouldEnterOnboarding(user.id)) {
+      router.replace("/onboarding");
+    }
+  }, [hydrated, user, pathname, router]);
+
+  const isIosPreview = pathname === "/ios";
   const isHome = pathname === "/" && !user;
   const isAuthForm =
-    (pathname === "/login" || pathname === "/signup" || pathname === "/dns") && !user;
-  const isIosPreview = pathname === "/ios";
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/onboarding" ||
+    pathname === "/dns";
+  const isOnboarding = pathname === "/onboarding";
 
   if (isIosPreview || isHome || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isAuthForm) {
+  if (isOnboarding) {
+    return <div className="min-h-full flex-1">{children}</div>;
+  }
+
+  if (isAuthForm && !user) {
     return (
       <div className="flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">

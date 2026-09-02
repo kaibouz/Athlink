@@ -11,9 +11,7 @@ import { Input, Label } from "@/components/ui/Input";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { cn } from "@/lib/utils";
 
-function dashboardFor(role: UserRole) {
-  return role === "coach" ? "/coach/dashboard" : "/bookings";
-}
+import { setOnboardingPending } from "@/lib/onboarding";
 
 export default function SignupPage() {
   const { signup } = useAuth();
@@ -37,7 +35,8 @@ export default function SignupPage() {
       setError(result.error === "EMAIL_TAKEN" ? t("signup_email_taken") : t("signup_error"));
       return;
     }
-    router.push(role === "coach" ? "/coach/register" : dashboardFor(role));
+    setOnboardingPending();
+    router.push("/onboarding");
   }
 
   return (

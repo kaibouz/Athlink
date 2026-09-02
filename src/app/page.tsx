@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { CoachProfile } from "@/types";
 import { coaches as staticCoaches } from "@/lib/data";
+import { shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { CoachCard } from "@/components/coaches/CoachCard";
@@ -57,7 +58,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!hydrated || !user) return;
-    const target = user.role === "coach" ? "/coach/dashboard" : "/bookings";
+    const target = shouldEnterOnboarding(user.id)
+      ? "/onboarding"
+      : destinationFor(user.role);
     const timer = window.setTimeout(() => {
       router.replace(target);
     }, 0);
@@ -172,7 +175,7 @@ export default function HomePage() {
             {t("hero_tagline")}
           </p>
           <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/signup" className="group">
+            <Link href="/onboarding" className="group">
               <Button
                 size="lg"
                 className="btn-landing-primary h-12 min-w-48 rounded-xl border-0 px-6 text-sm font-bold sm:h-14 sm:text-base"
@@ -315,7 +318,7 @@ export default function HomePage() {
                 <li>· {t("land_split_coach_2")}</li>
                 <li>· {t("land_split_coach_3")}</li>
               </ul>
-              <Link href="/coach/register" className="group mt-6 inline-block">
+              <Link href="/onboarding?role=coach" className="group mt-6 inline-block">
                 <Button className="btn-landing-primary border-0">
                   {t("hero_cta_coach")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -333,7 +336,7 @@ export default function HomePage() {
                 <li>· {t("land_split_athlete_2")}</li>
                 <li>· {t("land_split_athlete_3")}</li>
               </ul>
-              <Link href="/signup" className="group mt-6 inline-block">
+              <Link href="/onboarding?role=athlete" className="group mt-6 inline-block">
                 <Button variant="outline" className="btn-landing-secondary font-bold">
                   {t("nav_signup")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -388,7 +391,7 @@ export default function HomePage() {
                 </Link>
               </li>
               <li>
-                <Link href="/signup" className="hover:text-slate-900">
+                <Link href="/onboarding" className="hover:text-slate-900">
                   {t("nav_signup")}
                 </Link>
               </li>

@@ -17,6 +17,11 @@ interface SocialState {
   profiles: AthletePublicProfile[];
   addPost: (post: Omit<SocialPost, "id" | "createdAt" | "likes">) => SocialPost;
   updateProfile: (id: string, patch: Partial<AthletePublicProfile>) => void;
+  createProfile: (
+    input: Omit<AthletePublicProfile, "id" | "avatarUrl" | "seasonStats"> & {
+      seasonLabel?: string;
+    },
+  ) => AthletePublicProfile;
   getMyProfile: (userId: string) => AthletePublicProfile | undefined;
 }
 
@@ -66,14 +71,32 @@ export function SocialProvider({ children }: { children: ReactNode }) {
     setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
   }, []);
 
+  const createProfile = useCallback(
+    (
+      input: Omit<AthletePublicProfile, "id" | "avatarUrl" | "seasonStats"> & {
+        seasonLabel?: string;
+      },
+    ) => {
+      const profile: AthletePublicProfile = {
+        ...input,
+        id: `a-${Date.now()}`,
+        avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(input.name)}`,
+        seasonStats: { seasonLabel: input.seasonLabel ?? "2026 season" },
+      };
+      setProfiles((prev) => [...prev, profile]);
+      return profile;
+    },
+    [],
+  );
+
   const getMyProfile = useCallback(
     (userId: string) => profiles.find((p) => p.userId === userId),
     [profiles],
   );
 
   const value = useMemo(
-    () => ({ posts, profiles, addPost, updateProfile, getMyProfile }),
-    [posts, profiles, addPost, updateProfile, getMyProfile],
+    () => ({ posts, profiles, addPost, updateProfile, createProfile, getMyProfile }),
+    [posts, profiles, addPost, updateProfile, createProfile, getMyProfile],
   );
 
   return <SocialContext.Provider value={value}>{children}</SocialContext.Provider>;

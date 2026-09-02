@@ -11,8 +11,10 @@ import { Input, Label } from "@/components/ui/Input";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { cn } from "@/lib/utils";
 
+import { destinationFor, shouldEnterOnboarding } from "@/lib/onboarding";
+
 function dashboardFor(role: UserRole) {
-  return role === "coach" ? "/coach/dashboard" : "/bookings";
+  return destinationFor(role);
 }
 
 function nameFromEmail(email: string) {
@@ -41,6 +43,10 @@ function LoginForm() {
 
   useEffect(() => {
     if (!hydrated || !user) return;
+    if (shouldEnterOnboarding(user.id)) {
+      router.replace("/onboarding");
+      return;
+    }
     router.replace(next || dashboardFor(user.role));
   }, [user, hydrated, next, router]);
 
@@ -126,7 +132,7 @@ function LoginForm() {
 
       <p className="mt-8 text-center text-sm text-brand-500">
         {t("login_no_account")}{" "}
-        <Link href="/signup" className="font-semibold text-brand-600 hover:underline">
+        <Link href="/onboarding" className="font-semibold text-brand-600 hover:underline">
           {t("login_signup_link")}
         </Link>
       </p>
