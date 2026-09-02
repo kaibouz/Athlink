@@ -42,7 +42,7 @@ export function CoachCard({
               alt={coach.name}
               className={
                 landing
-                  ? "h-16 w-16 rounded-2xl border-2 border-white/70 bg-white/40 shadow-sm dark:border-white/20 dark:bg-white/10"
+                  ? "h-16 w-16 rounded-2xl border-2 border-white/20 bg-white/10 shadow-sm"
                   : "h-16 w-16 rounded-2xl border-2 border-white bg-surface shadow-sm"
               }
             />
@@ -136,7 +136,7 @@ export function CoachCard({
             variant="outline"
             className={
               landing
-                ? "w-full border-brand-200/70 bg-white/40 font-semibold backdrop-blur-sm dark:border-white/15 dark:bg-white/5"
+                ? "w-full border-white/15 bg-white/5 font-semibold backdrop-blur-sm"
                 : "w-full font-semibold"
             }
           >

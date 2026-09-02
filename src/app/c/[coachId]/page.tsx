@@ -41,7 +41,7 @@ export default function QuickBookPage({
             <img
               src={coach.avatarUrl}
               alt=""
-              className="h-14 w-14 rounded-xl border border-white/30 bg-white"
+              className="h-14 w-14 rounded-xl border border-white/30 bg-surface-elevated"
             />
             <div>
               <h1 className="text-xl font-black">{coach.name}</h1>

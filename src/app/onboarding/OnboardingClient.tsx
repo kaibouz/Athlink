@@ -687,7 +687,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
               <p className="text-sm text-brand-700">{t("onboard_social_coach_body")}</p>
               {coachId && qrSrc ? (
                 <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-                  <div className="rounded-2xl border border-brand-100 bg-white p-3 shadow-inner">
+                  <div className="rounded-2xl border border-brand-100 bg-surface-elevated p-3 shadow-inner">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={qrSrc} alt="QR" width={200} height={200} className="h-48 w-48" />
                   </div>

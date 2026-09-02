@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LogOut, Moon, Settings, Sun, X } from "lucide-react";
+import { LogOut, Settings, X } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
-import { useTheme } from "@/lib/theme";
 import { UI_LOCALES, UI_LOCALE_LABELS, type UiLocale } from "@/lib/i18n/messages";
 import { CalendarAutoPrefSelect } from "@/components/calendar/AddToCalendar";
 import { Button } from "@/components/ui/Button";
@@ -19,7 +18,6 @@ export function AppSettingsPanel({
   const router = useRouter();
   const { user, switchRole, logout } = useAuth();
   const { t, locale, setLocale } = useLocale();
-  const { theme, setTheme } = useTheme();
   const isCoach = user?.role === "coach";
 
   return (
@@ -40,38 +38,6 @@ export function AppSettingsPanel({
           ))}
         </select>
       </label>
-
-      <div>
-        <span className="mb-1.5 block text-sm font-medium text-brand-800">
-          {t("me_theme")}
-        </span>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setTheme("light")}
-            className={`inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-              theme === "light"
-                ? "border-brand-500 bg-brand-50 text-brand-800"
-                : "border-brand-200 text-brand-600 hover:bg-brand-50"
-            }`}
-          >
-            <Sun className="h-4 w-4" />
-            {t("me_theme_light")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setTheme("dark")}
-            className={`inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-              theme === "dark"
-                ? "border-brand-500 bg-brand-50 text-brand-800"
-                : "border-brand-200 text-brand-600 hover:bg-brand-50"
-            }`}
-          >
-            <Moon className="h-4 w-4" />
-            {t("me_theme_dark")}
-          </button>
-        </div>
-      </div>
 
       <CalendarAutoPrefSelect />
 

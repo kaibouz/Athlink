@@ -68,7 +68,7 @@ function QrInner() {
             <img
               src={coach.avatarUrl}
               alt=""
-              className="h-16 w-16 rounded-2xl border-2 border-white/30 bg-white"
+              className="h-16 w-16 rounded-2xl border-2 border-white/30 bg-surface-elevated"
             />
             <div>
               <p className="text-xl font-black">{user?.name ?? coach.name}</p>
@@ -88,7 +88,7 @@ function QrInner() {
         </div>
 
         <div className="grid gap-8 p-6 sm:grid-cols-[240px_1fr] sm:items-center">
-          <div className="mx-auto rounded-2xl border border-brand-100 bg-white p-3 shadow-inner">
+          <div className="mx-auto rounded-2xl border border-brand-100 bg-surface-elevated p-3 shadow-inner">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={qrSrc} alt={t("qr_alt")} width={240} height={240} className="h-60 w-60" />
           </div>

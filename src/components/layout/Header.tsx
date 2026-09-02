@@ -8,7 +8,6 @@ import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -80,7 +79,6 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
           <LocaleSwitcher />
           {user ? (
             <>
@@ -149,7 +147,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
           <LocaleSwitcher compact />
           <button
             className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"

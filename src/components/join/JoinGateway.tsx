@@ -50,13 +50,13 @@ function JoinCard({
     >
       <p
         className={`text-xs font-semibold tracking-[0.14em] uppercase ${
-          isCoach ? "text-brand-500" : "text-amber-600 dark:text-amber-400"
+          isCoach ? "text-brand-500" : "text-amber-400"
         }`}
       >
         {eyebrow}
       </p>
       <RoleIcon
-        className={`mt-4 h-7 w-7 ${isCoach ? "text-brand-600" : "text-amber-600 dark:text-amber-400"}`}
+        className={`mt-4 h-7 w-7 ${isCoach ? "text-brand-600" : "text-amber-400"}`}
       />
       <h2 className="mt-3 text-xl font-black tracking-tight text-brand-950 sm:text-2xl">{title}</h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-600">{body}</p>
@@ -68,7 +68,7 @@ function JoinCard({
               className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                 isCoach
                   ? "bg-brand-100 text-brand-600"
-                  : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
+                  : "bg-amber-500/15 text-amber-400"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -176,12 +176,12 @@ export function JoinGateway() {
         </main>
       </div>
 
-      <footer className="land-footer border-t border-slate-200/80">
+      <footer className="land-footer border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
           <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
             ← {t("nav_home")}
           </Link>
-          <p className="text-xs text-slate-500">{t("land_footer_tag")}</p>
+          <p className="text-xs text-brand-500">{t("land_footer_tag")}</p>
         </div>
       </footer>
     </div>

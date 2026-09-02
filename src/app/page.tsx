@@ -233,7 +233,7 @@ export default function HomePage() {
               return (
                 <article
                   key={step.n}
-                  className="rounded-2xl border border-white/12 bg-white/10 p-6 backdrop-blur-md dark:border-white/15 dark:bg-black/25"
+                  className="rounded-2xl border border-white/15 bg-black/25 p-6 backdrop-blur-md"
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-sm font-black text-white">

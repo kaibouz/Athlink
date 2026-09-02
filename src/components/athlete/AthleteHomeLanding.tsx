@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useTheme } from "@/lib/theme";
 import { useAthleteLandingAnim } from "@/components/athlete/useAthleteLandingAnim";
 import "./athlete-landing.css";
 
@@ -64,7 +63,6 @@ function ChartIcon() {
 }
 
 export function AthleteHomeLanding() {
-  const { theme, toggleTheme } = useTheme();
   useAthleteLandingAnim();
 
   return (
@@ -97,14 +95,6 @@ export function AthleteHomeLanding() {
             <Link className="ah-btn ah-btn-clay ah-btn-sm" href="/join/athlete">
               Get Started
             </Link>
-            <button
-              type="button"
-              className="ah-theme-dot"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-            >
-              {theme === "dark" ? "☀" : "☾"}
-            </button>
           </nav>
         </div>
       </header>

@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
 import { AppSidebar } from "@/components/layout/AppSidebar";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -104,7 +103,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
             <div className="flex items-center gap-1">
               <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
-              <ThemeToggle />
               <LocaleSwitcher compact />
             </div>
           </header>

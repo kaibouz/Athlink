@@ -3,52 +3,48 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  color-scheme: light;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
+  color-scheme: dark;
+  --background: #070b14;
+  --foreground: #e8eef9;
+  --surface: #121826;
+  --surface-elevated: #182033;
 
-  --brand-50: #eff6ff;
-  --brand-100: #dbeafe;
-  --brand-200: #bfdbfe;
-  --brand-300: #93c5fd;
-  --brand-400: #60a5fa;
-  --brand-500: #3b82f6;
-  --brand-600: #1d4ed8;
-  --brand-700: #1e40af;
-  --brand-800: #1e3a8a;
-  --brand-900: #172554;
-  --brand-950: #0b1226;
+  --brand-50: #151c2e;
+  --brand-100: #1c2540;
+  --brand-200: #2a3654;
+  --brand-300: #3d4f73;
+  --brand-400: #6b82ab;
+  --brand-500: #60a5fa;
+  --brand-600: #3b82f6;
+  --brand-700: #93c5fd;
+  --brand-800: #bfdbfe;
+  --brand-900: #dbeafe;
+  --brand-950: #f1f5f9;
 
-  --ink: #0b1226;
-  --ink-mid: #1e3a8a;
-  --field: #2f6b3a;
-  --clay: #c4a06a;
-  --sun: #eef2ff;
+  --ink: #0a1020;
+  --ink-mid: #1d4ed8;
+  --field: #3d8a4c;
+  --clay: #d4b483;
+  --sun: #151c2e;
 
-  /* AthLink wordmark — Link stays vivid in each theme */
-  --athlink-ath: #0b1226;
-  --athlink-link: #1d4ed8;
-  --athlink-link-hero: #93c5fd;
+  --athlink-ath: #f8fafc;
+  --athlink-link: #7dd3fc;
+  --athlink-link-hero: #bae6fd;
 
-  /* Landing (AthlinkPro-inspired) */
-  --landing-bg: #f7fafc;
-  --landing-hero: #f5f9fd;
-  --landing-grad-from: #06b6d4;
-  --landing-grad-to: #2563eb;
+  --landing-bg: #0a1220;
+  --landing-hero: #0f1a2e;
+  --landing-grad-from: #0891b2;
+  --landing-grad-to: #3b82f6;
 
-  /* Athlete path accent (AthlinkPro clay/amber) */
   --athlete-clay-1: #e0a458;
   --athlete-clay-2: #f2c94c;
   --athlete-clay-text: #1a1206;
 
-  /* Video sections — stay dark even when brand scale inverts in .dark */
   --land-video-wash: linear-gradient(
     to bottom,
-    rgba(12, 40, 72, 0.35),
-    rgba(15, 35, 70, 0.3),
-    rgba(11, 18, 38, 0.45)
+    rgba(7, 11, 20, 0.62),
+    rgba(7, 11, 20, 0.5),
+    rgba(7, 11, 20, 0.72)
   );
   --land-video-wash-deep: linear-gradient(
     to bottom,
@@ -56,7 +52,7 @@
     rgba(7, 11, 20, 0.5),
     rgba(7, 11, 20, 0.72)
   );
-  --land-title-plate: rgba(11, 18, 38, 0.28);
+  --land-title-plate: rgba(7, 11, 20, 0.5);
   --land-title-plate-deep: rgba(7, 11, 20, 0.5);
 }
 
@@ -157,25 +153,18 @@ body {
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--brand-800);
+  color: var(--brand-700);
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .landing-nav-link:hover {
-  background: color-mix(in oklab, white 12%, transparent);
-  color: var(--brand-950);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--brand-900);
 }
 
 .landing-page {
   color: var(--foreground);
   background-color: var(--landing-bg);
-  background-image:
-    radial-gradient(ellipse 90% 55% at 50% -8%, rgba(186, 230, 253, 0.28), transparent 58%),
-    radial-gradient(ellipse 55% 40% at 100% 35%, rgba(191, 219, 254, 0.16), transparent 55%),
-    radial-gradient(ellipse 50% 35% at 0% 70%, rgba(224, 242, 254, 0.2), transparent 50%);
-}
-
-.dark .landing-page {
   background-image:
     radial-gradient(ellipse 90% 55% at 50% -8%, rgba(56, 189, 248, 0.12), transparent 58%),
     radial-gradient(ellipse 55% 40% at 100% 35%, rgba(59, 130, 246, 0.12), transparent 55%),
@@ -422,25 +411,14 @@ body {
 
 /* Transparent panels that sit on the landing wash */
 .land-panel {
-  border: 1px solid color-mix(in oklab, var(--brand-200) 70%, transparent);
-  background: color-mix(in oklab, var(--surface) 58%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 26, 46, 0.45);
   backdrop-filter: blur(12px);
   box-shadow: none;
 }
 
-.dark .land-panel {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(15, 26, 46, 0.45);
-}
-
 /* Join gateway — cinematic atmosphere + role card accents */
 .join-gateway-page .landing-hero-bg {
-  background-image:
-    linear-gradient(155deg, #f8fbff 0%, #f3f8fd 35%, #eef5fb 68%, #f7fafc 100%),
-    radial-gradient(ellipse 55% 45% at 78% 62%, rgba(242, 201, 76, 0.08), transparent 55%);
-}
-
-.dark .join-gateway-page .landing-hero-bg {
   background-image:
     linear-gradient(155deg, #0f1a2e 0%, #0d1525 35%, #0a1220 68%, #070b14 100%),
     radial-gradient(ellipse 50% 40% at 82% 58%, rgba(224, 164, 88, 0.12), transparent 55%),
@@ -452,36 +430,18 @@ body {
 }
 
 .join-card-athlete {
-  border-color: color-mix(in oklab, var(--athlete-clay-2) 35%, transparent);
-}
-
-.dark .join-card-athlete {
   border-color: rgba(242, 201, 76, 0.22);
   background: rgba(18, 16, 10, 0.35);
   box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
 }
 
 .land-panel-head {
-  background: color-mix(in oklab, var(--brand-50) 55%, transparent);
-}
-
-.dark .land-panel-head {
   background: rgba(56, 189, 248, 0.08);
 }
 
 .landing-hero-bg {
   isolation: isolate;
   background-color: var(--landing-hero);
-  background-image: linear-gradient(
-    155deg,
-    #f8fbff 0%,
-    #f3f8fd 35%,
-    #eef5fb 68%,
-    #f7fafc 100%
-  );
-}
-
-.dark .landing-hero-bg {
   background-image: linear-gradient(
     155deg,
     #0f1a2e 0%,
@@ -723,11 +683,11 @@ body {
 }
 
 .btn-landing-secondary {
-  border: 1px solid color-mix(in oklab, var(--brand-300) 70%, white);
-  background: color-mix(in oklab, white 82%, transparent);
-  color: var(--brand-900, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foreground);
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   transition:
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.2s ease,
@@ -736,37 +696,12 @@ body {
 }
 .btn-landing-secondary:hover {
   transform: translateY(-2px);
-  background: white;
-  border-color: color-mix(in oklab, var(--brand-400) 55%, white);
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.14);
-}
-.btn-landing-secondary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.dark .btn-landing-secondary {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--foreground);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-}
-
-.dark .btn-landing-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
 }
-
-.dark .land-chip {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--brand-800);
-}
-
-.dark .land-chip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(125, 211, 252, 0.35);
-  color: var(--brand-700);
+.btn-landing-secondary:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .land-chip {
@@ -776,9 +711,9 @@ body {
   min-height: 2.25rem;
   padding: 0.4rem 0.95rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in oklab, var(--brand-300) 55%, transparent);
-  background: color-mix(in oklab, white 70%, transparent);
-  color: var(--brand-800, #1e3a5f);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--brand-800);
   font-size: 0.8125rem;
   font-weight: 700;
   backdrop-filter: blur(6px);
@@ -791,9 +726,9 @@ body {
 }
 .land-chip:hover {
   transform: translateY(-1px);
-  background: white;
-  border-color: color-mix(in oklab, var(--athlink-link, #2563eb) 45%, white);
-  color: var(--athlink-link, #2563eb);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(125, 211, 252, 0.35);
+  color: var(--brand-700);
   box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
 }
 .land-chip:active {
@@ -949,11 +884,6 @@ body {
 }
 
 .land-footer {
-  background: color-mix(in oklab, var(--landing-bg) 88%, white);
-  color: #334155;
-}
-
-.dark .land-footer {
   background: color-mix(in oklab, var(--landing-bg) 92%, black);
   color: var(--brand-700);
 }
@@ -1048,7 +978,7 @@ body {
 .landing-sticky-header {
   background: color-mix(in oklab, var(--landing-hero) 88%, transparent);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid color-mix(in oklab, var(--brand-200) 55%, transparent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .land-ken {
@@ -1291,19 +1221,19 @@ body {
   max-width: 36rem;
   padding: 2rem 1.75rem 1.75rem;
   border-radius: 1.75rem;
-  border: 1px solid color-mix(in oklab, white 70%, var(--brand-200));
-  background: color-mix(in oklab, white 78%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
   backdrop-filter: blur(20px);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 24px 60px rgba(15, 23, 42, 0.08),
-    0 4px 16px rgba(37, 99, 235, 0.06);
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 24px 60px rgba(0, 0, 0, 0.35),
+    0 4px 16px rgba(37, 99, 235, 0.08);
 }
 
 .onboarding-role-card {
   border-radius: 1.25rem;
-  border: 1px solid color-mix(in oklab, var(--brand-200) 80%, white);
-  background: color-mix(in oklab, white 65%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: color-mix(in oklab, var(--surface) 75%, transparent);
   padding: 1.25rem 1.125rem;
   text-align: left;
   transition:
@@ -1315,16 +1245,16 @@ body {
 
 .onboarding-role-card:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in oklab, var(--brand-400) 60%, white);
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+  border-color: rgba(96, 165, 250, 0.35);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.15);
 }
 
 .onboarding-role-card.is-selected {
   border-color: transparent;
-  background: color-mix(in oklab, white 92%, var(--brand-50));
+  background: color-mix(in oklab, var(--surface-elevated) 95%, var(--brand-600));
   box-shadow:
-    0 0 0 2px color-mix(in oklab, var(--brand-500) 55%, white),
-    0 16px 36px rgba(37, 99, 235, 0.14);
+    0 0 0 2px color-mix(in oklab, var(--brand-500) 55%, transparent),
+    0 16px 36px rgba(37, 99, 235, 0.2);
   transform: translateY(-3px);
 }
 
@@ -1335,7 +1265,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  background: color-mix(in oklab, var(--brand-100) 80%, white);
+  background: color-mix(in oklab, var(--brand-100) 80%, var(--surface));
   color: var(--brand-600);
   transition: background 0.2s ease, color 0.2s ease;
 }
