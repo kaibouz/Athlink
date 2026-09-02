@@ -889,9 +889,9 @@ body {
   color: #fff;
 }
 
-/* Featured coaches — pure black band matching hero */
+/* Featured coaches — dark navy band (site landing palette) */
 .landing-coaches-section {
-  background: #000;
+  background: var(--landing-bg);
 }
 
 .landing-coaches-section .land-panel {
