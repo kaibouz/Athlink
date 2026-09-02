@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070b14",
+  themeColor: "#0a1220",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -68,7 +68,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="flex min-h-full flex-col bg-background font-sans text-foreground"
+        className="flex min-h-full flex-col app-page-bg-subtle font-sans text-foreground"
         suppressHydrationWarning
       >
         <ClerkProvider>

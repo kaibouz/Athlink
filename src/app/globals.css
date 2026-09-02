@@ -4,7 +4,50 @@
 
 :root {
   color-scheme: dark;
-  --background: #070b14;
+
+  /* Sitewide black + blue gradient palette */
+  --app-bg: #000000;
+  --app-bg-deep: #030712;
+  --app-bg-mid: #0a1220;
+  --app-bg-accent: #0a1628;
+  --surface-bg: rgba(18, 24, 38, 0.72);
+  --surface-glass: rgba(15, 26, 46, 0.45);
+  --surface-glass-border: rgba(255, 255, 255, 0.1);
+  --app-gradient-linear: linear-gradient(
+    155deg,
+    #000000 0%,
+    #030712 28%,
+    #0a1628 52%,
+    #051018 78%,
+    #000000 100%
+  );
+  --app-gradient-glow-top: radial-gradient(
+    ellipse 70% 55% at 50% -8%,
+    rgba(37, 99, 235, 0.32),
+    transparent 55%
+  );
+  --app-gradient-glow-right: radial-gradient(
+    ellipse 48% 42% at 88% 42%,
+    rgba(59, 130, 246, 0.2),
+    transparent 52%
+  );
+  --app-gradient-glow-left: radial-gradient(
+    ellipse 42% 38% at 10% 58%,
+    rgba(14, 165, 233, 0.14),
+    transparent 48%
+  );
+  --app-gradient-glow-subtle-top: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    rgba(37, 99, 235, 0.12),
+    transparent 55%
+  );
+  --app-gradient-glow-subtle-corner: radial-gradient(
+    ellipse 40% 30% at 100% 0%,
+    rgba(56, 189, 248, 0.08),
+    transparent 50%
+  );
+
+  --background: var(--app-bg-mid);
   --foreground: #e8eef9;
   --surface: #121826;
   --surface-elevated: #182033;
@@ -31,8 +74,8 @@
   --athlink-link: #7dd3fc;
   --athlink-link-hero: #bae6fd;
 
-  --landing-bg: #0a1220;
-  --landing-hero: #000000;
+  --landing-bg: var(--app-bg-mid);
+  --landing-hero: var(--app-bg);
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
@@ -74,7 +117,7 @@
 
 .dark {
   color-scheme: dark;
-  --background: #070b14;
+  --background: var(--app-bg-mid);
   --foreground: #e8eef9;
   --surface: #121826;
   --surface-elevated: #182033;
@@ -101,8 +144,8 @@
   --athlink-link: #7dd3fc;
   --athlink-link-hero: #bae6fd;
 
-  --landing-bg: #0a1220;
-  --landing-hero: #000000;
+  --landing-bg: var(--app-bg-mid);
+  --landing-hero: var(--app-bg);
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
@@ -115,6 +158,8 @@
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
+  --color-app-bg: var(--app-bg);
+  --color-app-bg-mid: var(--app-bg-mid);
   --color-ink: var(--ink);
   --color-ink-mid: var(--ink-mid);
   --color-field: var(--field);
@@ -139,10 +184,39 @@
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-noto-sans-jp), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Shared page backgrounds — black base + blue radial glows */
+.app-page-bg {
+  background-color: var(--app-bg);
+  background-image:
+    var(--app-gradient-glow-top),
+    var(--app-gradient-glow-right),
+    var(--app-gradient-glow-left),
+    var(--app-gradient-linear);
+}
+
+.app-page-bg-subtle {
+  background-color: var(--app-bg-mid);
+  background-image:
+    var(--app-gradient-glow-subtle-top),
+    var(--app-gradient-glow-subtle-corner),
+    var(--app-gradient-linear);
+}
+
+.app-glass {
+  border: 1px solid var(--surface-glass-border);
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+}
+
+.app-glass-solid {
+  border: 1px solid var(--surface-glass-border);
+  background: var(--surface-bg);
+  backdrop-filter: blur(12px);
 }
 
 .font-brand,
@@ -184,7 +258,8 @@ body {
   background-image:
     radial-gradient(ellipse 90% 55% at 50% -8%, rgba(56, 189, 248, 0.12), transparent 58%),
     radial-gradient(ellipse 55% 40% at 100% 35%, rgba(59, 130, 246, 0.12), transparent 55%),
-    radial-gradient(ellipse 50% 35% at 0% 70%, rgba(14, 165, 233, 0.08), transparent 50%);
+    radial-gradient(ellipse 50% 35% at 0% 70%, rgba(14, 165, 233, 0.08), transparent 50%),
+    var(--app-gradient-linear);
 }
 
 /* Cinematic startup splash — AthlinkPro Clip #1 emotion */
@@ -427,8 +502,8 @@ body {
 
 /* Transparent panels that sit on the landing wash */
 .land-panel {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(15, 26, 46, 0.45);
+  border: 1px solid var(--surface-glass-border);
+  background: var(--surface-glass);
   backdrop-filter: blur(12px);
   box-shadow: none;
 }
@@ -439,7 +514,7 @@ body {
     radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
     radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
     radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
-    linear-gradient(155deg, #000000 0%, #030712 32%, #0a1628 55%, #051018 78%, #000000 100%);
+    var(--app-gradient-linear);
 }
 
 .join-card-coach {
@@ -460,17 +535,10 @@ body {
   isolation: isolate;
   background-color: var(--landing-hero);
   background-image:
-    radial-gradient(ellipse 70% 55% at 50% -8%, rgba(37, 99, 235, 0.32), transparent 55%),
-    radial-gradient(ellipse 48% 42% at 88% 42%, rgba(59, 130, 246, 0.2), transparent 52%),
-    radial-gradient(ellipse 42% 38% at 10% 58%, rgba(14, 165, 233, 0.14), transparent 48%),
-    linear-gradient(
-      155deg,
-      #000000 0%,
-      #030712 28%,
-      #0a1628 52%,
-      #051018 78%,
-      #000000 100%
-    );
+    var(--app-gradient-glow-top),
+    var(--app-gradient-glow-right),
+    var(--app-gradient-glow-left),
+    var(--app-gradient-linear);
 }
 
 .landing-coast {
@@ -1119,16 +1187,18 @@ body {
 
 /* ── App shell (logged-in surfaces) ── */
 .app-canvas {
-  background-color: var(--background);
+  background-color: var(--app-bg-mid);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--brand-200) 35%, transparent), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 100% 0%, color-mix(in oklab, var(--field) 8%, transparent), transparent 50%);
+    var(--app-gradient-glow-subtle-top),
+    var(--app-gradient-glow-subtle-corner),
+    var(--app-gradient-linear);
 }
 
 .dark .app-canvas {
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--brand-600) 12%, transparent), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 100% 0%, color-mix(in oklab, var(--field) 6%, transparent), transparent 50%);
+    var(--app-gradient-glow-subtle-top),
+    var(--app-gradient-glow-subtle-corner),
+    var(--app-gradient-linear);
 }
 
 .app-nav-active {
@@ -1201,11 +1271,12 @@ body {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--landing-hero);
+  background-color: var(--app-bg);
   background-image:
     radial-gradient(ellipse 90% 60% at 50% -15%, color-mix(in oklab, #06b6d4 22%, transparent), transparent 55%),
     radial-gradient(ellipse 50% 40% at 85% 20%, color-mix(in oklab, #2563eb 14%, transparent), transparent 50%),
-    radial-gradient(ellipse 40% 35% at 10% 80%, color-mix(in oklab, #06b6d4 10%, transparent), transparent 45%);
+    radial-gradient(ellipse 40% 35% at 10% 80%, color-mix(in oklab, #06b6d4 10%, transparent), transparent 45%),
+    var(--app-gradient-linear);
 }
 
 .onboarding-scene-header {
@@ -1324,18 +1395,24 @@ body {
 
 /* Executive admin console — shares site dark palette */
 .admin-console {
-  --admin-bg: var(--background);
-  --admin-panel: var(--surface);
-  --admin-panel-elevated: var(--surface-elevated);
-  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-bg: var(--app-bg);
+  --admin-panel: var(--surface-bg);
+  --admin-panel-elevated: var(--surface);
+  --admin-border: var(--surface-glass-border);
   --admin-text: var(--foreground);
   --admin-text-dim: color-mix(in oklab, var(--foreground) 55%, transparent);
   color-scheme: dark;
+  background-color: var(--admin-bg);
+  background-image:
+    var(--app-gradient-glow-subtle-top),
+    var(--app-gradient-glow-subtle-corner),
+    var(--app-gradient-linear);
 }
 
 .admin-panel {
   background: var(--admin-panel);
   border-color: var(--admin-border);
+  backdrop-filter: blur(12px);
 }
 
 .admin-input {
@@ -1380,7 +1457,6 @@ body {
 }
 
 .admin-auth-page {
-  background: var(--admin-bg);
   color: var(--admin-text);
   min-height: 100vh;
 }
@@ -1389,6 +1465,7 @@ body {
   background: var(--admin-panel);
   border: 1px solid var(--admin-border);
   border-radius: 1rem;
+  backdrop-filter: blur(12px);
 }
 
 .admin-status-up {

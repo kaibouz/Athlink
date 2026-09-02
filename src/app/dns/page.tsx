@@ -112,7 +112,7 @@ export default function DnsSetupPage() {
   }
 
   return (
-    <div className="min-h-svh bg-background px-4 py-10 sm:px-6">
+    <div className="app-page-bg min-h-svh px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-xl">
         <Link href="/" className="inline-block text-2xl">
           <AthLinkMark />
@@ -128,7 +128,7 @@ export default function DnsSetupPage() {
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
-            className="mt-8 space-y-4 rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm sm:p-6"
+            className="app-glass-solid mt-8 space-y-4 rounded-2xl p-5 shadow-sm sm:p-6"
           >
             <div>
               <Label htmlFor="domain">Domain</Label>
@@ -194,7 +194,7 @@ export default function DnsSetupPage() {
               add the records below, then wait for propagation (often minutes, sometimes up to 24h).
             </div>
 
-            <div className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm">
+            <div className="app-glass-solid rounded-2xl p-5 shadow-sm">
               <h2 className="font-bold text-brand-950">
                 DNS records for {domain}
                 {preset ? ` (${preset.title})` : ""}
@@ -206,7 +206,7 @@ export default function DnsSetupPage() {
                 {(preset?.records ?? []).map((r) => (
                   <li
                     key={`${r.type}-${r.name}`}
-                    className="rounded-xl border border-brand-100 bg-brand-50/60 px-4 py-3 font-mono text-sm"
+                    className="app-glass rounded-xl px-4 py-3 font-mono text-sm"
                   >
                     <p className="font-sans text-xs font-semibold text-brand-500 uppercase">
                       {r.type}

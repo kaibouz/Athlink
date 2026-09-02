@@ -106,7 +106,7 @@ export function MobileNav() {
   const items = user.role === "coach" ? coachTabs : athleteTabs;
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-100/80 bg-surface/80 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]">
+    <nav className="app-glass-solid fixed inset-x-0 bottom-0 z-40 border-t border-white/10 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto flex h-[52px] max-w-lg items-center justify-around px-1">
         {items.map((item) => {
           const active = item.match(pathname);

@@ -31,7 +31,7 @@ export default function IosPreviewPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c] px-4 py-8 text-white">
+    <div className="app-page-bg min-h-screen px-4 py-8 text-white">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>

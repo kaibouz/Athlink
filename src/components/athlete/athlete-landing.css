@@ -1,20 +1,25 @@
 /* AthlinkPro for Athletes — reference-matched landing (always dark) */
 .athlete-landing {
-  --ah-bg: #05070c;
-  --ah-panel: #0b0f1a;
-  --ah-panel-2: #10162a;
-  --ah-border: rgba(255, 255, 255, 0.08);
+  --ah-bg: var(--app-bg, #000000);
+  --ah-panel: var(--surface, #121826);
+  --ah-panel-2: var(--app-bg-accent, #0a1628);
+  --ah-border: var(--surface-glass-border, rgba(255, 255, 255, 0.08));
   --ah-border-strong: rgba(255, 255, 255, 0.16);
   --ah-text: #f5f7fa;
   --ah-dim: #9aa3b2;
   --ah-dimmer: #5f6773;
-  --ah-blue-1: #3b6ef6;
-  --ah-blue-2: #22c7e0;
+  --ah-blue-1: #2563eb;
+  --ah-blue-2: #22d3ee;
   --ah-clay-1: var(--athlete-clay-1, #e0a458);
   --ah-clay-2: var(--athlete-clay-2, #f2c94c);
   --ah-green: #3ddc97;
 
-  background: var(--ah-bg);
+  background-color: var(--ah-bg);
+  background-image:
+    var(--app-gradient-glow-top, radial-gradient(ellipse 70% 55% at 50% -8%, rgba(37, 99, 235, 0.32), transparent 55%)),
+    var(--app-gradient-glow-right, radial-gradient(ellipse 48% 42% at 88% 42%, rgba(59, 130, 246, 0.2), transparent 52%)),
+    var(--app-gradient-glow-left, radial-gradient(ellipse 42% 38% at 10% 58%, rgba(14, 165, 233, 0.14), transparent 48%)),
+    var(--app-gradient-linear, linear-gradient(155deg, #000 0%, #030712 28%, #0a1628 52%, #051018 78%, #000 100%));
   color: var(--ah-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -53,7 +58,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(5, 7, 12, 0.85);
+  background: color-mix(in oklab, var(--ah-bg) 85%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
 }
@@ -605,7 +610,7 @@
 
 .athlete-landing .ah-post .ah-vid {
   height: 120px;
-  background: linear-gradient(180deg, #141b30, #0b0f1a);
+  background: linear-gradient(180deg, var(--app-bg-accent, #0a1628), var(--ah-panel));
   display: flex;
   align-items: center;
   justify-content: center;

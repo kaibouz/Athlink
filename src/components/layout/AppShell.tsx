@@ -60,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (isClerkAuthRoute || (isAuthForm && !user)) {
     return (
-      <div className="flex min-h-full flex-1 flex-col">
+      <div className="app-page-bg flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <AthlinkProLogo href="/" size="sm" priority />
           <div className="flex items-center gap-2">
@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-full min-w-0 flex-1 flex-col md:pl-64">
         <div className="app-canvas flex min-h-full min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-brand-100/80 bg-surface/90 px-4 backdrop-blur-md md:hidden">
+          <header className="app-glass-solid sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 backdrop-blur-md md:hidden">
             <button
               type="button"
               className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"

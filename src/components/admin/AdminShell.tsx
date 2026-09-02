@@ -108,8 +108,8 @@ export function AdminShell({
   }
 
   return (
-    <div className="admin-console flex min-h-screen bg-[var(--admin-bg)] text-[var(--admin-text)]">
-      <aside className="admin-sidebar hidden w-[232px] shrink-0 flex-col border-r border-[var(--admin-border)] bg-[var(--admin-panel)] lg:flex">
+    <div className="admin-console flex min-h-screen text-[var(--admin-text)]">
+      <aside className="admin-sidebar app-glass-solid hidden w-[232px] shrink-0 flex-col border-r border-[var(--admin-border)] lg:flex">
         <div className="border-b border-[var(--admin-border)] px-4 py-4">
           <Link href="/admin" className="flex items-center gap-2">
             <span className="text-base">
@@ -136,7 +136,7 @@ export function AdminShell({
             aria-label="Close menu"
             onClick={() => setDrawerOpen(false)}
           />
-          <aside className="absolute left-0 top-0 flex h-full w-[232px] flex-col bg-[var(--admin-panel)] shadow-xl">
+          <aside className="app-glass-solid absolute left-0 top-0 flex h-full w-[232px] flex-col shadow-xl">
             <div className="flex items-center justify-between border-b border-[var(--admin-border)] px-4 py-4">
               <span className="font-semibold">Menu</span>
               <button type="button" onClick={() => setDrawerOpen(false)} className="admin-btn-ghost p-1">
@@ -151,7 +151,7 @@ export function AdminShell({
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-[var(--admin-border)] bg-[var(--admin-panel)]/95 px-4 backdrop-blur-md sm:px-6">
+        <header className="app-glass-solid sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-[var(--admin-border)] px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
               type="button"

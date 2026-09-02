@@ -37,7 +37,7 @@ export function OnboardingShell({
 
   return (
     <div className={cn("onboarding-scene flex min-h-screen flex-col", role === "athlete" && "onboarding-scene-athlete")}>
-      <header className="onboarding-scene-header flex h-14 items-center justify-between gap-3 border-b px-4 backdrop-blur-md sm:px-6">
+      <header className="onboarding-scene-header app-glass-solid flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 backdrop-blur-md sm:px-6">
         <Link href="/join" className="inline-flex items-center gap-2">
           <span
             className={cn(
@@ -69,7 +69,7 @@ export function OnboardingShell({
       </header>
 
       {wizardMode && !isFinish && current >= 0 && (
-        <div className="border-b border-brand-100 bg-surface/60 px-4 py-4 sm:px-6">
+        <div className="app-glass-solid border-b border-white/10 px-4 py-4 sm:px-6">
           <div className="mx-auto max-w-2xl">
             <div className="mb-2 flex items-center justify-between text-xs font-semibold text-brand-500">
               <span>{t("onboard_progress")}</span>

@@ -80,8 +80,8 @@ export function AppSidebar({
   }
 
   const panel = (
-    <aside className="flex h-full w-64 flex-col border-r border-brand-100 bg-surface">
-      <div className="flex h-16 items-center gap-2 border-b border-brand-100 px-4">
+    <aside className="app-glass-solid flex h-full w-64 flex-col border-r border-white/10">
+      <div className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
         <Link href="/" onClick={() => onClose?.()} className="inline-flex shrink-0">
           <AthlinkProLogo href={null} size="sm" />
         </Link>
@@ -158,7 +158,7 @@ export function AppSidebar({
         </div>
       )}
 
-      <div className="border-t border-brand-100 p-2">
+      <div className="border-t border-white/10 p-2">
         {user ? (
           <div
             className={cn(

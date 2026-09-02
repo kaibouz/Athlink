@@ -10,8 +10,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-brand-100/90 bg-surface shadow-sm",
-        hover && "transition hover:border-brand-200 hover:shadow-md",
+        "app-glass-solid rounded-2xl shadow-sm",
+        hover && "transition hover:border-brand-300/50 hover:shadow-md",
         className,
       )}
       {...props}
@@ -29,7 +29,7 @@ export function CardHeader({
   children: ReactNode;
 }) {
   return (
-    <div className={cn("border-b border-brand-50 px-5 py-4", className)}>{children}</div>
+    <div className={cn("border-b border-white/10 px-5 py-4", className)}>{children}</div>
   );
 }
 
