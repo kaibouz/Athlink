@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.athlink.com" }],
+      "destination": "https://athlink.com/:path*",
+      "permanent": true
+    }
+  ]
+}
