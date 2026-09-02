@@ -36,7 +36,7 @@ export function OnboardingShell({
   const isFinish = step === "finish";
 
   return (
-    <div className="onboarding-scene flex min-h-screen flex-col">
+    <div className={cn("onboarding-scene flex min-h-screen flex-col", role === "athlete" && "onboarding-scene-athlete")}>
       <header className="onboarding-scene-header flex h-14 items-center justify-between gap-3 border-b px-4 backdrop-blur-md sm:px-6">
         <Link href="/join" className="inline-flex items-center gap-2">
           <span

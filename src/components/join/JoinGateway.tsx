@@ -43,16 +43,34 @@ function JoinCard({
   const RoleIcon = isCoach ? UserRound : Users;
 
   return (
-    <article className="land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8">
-      <p className="text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase">{eyebrow}</p>
-      <RoleIcon className="mt-4 h-7 w-7 text-brand-600" />
+    <article
+      className={`land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8 ${
+        isCoach ? "join-card-coach" : "join-card-athlete"
+      }`}
+    >
+      <p
+        className={`text-xs font-semibold tracking-[0.14em] uppercase ${
+          isCoach ? "text-brand-500" : "text-amber-600 dark:text-amber-400"
+        }`}
+      >
+        {eyebrow}
+      </p>
+      <RoleIcon
+        className={`mt-4 h-7 w-7 ${isCoach ? "text-brand-600" : "text-amber-600 dark:text-amber-400"}`}
+      />
       <h2 className="mt-3 text-xl font-black tracking-tight text-brand-950 sm:text-2xl">{title}</h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-600">{body}</p>
 
       <ul className="mt-6 flex flex-1 flex-col gap-3">
         {features.map(({ icon: Icon, text }) => (
           <li key={text} className="flex gap-3 text-sm leading-snug text-brand-700">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-600">
+            <span
+              className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                isCoach
+                  ? "bg-brand-100 text-brand-600"
+                  : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
+              }`}
+            >
               <Icon className="h-4 w-4" />
             </span>
             {text}
@@ -63,11 +81,11 @@ function JoinCard({
       <div className="mt-auto pt-6">
         <Link href={href} className="group inline-block">
           <Button
-            variant={isCoach ? "primary" : "outline"}
+            variant={isCoach ? "primary" : "primary"}
             className={
               isCoach
                 ? "btn-landing-primary border-0"
-                : "btn-landing-secondary font-bold"
+                : "btn-athlete-primary border-0 font-bold"
             }
           >
             {cta}
@@ -97,7 +115,7 @@ export function JoinGateway() {
   ];
 
   return (
-    <div className="landing-page flex min-h-screen flex-col">
+    <div className="join-gateway-page landing-page flex min-h-screen flex-col">
       <div className="landing-hero-bg relative flex flex-1 flex-col overflow-hidden">
         <div className="landing-hero-wind" aria-hidden>
           <div className="landing-hero-wash landing-hero-wash-a" />

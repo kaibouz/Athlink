@@ -54,6 +54,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   const { t } = useLocale();
   const { user, hydrated, signup } = useAuth();
   const { createProfile, addPost } = useSocial();
+  const primaryBtnClass =
+    role === "athlete" ? "btn-athlete-primary border-0" : "btn-landing-primary border-0";
 
   const [step, setStep] = useState<OnboardingStep>("account");
   const [draft, setDraft] = useState<OnboardingDraft>(() => {
@@ -381,7 +383,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" onClick={() => void goNext()} disabled={submitting}>
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()} disabled={submitting}>
               {submitting ? t("loading") : t("onboard_next")}
             </Button>
           </div>
@@ -426,7 +428,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" onClick={() => void goNext()}>
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
               {t("onboard_next")}
             </Button>
           </div>
@@ -559,7 +561,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" onClick={() => void goNext()}>
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
               {t("onboard_next")}
             </Button>
           </div>
@@ -666,7 +668,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" onClick={() => void goNext()} disabled={submitting}>
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()} disabled={submitting}>
               {submitting ? t("loading") : t("onboard_next")}
             </Button>
           </div>
@@ -754,7 +756,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                 {t("onboard_skip")}
               </Button>
             )}
-            <Button size="lg" onClick={() => void goNext()}>
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
               {t("onboard_next")}
             </Button>
           </div>
@@ -781,7 +783,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             </li>
           </ul>
 
-          <Button className="mt-8 w-full sm:w-auto" size="lg" onClick={finish} disabled={!user}>
+          <Button className={cn("mt-8 w-full sm:w-auto", primaryBtnClass)} size="lg" onClick={finish} disabled={!user}>
             {t("onboard_start")}
           </Button>
         </div>

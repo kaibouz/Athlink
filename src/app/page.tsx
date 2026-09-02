@@ -302,7 +302,7 @@ export default function HomePage() {
             <p className="mt-2 text-brand-600">{t("land_split_sub")}</p>
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <article className="land-panel rounded-2xl p-6 sm:p-8">
+            <article className="land-panel join-card-coach rounded-2xl p-6 sm:p-8">
               <UserRound className="h-7 w-7 text-brand-600" />
               <h3 className="mt-3 text-xl font-black text-brand-950">
                 {t("land_split_coach_title")}
@@ -320,8 +320,8 @@ export default function HomePage() {
                 </Button>
               </Link>
             </article>
-            <article className="land-panel rounded-2xl p-6 sm:p-8">
-              <Users className="h-7 w-7 text-brand-600" />
+            <article className="land-panel join-card-athlete rounded-2xl p-6 sm:p-8">
+              <Users className="h-7 w-7 text-amber-600 dark:text-amber-400" />
               <h3 className="mt-3 text-xl font-black text-brand-950">
                 {t("land_split_athlete_title")}
               </h3>
@@ -331,8 +331,8 @@ export default function HomePage() {
                 <li>· {t("land_split_athlete_2")}</li>
                 <li>· {t("land_split_athlete_3")}</li>
               </ul>
-              <Link href="/join/athlete" className="group mt-6 inline-block">
-                <Button variant="outline" className="btn-landing-secondary font-bold">
+              <Link href="/for-athletes" className="group mt-6 inline-block">
+                <Button className="btn-athlete-primary border-0 font-bold">
                   {t("nav_signup")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>

@@ -10,8 +10,8 @@
   --ah-dimmer: #5f6773;
   --ah-blue-1: #3b6ef6;
   --ah-blue-2: #22c7e0;
-  --ah-clay-1: #e0a458;
-  --ah-clay-2: #f2c94c;
+  --ah-clay-1: var(--athlete-clay-1, #e0a458);
+  --ah-clay-2: var(--athlete-clay-2, #f2c94c);
   --ah-green: #3ddc97;
 
   background: var(--ah-bg);

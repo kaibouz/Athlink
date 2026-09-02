@@ -64,7 +64,9 @@ export default function SignupPage() {
               className={cn(
                 "rounded-xl px-3 py-2.5 text-sm font-semibold transition",
                 role === r
-                  ? "bg-surface text-brand-900 shadow-sm"
+                  ? r === "athlete"
+                    ? "bg-amber-100 text-amber-900 shadow-sm dark:bg-amber-500/20 dark:text-amber-200"
+                    : "bg-surface text-brand-900 shadow-sm"
                   : "text-brand-500 hover:text-brand-800",
               )}
             >
@@ -104,7 +106,12 @@ export default function SignupPage() {
             required
           />
         </div>
-        <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+        <Button
+          type="submit"
+          className={cn("w-full", role === "athlete" ? "btn-athlete-primary border-0" : "btn-landing-primary border-0")}
+          size="lg"
+          disabled={submitting}
+        >
           {submitting ? t("loading") : t("signup_submit")}
         </Button>
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
