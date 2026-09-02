@@ -13,6 +13,7 @@ import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 
 /** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -64,14 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-black text-white">
-              A
-            </span>
-            <span className="text-lg">
-              <AthLinkMark />
-            </span>
-          </Link>
+          <AthlinkProLogo href="/" size="sm" priority />
           <div className="flex items-center gap-2">
             <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
             <LocaleSwitcher compact />
