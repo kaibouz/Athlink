@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { listCoaches, getCoachById, getReviewsByCoach } from "@/lib/server/data";
 import { CoachDetailView } from "@/components/coaches/CoachDetailView";

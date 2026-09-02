@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
+  BarChart3,
   CalendarDays,
   Check,
   LayoutDashboard,
@@ -17,7 +18,8 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "@/lib/store";
-import { getDemoCoach, pendingCoachBookings } from "@/lib/coach-bookings";
+import { pendingCoachBookings } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { formatDateJa, formatPrice, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
@@ -59,14 +61,15 @@ export function AppSidebar({
     { href: "/search", label: t("comm_tab_search"), icon: Search },
     { href: "/messages", label: t("comm_tab_messages"), icon: MessageSquare },
     { href: "/coach/feedback", label: t("comm_tab_feedback"), icon: Send },
+    { href: "/coach/analytics", label: t("coach_nav_analytics"), icon: BarChart3 },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },
     { href: "/coach/invite", label: t("coach_nav_invite"), icon: Network },
   ];
 
   const links = isCoach ? coachNav : athleteNav;
 
-  const coach = getDemoCoach();
-  const pending = isCoach ? pendingCoachBookings(bookings, coach.id) : [];
+  const { coach } = useMyCoach();
+  const pending = isCoach ? pendingCoachBookings(bookings, coach?.id) : [];
   const next = pending[0];
   const onMyPage = pathname === "/me" || pathname.startsWith("/me/");
 

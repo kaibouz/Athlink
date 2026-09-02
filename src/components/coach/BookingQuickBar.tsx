@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { CalendarDays, Check, QrCode, X } from "lucide-react";
 import { useAuth } from "@/lib/store";
-import { getDemoCoach, pendingCoachBookings } from "@/lib/coach-bookings";
+import { pendingCoachBookings } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
@@ -16,8 +17,8 @@ export function BookingQuickBar() {
 
   if (user?.role !== "coach") return null;
 
-  const coach = getDemoCoach();
-  const pending = pendingCoachBookings(bookings, coach.id);
+  const { coach } = useMyCoach();
+  const pending = pendingCoachBookings(bookings, coach?.id);
   const next = pending[0];
 
   return (

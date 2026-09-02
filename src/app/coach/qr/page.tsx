@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, Copy, Download, Share2 } from "lucide-react";
 import { CoachGate } from "@/components/coach/CoachGate";
-import { getDemoCoach } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { sportLabel } from "@/lib/i18n/localize";
@@ -15,13 +15,32 @@ import { Badge } from "@/components/ui/Badge";
 function QrInner() {
   const { user } = useAuth();
   const { t } = useLocale();
-  const coach = getDemoCoach();
+  const { coach, loading, hasProfile } = useMyCoach();
   const [copied, setCopied] = useState(false);
 
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center text-brand-500">{t("loading")}</div>
+    );
+  }
+
+  if (!hasProfile || !coach) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold text-brand-950">{t("register_prompt_title")}</h1>
+        <p className="mt-2 text-brand-600">{t("register_prompt_body")}</p>
+        <Link href="/coach/register" className="mt-6 inline-block">
+          <Button size="lg">{t("register_submit")}</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const bookUrl = useMemo(() => {
+    if (!coach) return "";
     if (typeof window === "undefined") return `/c/${coach.id}`;
     return `${window.location.origin}/c/${coach.id}`;
-  }, [coach.id]);
+  }, [coach?.id]);
 
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&data=${encodeURIComponent(bookUrl)}`;
 

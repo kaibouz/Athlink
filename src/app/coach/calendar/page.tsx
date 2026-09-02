@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, QrCode } from "lucide-react";
 import { CoachGate } from "@/components/coach/CoachGate";
 import { useAuth } from "@/lib/store";
-import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
+import { bookingsForCoach } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import type { MessageKey } from "@/lib/i18n/messages";
@@ -47,8 +48,8 @@ function toKey(d: Date) {
 function CalendarInner() {
   const { bookings, updateBookingStatus } = useAuth();
   const { t, locale } = useLocale();
-  const coach = getDemoCoach();
-  const coachBookings = bookingsForCoach(bookings, coach.id);
+  const { coach } = useMyCoach();
+  const coachBookings = bookingsForCoach(bookings, coach?.id);
 
   const [cursor, setCursor] = useState(() => startOfMonth(new Date("2026-07-29")));
   const [selected, setSelected] = useState(toKey(new Date("2026-07-29")));

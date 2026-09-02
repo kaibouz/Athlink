@@ -1,6 +1,8 @@
-import { eq } from "drizzle-orm";
+import { and, count, desc, eq, gte } from "drizzle-orm";
+import { randomBytes } from "crypto";
 import { getDb, isDatabaseConfigured } from "@/db";
 import {
+  analyticsEvents,
   athleteProfiles,
   bookings,
   coachFeedback,
@@ -11,6 +13,7 @@ import {
   socialPosts,
   studentAthletes,
   timeSlots,
+  users,
 } from "@/db/schema";
 import {
   coaches as staticCoaches,
@@ -221,6 +224,218 @@ export async function updateBookingStatus(id: string, status: Booking["status"])
       /* ignore */
     }
   }
+}
+
+const COVER_GRADIENTS = [
+  "from-sky-600 to-indigo-700",
+  "from-rose-500 to-orange-500",
+  "from-emerald-600 to-teal-700",
+  "from-violet-600 to-purple-700",
+  "from-amber-500 to-orange-600",
+];
+
+export type RegisterCoachInput = {
+  name: string;
+  sport: string;
+  specialty: string;
+  location: string;
+  languages: string[];
+  pricePerHour: number;
+  bio: string;
+};
+
+function seedSlotsForCoach(coachId: string) {
+  const slots: (typeof timeSlots.$inferInsert)[] = [];
+  const times = [
+    ["09:00", "10:00"],
+    ["10:30", "11:30"],
+    ["13:00", "14:00"],
+    ["15:00", "16:00"],
+    ["17:00", "18:00"],
+    ["19:00", "20:00"],
+  ];
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  for (let d = 0; d < 14; d++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + d);
+    const dateStr = date.toISOString().slice(0, 10);
+    times.forEach(([startTime, endTime], ti) => {
+      slots.push({
+        id: `${coachId}-${dateStr}-${startTime}`,
+        coachId,
+        date: dateStr,
+        startTime,
+        endTime,
+        available: (d + ti) % 3 !== 0,
+      });
+    });
+  }
+  return slots;
+}
+
+export async function getCoachByUserId(userId: string): Promise<CoachProfile | undefined> {
+  if (!isDatabaseConfigured()) return undefined;
+  try {
+    const [row] = await getDb()
+      .select()
+      .from(coachProfiles)
+      .where(eq(coachProfiles.userId, userId))
+      .limit(1);
+    return row ? mapCoach(row) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export async function createCoachProfile(
+  userId: string,
+  email: string,
+  avatarUrl: string | undefined,
+  input: RegisterCoachInput,
+): Promise<CoachProfile> {
+  if (!isDatabaseConfigured()) {
+    throw new Error("DATABASE_NOT_CONFIGURED");
+  }
+
+  const existing = await getCoachByUserId(userId);
+  if (existing) return existing;
+
+  const id = `c-${randomBytes(4).toString("hex")}`;
+  const bioText = input.bio.trim();
+  const bio = { en: bioText, ja: bioText, es: bioText };
+  const gradient = COVER_GRADIENTS[Math.floor(Math.random() * COVER_GRADIENTS.length)];
+
+  const row: typeof coachProfiles.$inferInsert = {
+    id,
+    userId,
+    name: input.name.trim(),
+    email: email.toLowerCase(),
+    sport: input.sport,
+    specialties: [input.specialty],
+    bio,
+    location: `${input.location}, CA`,
+    city: input.location,
+    prefecture: input.location,
+    experienceYears: 0,
+    pricePerHour: input.pricePerHour,
+    rating: 0,
+    reviewCount: 0,
+    verified: false,
+    formats: ["in_person", "online"],
+    avatarUrl: avatarUrl ?? `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(input.name)}`,
+    coverGradient: gradient,
+    career: [],
+    languages: input.languages,
+    availabilityNote: "Weekdays & weekends — update in dashboard",
+  };
+
+  const db = getDb();
+  await db.insert(coachProfiles).values(row);
+  await db.insert(timeSlots).values(seedSlotsForCoach(id));
+
+  return mapCoach(row as typeof coachProfiles.$inferSelect);
+}
+
+export async function recordAnalyticsEvent(input: {
+  name: string;
+  userId?: string;
+  coachId?: string;
+  path?: string;
+  props?: Record<string, string>;
+}) {
+  if (!isDatabaseConfigured()) return;
+  try {
+    await getDb().insert(analyticsEvents).values({
+      id: `ev-${randomBytes(6).toString("hex")}`,
+      name: input.name,
+      userId: input.userId,
+      coachId: input.coachId,
+      path: input.path,
+      props: input.props,
+    });
+  } catch {
+    /* ignore */
+  }
+}
+
+export async function getPlatformStats() {
+  if (!isDatabaseConfigured()) {
+    return {
+      users: 0,
+      coaches: 0,
+      bookings: 0,
+      signupsLast7d: 0,
+      events: [] as { name: string; count: number }[],
+    };
+  }
+
+  const db = getDb();
+  const [[userCount], [coachCount], [bookingCount]] = await Promise.all([
+    db.select({ n: count() }).from(users),
+    db.select({ n: count() }).from(coachProfiles),
+    db.select({ n: count() }).from(bookings),
+  ]);
+
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const [signupRow] = await db
+    .select({ n: count() })
+    .from(users)
+    .where(gte(users.createdAt, weekAgo));
+
+  const eventRows = await db
+    .select({ name: analyticsEvents.name, n: count() })
+    .from(analyticsEvents)
+    .groupBy(analyticsEvents.name)
+    .orderBy(desc(count()));
+
+  return {
+    users: userCount?.n ?? 0,
+    coaches: coachCount?.n ?? 0,
+    bookings: bookingCount?.n ?? 0,
+    signupsLast7d: signupRow?.n ?? 0,
+    events: eventRows.map((r) => ({ name: r.name, count: Number(r.n) })),
+  };
+}
+
+export async function getCoachAnalytics(coachId: string) {
+  if (!isDatabaseConfigured()) {
+    return { profileViews: 0, bookingClicks: 0, bookings: 0 };
+  }
+
+  const db = getDb();
+  const [views] = await db
+    .select({ n: count() })
+    .from(analyticsEvents)
+    .where(
+      and(
+        eq(analyticsEvents.coachId, coachId),
+        eq(analyticsEvents.name, "coach_profile_view"),
+      ),
+    );
+
+  const [clicks] = await db
+    .select({ n: count() })
+    .from(analyticsEvents)
+    .where(
+      and(
+        eq(analyticsEvents.coachId, coachId),
+        eq(analyticsEvents.name, "booking_start"),
+      ),
+    );
+
+  const [bookingCount] = await db
+    .select({ n: count() })
+    .from(bookings)
+    .where(eq(bookings.coachId, coachId));
+
+  return {
+    profileViews: views?.n ?? 0,
+    bookingClicks: clicks?.n ?? 0,
+    bookings: bookingCount?.n ?? 0,
+  };
 }
 
 export type { CoachProfile, Review, Booking, TimeSlot };

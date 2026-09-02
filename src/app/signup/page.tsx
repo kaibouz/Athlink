@@ -37,7 +37,7 @@ export default function SignupPage() {
       setError(result.error === "EMAIL_TAKEN" ? t("signup_email_taken") : t("signup_error"));
       return;
     }
-    router.push(dashboardFor(role));
+    router.push(role === "coach" ? "/coach/register" : dashboardFor(role));
   }
 
   return (

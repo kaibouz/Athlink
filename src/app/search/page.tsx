@@ -1,10 +1,10 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { defaultFilters, filterCoaches } from "@/lib/search";
-import type { SearchFilters } from "@/types";
+import type { CoachProfile, SearchFilters } from "@/types";
 import { CoachCard } from "@/components/coaches/CoachCard";
 import { SearchFiltersPanel } from "@/components/coaches/SearchFiltersPanel";
 import { useLocale } from "@/lib/i18n/provider";
@@ -26,7 +26,16 @@ function SearchContent() {
     location: params.get("location") ?? "",
     language: params.get("language") ?? "",
   }));
-  const results = useMemo(() => filterCoaches(filters), [filters]);
+  const [coaches, setCoaches] = useState<CoachProfile[]>([]);
+
+  useEffect(() => {
+    void fetch("/api/coaches")
+      .then((r) => r.json())
+      .then((d: { coaches: CoachProfile[] }) => setCoaches(d.coaches ?? []))
+      .catch(() => setCoaches([]));
+  }, []);
+
+  const results = useMemo(() => filterCoaches(filters, coaches), [filters, coaches]);
 
   const activeFilterCount = useMemo(() => {
     let n = 0;

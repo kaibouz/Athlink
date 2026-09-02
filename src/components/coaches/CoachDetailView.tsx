@@ -1,16 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star } from "lucide-react";
 import type { CoachProfile, Review } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
-import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
+import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, loc, locList, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
 import { venueForCoach } from "@/lib/lesson-venues";
 import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
+import { trackEvent } from "@/lib/track-event";
 import { Badge } from "@/components/ui/Badge";
 import { BookingForm } from "@/components/coaches/BookingForm";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
@@ -35,8 +37,12 @@ export function CoachDetailView({
 }) {
   const { t, locale } = useLocale();
   const { user, bookings } = useAuth();
-  const isOwnProfile = user?.role === "coach" && coach.id === getDemoCoach().id;
+  const isOwnProfile = user?.role === "coach" && coach.userId === user.id;
   const coachBookings = bookingsForCoach(bookings, coach.id);
+
+  useEffect(() => {
+    trackEvent("coach_profile_view", { coachId: coach.id }, coach.id);
+  }, [coach.id]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">

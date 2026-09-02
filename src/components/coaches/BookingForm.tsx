@@ -7,6 +7,7 @@ import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { autoSyncBookingToCalendars } from "@/lib/calendar";
+import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { Label, Select, Textarea } from "@/components/ui/Input";
@@ -22,10 +23,9 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const { user, addBooking } = useAuth();
   const { t, locale } = useLocale();
   const isCoachPublishing = user?.role === "coach";
-  const slots = useMemo(() => getSlotsByCoach(coach.id), [coach.id]);
+  const [slots, setSlots] = useState<TimeSlot[]>(() => getSlotsByCoach(coach.id));
   const dates = useMemo(() => [...new Set(slots.map((s) => s.date))], [slots]);
-
-  const [date, setDate] = useState(dates[0] ?? "");
+  const [date, setDate] = useState("");
   const [slotId, setSlotId] = useState("");
   const [format, setFormat] = useState<LessonFormat>(coach.formats[0]);
   const [packageType, setPackageType] = useState<PackageType>("single");
@@ -33,6 +33,30 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState<Booking | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch(`/api/coaches/${coach.id}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { slots?: TimeSlot[] } | null) => {
+        if (cancelled || !data?.slots?.length) return;
+        setSlots(data.slots);
+      })
+      .catch(() => {
+        /* keep static fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [coach.id]);
+
+  useEffect(() => {
+    if (dates.length === 0) return;
+    if (!date || !dates.includes(date)) {
+      setDate(dates[0]);
+      setSlotId("");
+    }
+  }, [dates, date]);
 
   const daySlots = slots.filter((s) => s.date === date);
   const priceMultiplier =
@@ -67,6 +91,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       setError(t("booking_total_invalid"));
       return;
     }
+    trackEvent("booking_start", { coachId: coach.id }, coach.id);
     const booking = await addBooking({
       coachId: coach.id,
       coachName: coach.name,

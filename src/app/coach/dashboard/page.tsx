@@ -12,7 +12,8 @@ import {
   Star,
 } from "lucide-react";
 import { useAuth } from "@/lib/store";
-import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
+import { bookingsForCoach } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { getReviewsByCoach } from "@/lib/data";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
@@ -31,9 +32,9 @@ export default function CoachDashboardPage() {
   const { t, locale } = useLocale();
   const [bookingsExpanded, setBookingsExpanded] = useState(false);
   const [reviewsExpanded, setReviewsExpanded] = useState(false);
-  const sampleCoach = getDemoCoach();
-  const coachReviews = getReviewsByCoach(sampleCoach.id);
-  const coachBookings = bookingsForCoach(bookings, sampleCoach.id);
+  const { coach, loading: coachLoading, hasProfile } = useMyCoach();
+  const coachReviews = coach ? getReviewsByCoach(coach.id) : [];
+  const coachBookings = bookingsForCoach(bookings, coach?.id);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const upcoming = coachBookings.filter(
     (b) => b.status === "pending" || b.status === "confirmed",
@@ -45,6 +46,24 @@ export default function CoachDashboardPage() {
     completed: "status_completed",
     cancelled: "status_cancelled",
   };
+
+  if (coachLoading) {
+    return (
+      <PageContainer className="py-16 text-center text-brand-500">{t("loading")}</PageContainer>
+    );
+  }
+
+  if (!hasProfile || !coach) {
+    return (
+      <PageContainer className="py-16 text-center">
+        <h1 className="text-2xl font-bold text-brand-950">{t("register_prompt_title")}</h1>
+        <p className="mt-2 text-brand-600">{t("register_prompt_body")}</p>
+        <Link href="/coach/register" className="mt-6 inline-block">
+          <Button size="lg">{t("register_submit")}</Button>
+        </Link>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
@@ -176,12 +195,12 @@ export default function CoachDashboardPage() {
           </div>
           <div className="mt-2 flex items-end gap-5">
             <div>
-              <p className="text-2xl font-bold text-brand-950">{sampleCoach.rating}</p>
+              <p className="text-2xl font-bold text-brand-950">{coach.rating}</p>
               <p className="mt-0.5 text-xs text-brand-500">{t("dash_stat_rating")}</p>
             </div>
             <div className="mb-2 h-8 w-px bg-brand-100" aria-hidden />
             <div>
-              <p className="text-2xl font-bold text-brand-950">{sampleCoach.reviewCount}</p>
+              <p className="text-2xl font-bold text-brand-950">{coach.reviewCount}</p>
               <p className="mt-0.5 text-xs text-brand-500">{t("dash_stat_reviews")}</p>
             </div>
           </div>
@@ -191,7 +210,7 @@ export default function CoachDashboardPage() {
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-sm font-bold text-brand-950">{t("dash_reviews_voice")}</h3>
                 <Link
-                  href={`/coaches/${sampleCoach.id}`}
+                  href={`/coaches/${coach.id}`}
                   onClick={(e) => e.stopPropagation()}
                   className="text-xs font-semibold text-brand-600"
                 >
@@ -223,10 +242,10 @@ export default function CoachDashboardPage() {
                   </li>
                 ))}
               </ul>
-              {coachReviews.length > 0 && coachReviews.length < sampleCoach.reviewCount && (
+              {coachReviews.length > 0 && coachReviews.length < coach.reviewCount && (
                 <p className="mt-2 text-center text-xs text-brand-500">
                   {t("dash_reviews_more", {
-                    n: sampleCoach.reviewCount - coachReviews.length,
+                    n: coach.reviewCount - coachReviews.length,
                   })}
                 </p>
               )}
@@ -274,23 +293,23 @@ export default function CoachDashboardPage() {
           <div className="mt-4 flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={sampleCoach.avatarUrl}
+              src={coach.avatarUrl}
               alt=""
               className="h-16 w-16 rounded-2xl bg-brand-50"
             />
             <div>
-              <p className="font-bold text-brand-950">{sampleCoach.name}</p>
+              <p className="font-bold text-brand-950">{coach.name}</p>
               <p className="text-sm text-brand-600">
-                {sportLabel(t, sampleCoach.sport)} · {formatPrice(sampleCoach.pricePerHour)}
+                {sportLabel(t, coach.sport)} · {formatPrice(coach.pricePerHour)}
                 {t("per_hr")}
               </p>
             </div>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-brand-700">
-            {loc(locale, sampleCoach.bio)}
+            {loc(locale, coach.bio)}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link href={`/coaches/${sampleCoach.id}`}>
+            <Link href={`/coaches/${coach.id}`}>
               <Button variant="secondary" size="sm">
                 {t("dash_view_public")}
               </Button>

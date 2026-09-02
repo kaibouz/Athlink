@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, LogOut, UserRound } from "lucide-react";
 import { useAuth } from "@/lib/store";
-import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
+import { bookingsForCoach } from "@/lib/coach-bookings";
+import { useMyCoach } from "@/lib/use-my-coach";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -31,8 +32,8 @@ export default function MyPage() {
   const router = useRouter();
   const { user, logout, bookings } = useAuth();
   const { t } = useLocale();
-  const coach = getDemoCoach();
-  const coachBookings = bookingsForCoach(bookings, coach.id);
+  const { coach, hasProfile } = useMyCoach();
+  const coachBookings = bookingsForCoach(bookings, coach?.id);
 
   if (!user) {
     return (
@@ -66,8 +67,9 @@ export default function MyPage() {
                 src={
                   user.avatarUrl ??
                   (isCoach
-                    ? coach.avatarUrl
-                    : "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete")
+                    ? coach?.avatarUrl
+                    : "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete") ??
+                  "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete"
                 }
                 alt=""
                 className="h-16 w-16 shrink-0 rounded-2xl border-2 border-white/30 bg-brand-500 object-cover sm:h-20 sm:w-20"
@@ -90,7 +92,7 @@ export default function MyPage() {
                   </span>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </Link>
-                <Link href={`/coaches/${coach.id}`} className={`${linkClass} rounded-none border-0`}>
+                <Link href={hasProfile && coach ? `/coaches/${coach.id}` : "/coach/register"} className={`${linkClass} rounded-none border-0`}>
                   <span>{t("me_view_public")}</span>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </Link>
@@ -114,7 +116,7 @@ export default function MyPage() {
         </CardBody>
       </Card>
 
-      {isCoach && (
+      {isCoach && coach && (
         <div className="mt-6 space-y-4">
           <UpcomingRecordsPanel
             bookings={coachBookings}

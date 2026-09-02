@@ -14,7 +14,8 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { coaches } from "@/lib/data";
+import type { CoachProfile } from "@/types";
+import { coaches as staticCoaches } from "@/lib/data";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { CoachCard } from "@/components/coaches/CoachCard";
@@ -29,9 +30,23 @@ export default function HomePage() {
   const { t } = useLocale();
   const { user, hydrated } = useAuth();
   const router = useRouter();
-  const featured = coaches.filter((c) => c.verified).slice(0, 3);
+  const [featured, setFeatured] = useState<CoachProfile[]>(
+    staticCoaches.filter((c) => c.verified).slice(0, 3),
+  );
   const [intro, setIntro] = useState<"pending" | "crossfade" | "ready">("pending");
   useForceLightTheme();
+
+  useEffect(() => {
+    void fetch("/api/coaches")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { coaches?: CoachProfile[] } | null) => {
+        const list = data?.coaches?.filter((c) => c.verified) ?? [];
+        if (list.length > 0) setFeatured(list.slice(0, 3));
+      })
+      .catch(() => {
+        /* keep static fallback */
+      });
+  }, []);
 
   // If client JS fails to hydrate (e.g. dev CORS), don't leave a permanent black veil.
   useEffect(() => {

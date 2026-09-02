@@ -226,3 +226,14 @@ export const coachFeedback = pgTable("coach_feedback", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
   aiAttached: boolean("ai_attached").notNull().default(false),
 });
+
+/** MVP analytics — page views, clicks, funnel events */
+export const analyticsEvents = pgTable("analytics_events", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  userId: text("user_id"),
+  coachId: text("coach_id"),
+  path: text("path"),
+  props: jsonb("props").$type<Record<string, string>>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
