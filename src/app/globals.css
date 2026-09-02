@@ -1086,3 +1086,133 @@ body {
 .dark .bg-red-50 {
   background-color: color-mix(in oklab, #ef4444 14%, var(--surface));
 }
+
+/* ── Onboarding welcome (sleek + bow hero) ── */
+.onboarding-scene {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--landing-hero);
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -15%, color-mix(in oklab, #06b6d4 22%, transparent), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 20%, color-mix(in oklab, #2563eb 14%, transparent), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 10% 80%, color-mix(in oklab, #06b6d4 10%, transparent), transparent 45%);
+}
+
+.onboarding-scene-header {
+  border-bottom-color: transparent;
+  background: color-mix(in oklab, var(--surface) 55%, transparent);
+}
+
+.onboarding-welcome-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.onboarding-bow-wrap {
+  position: relative;
+  width: min(280px, 72vw);
+  margin-bottom: -0.5rem;
+  animation: onboarding-bow-float 5s ease-in-out infinite;
+}
+
+.onboarding-bow-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 10% 5% 25%;
+  background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.35), transparent 70%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.onboarding-bow-svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(37, 99, 235, 0.22));
+}
+
+@keyframes onboarding-bow-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.onboarding-welcome-card {
+  width: 100%;
+  max-width: 36rem;
+  padding: 2rem 1.75rem 1.75rem;
+  border-radius: 1.75rem;
+  border: 1px solid color-mix(in oklab, white 70%, var(--brand-200));
+  background: color-mix(in oklab, white 78%, transparent);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 24px 60px rgba(15, 23, 42, 0.08),
+    0 4px 16px rgba(37, 99, 235, 0.06);
+}
+
+.onboarding-role-card {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in oklab, var(--brand-200) 80%, white);
+  background: color-mix(in oklab, white 65%, transparent);
+  padding: 1.25rem 1.125rem;
+  text-align: left;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease,
+    box-shadow 0.28s ease,
+    background 0.2s ease;
+}
+
+.onboarding-role-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--brand-400) 60%, white);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+}
+
+.onboarding-role-card.is-selected {
+  border-color: transparent;
+  background: color-mix(in oklab, white 92%, var(--brand-50));
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--brand-500) 55%, white),
+    0 16px 36px rgba(37, 99, 235, 0.14);
+  transform: translateY(-3px);
+}
+
+.onboarding-role-icon {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--brand-100) 80%, white);
+  color: var(--brand-600);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.onboarding-role-card.is-selected .onboarding-role-icon {
+  background: linear-gradient(135deg, var(--landing-grad-from), var(--landing-grad-to));
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-bow-wrap {
+    animation: none;
+  }
+  .onboarding-role-card:hover,
+  .onboarding-role-card.is-selected {
+    transform: none;
+  }
+}
+

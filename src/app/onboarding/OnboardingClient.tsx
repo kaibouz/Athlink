@@ -9,10 +9,10 @@ import {
   Copy,
   Handshake,
   Share2,
-  Sparkles,
+  UserRound,
   Users,
 } from "lucide-react";
-import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
+import { OnboardingShell, OnboardingWelcomeHero } from "@/components/onboarding/OnboardingShell";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
@@ -326,40 +326,61 @@ export function OnboardingClient() {
   return (
     <OnboardingShell step={step}>
       {step === "welcome" && (
-        <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/25">
-            <Sparkles className="h-7 w-7" />
-          </div>
-          <h1 className="mt-6 text-3xl font-bold text-brand-950">{t("onboard_welcome_title")}</h1>
-          <p className="mx-auto mt-3 max-w-md text-brand-600">{t("onboard_welcome_sub")}</p>
+        <OnboardingWelcomeHero>
+          <div className="text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-500">
+              {t("onboard_step_welcome")}
+            </p>
+            <h1 className="mt-3 font-brand text-3xl font-black tracking-tight text-brand-950 sm:text-4xl">
+              {t("onboard_welcome_title")}
+            </h1>
+            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-brand-600">
+              {t("onboard_welcome_sub")}
+            </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {(["coach", "athlete"] as const).map((role) => (
-              <button
-                key={role}
-                type="button"
-                onClick={() => patchDraft({ role })}
-                className={cn(
-                  "rounded-2xl border p-5 text-left transition",
-                  draft.role === role
-                    ? "border-brand-600 bg-brand-50 shadow-sm ring-2 ring-brand-600/20"
-                    : "border-brand-100 bg-surface hover:border-brand-300",
-                )}
-              >
-                <p className="text-sm font-bold text-brand-950">
-                  {role === "coach" ? t("role_coach") : t("role_athlete")}
-                </p>
-                <p className="mt-2 text-sm text-brand-600">
-                  {role === "coach" ? t("onboard_role_coach_desc") : t("onboard_role_athlete_desc")}
-                </p>
-              </button>
-            ))}
-          </div>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {(["coach", "athlete"] as const).map((role) => {
+                const Icon = role === "coach" ? Users : UserRound;
+                const selected = draft.role === role;
+                return (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => patchDraft({ role })}
+                    className={cn("onboarding-role-card", selected && "is-selected")}
+                  >
+                    <span className="onboarding-role-icon">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <p className="mt-3 text-sm font-bold text-brand-950">
+                      {role === "coach" ? t("role_coach") : t("role_athlete")}
+                    </p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-brand-600">
+                      {role === "coach"
+                        ? t("onboard_role_coach_desc")
+                        : t("onboard_role_athlete_desc")}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
 
-          <Button className="mt-8 w-full sm:w-auto" size="lg" onClick={() => void goNext()}>
-            {t("onboard_continue")}
-          </Button>
-        </div>
+            <Button
+              className="btn-landing-primary mt-8 w-full border-0 sm:w-auto"
+              size="lg"
+              onClick={() => void goNext()}
+            >
+              {t("onboard_continue")}
+            </Button>
+
+            <p className="mt-5 text-xs text-brand-500">
+              {t("signup_have_account")}{" "}
+              <Link href="/login" className="font-semibold text-brand-600 hover:underline">
+                {t("nav_login")}
+              </Link>
+            </p>
+          </div>
+        </OnboardingWelcomeHero>
       )}
 
       {step === "account" && (
