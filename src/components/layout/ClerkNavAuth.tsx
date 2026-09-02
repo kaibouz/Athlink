@@ -24,7 +24,6 @@ export function ClerkNavAuth({ loginLabel, signupLabel, compact }: ClerkNavAuthP
       </Show>
       <Show when="signed-in">
         <UserButton
-          afterSignOutUrl="/"
           appearance={{
             elements: {
               avatarBox: compact ? "h-8 w-8" : "h-9 w-9",
