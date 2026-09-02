@@ -9,6 +9,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { cn } from "@/lib/utils";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 
 export function Header() {
   const pathname = usePathname();
@@ -39,14 +40,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-brand-100/80 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-sm font-black text-white">
-            A
-          </span>
-          <span className="text-lg font-bold tracking-tight text-brand-950">
-            Ath<span className="text-brand-600">Link</span>
-          </span>
-        </Link>
+        <AthlinkProLogo href="/" size="sm" />
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => (

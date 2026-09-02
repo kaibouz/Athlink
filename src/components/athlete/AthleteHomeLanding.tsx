@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { useAthleteLandingAnim } from "@/components/athlete/useAthleteLandingAnim";
 import "./athlete-landing.css";
 
@@ -69,13 +70,7 @@ export function AthleteHomeLanding() {
     <div className="athlete-landing min-h-full">
       <header className="ah-site">
         <div className="ah-wrap ah-in">
-          <Link className="ah-logo" href="/for-athletes">
-            <div className="ah-logo-mark">AP</div>
-            <div className="ah-logo-word">
-              <b>AthlinkPro</b>
-              FOR ATHLETES
-            </div>
-          </Link>
+          <AthlinkProLogo className="rounded-lg" href="/for-athletes" size="sm" priority />
           <nav className="ah-links">
             <Link className="ah-hide-m" href="#features">
               Features

@@ -22,7 +22,7 @@ import { pendingCoachBookings } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
 import { formatDateJa, formatPrice, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
-import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { Button } from "@/components/ui/Button";
 import { AppSettingsDialog } from "@/components/layout/AppSettingsPanel";
@@ -82,13 +82,8 @@ export function AppSidebar({
   const panel = (
     <aside className="flex h-full w-64 flex-col border-r border-brand-100 bg-surface">
       <div className="flex h-16 items-center gap-2 border-b border-brand-100 px-4">
-        <Link href="/" onClick={() => onClose?.()} className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-sm font-black text-white">
-            A
-          </span>
-          <span className="text-lg">
-            <AthLinkMark />
-          </span>
+        <Link href="/" onClick={() => onClose?.()} className="inline-flex shrink-0">
+          <AthlinkProLogo href={null} size="sm" />
         </Link>
         {onClose && (
           <button

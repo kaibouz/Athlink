@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { CoachCard } from "@/components/coaches/CoachCard";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { Button } from "@/components/ui/Button";
@@ -146,9 +147,7 @@ export default function HomePage() {
         <HeroCoastline className="landing-coast" />
         <header className="relative z-20">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-            <Link href="/" className="text-lg" aria-label="AthLink">
-              <AthLinkMark athClassName="text-brand-950" />
-            </Link>
+            <AthlinkProLogo href="/" size="sm" priority />
             <div className="flex items-center gap-2 sm:gap-3">
               <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} />
               <LocaleSwitcher compact />
