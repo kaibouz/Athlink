@@ -36,14 +36,12 @@ export function CoachCard({
           }
         >
           <div className="flex items-start gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={coach.avatarUrl}
-              alt={coach.name}
+            <div
+              aria-hidden
               className={
                 landing
-                  ? "h-16 w-16 rounded-2xl border-2 border-white/20 bg-white/10 shadow-sm"
-                  : "h-16 w-16 rounded-2xl border-2 border-white bg-surface shadow-sm"
+                  ? "h-16 w-16 shrink-0 rounded-2xl border-2 border-white/20 bg-white/10 shadow-sm"
+                  : "h-16 w-16 shrink-0 rounded-2xl border-2 border-white bg-surface shadow-sm"
               }
             />
             <div className="min-w-0 flex-1">
