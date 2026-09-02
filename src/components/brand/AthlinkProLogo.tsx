@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const LOGO_SRC = "/brand/athlinkpro-logo.png";
+const LOGO_TRANSPARENT_SRC = "/brand/athlinkpro-logo-transparent.png";
+const MONOGRAM_SRC = "/brand/athlinkpro-monogram.png";
 
 const sizeClasses = {
   sm: "h-8 w-8",
@@ -17,6 +19,7 @@ export function AthlinkProLogo({
   href = "/",
   size = "default",
   variant = "full",
+  tone = "default",
   priority = false,
 }: {
   className?: string;
@@ -24,34 +27,55 @@ export function AthlinkProLogo({
   size?: keyof typeof sizeClasses;
   /** monogram crops to the AP mark — readable in compact headers */
   variant?: "full" | "monogram";
+  /** onGradient = transparent AP mark for dark blue hero/nav washes; default = solid black tile */
+  tone?: "default" | "onGradient";
   priority?: boolean;
 }) {
+  const onGradient = tone === "onGradient";
+
   const image =
     variant === "monogram" ? (
-      <div
-        className={cn("shrink-0 overflow-hidden rounded-lg", sizeClasses[size], className)}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+      onGradient ? (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={LOGO_SRC}
+          src={MONOGRAM_SRC}
           alt="AthlinkPro"
-          width={2000}
-          height={2000}
+          width={1300}
+          height={560}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
-          className="h-[155%] w-full object-cover object-top"
+          className={cn("shrink-0 object-contain", sizeClasses[size], className)}
         />
-      </div>
+      ) : (
+        <div
+          className={cn("shrink-0 overflow-hidden rounded-lg", sizeClasses[size], className)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={LOGO_SRC}
+            alt="AthlinkPro"
+            width={2000}
+            height={2000}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            className="h-[155%] w-full object-cover object-top"
+          />
+        </div>
+      )
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={LOGO_SRC}
+        src={onGradient ? LOGO_TRANSPARENT_SRC : LOGO_SRC}
         alt="AthlinkPro"
-        width={2000}
-        height={2000}
+        width={onGradient ? 1154 : 2000}
+        height={onGradient ? 895 : 2000}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-        className={cn("rounded-lg object-contain", sizeClasses[size], className)}
+        className={cn(
+          onGradient ? "object-contain" : "rounded-lg object-contain",
+          sizeClasses[size],
+          className,
+        )}
       />
     );
 

@@ -5,7 +5,7 @@ import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 export function ClerkAuthShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
-      <AthlinkProLogo className="mb-8" href="/" size="xl" priority />
+      <AthlinkProLogo className="mb-8" href="/" size="xl" tone="onGradient" priority />
       {children}
     </div>
   );
