@@ -54,34 +54,36 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <AppSidebar mobileOpen={open} onClose={() => setOpen(false)} />
 
       <div className="flex min-h-full min-w-0 flex-1 flex-col md:pl-64">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-brand-100/80 bg-surface/90 px-4 backdrop-blur-md md:hidden">
-          <button
-            type="button"
-            className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"
-            onClick={() => setOpen(true)}
-            aria-label={t("nav_menu")}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <Link
-            href={user?.role === "coach" ? "/coach/dashboard" : "/bookings"}
-            className="flex items-center gap-2"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-black text-white">
-              A
-            </span>
-            <span className="text-base">
-              <AthLinkMark />
-            </span>
-          </Link>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <LocaleSwitcher compact />
-          </div>
-        </header>
+        <div className="app-canvas flex min-h-full min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-brand-100/80 bg-surface/90 px-4 backdrop-blur-md md:hidden">
+            <button
+              type="button"
+              className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"
+              onClick={() => setOpen(true)}
+              aria-label={t("nav_menu")}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link
+              href={user?.role === "coach" ? "/coach/dashboard" : "/bookings"}
+              className="flex items-center gap-2"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-black text-white">
+                A
+              </span>
+              <span className="text-base">
+                <AthLinkMark />
+              </span>
+            </Link>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <LocaleSwitcher compact />
+            </div>
+          </header>
 
-        {children}
-        <Footer />
+          {children}
+          <Footer />
+        </div>
       </div>
     </div>
   );

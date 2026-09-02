@@ -20,6 +20,7 @@ import { loc, sportLabel } from "@/lib/i18n/localize";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import {
   DashboardGoalRings,
 } from "@/components/coach/DashboardCharts";
@@ -46,22 +47,22 @@ export default function CoachDashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-brand-950">{t("dash_title")}</h1>
-          <p className="mt-1 text-brand-600">
-            {user?.role === "coach"
-              ? t("dash_sub", { name: user.name })
-              : t("dash_sub_demo")}
-          </p>
-        </div>
-        <Link href="/me">
-          <Button variant="outline">{t("dash_edit")}</Button>
-        </Link>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={t("dash_title")}
+        description={
+          user?.role === "coach"
+            ? t("dash_sub", { name: user.name })
+            : t("dash_sub_demo")
+        }
+        actions={
+          <Link href="/me">
+            <Button variant="outline">{t("dash_edit")}</Button>
+          </Link>
+        }
+      />
 
-      <div className="mt-8">
+      <div className="mt-2">
         <DashboardGoalRings bookings={coachBookings} />
       </div>
 
@@ -303,6 +304,6 @@ export default function CoachDashboardPage() {
           </div>
         </section>
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { Input, Label, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/Card";
 
 export function SearchFiltersPanel({
   filters,
@@ -23,7 +24,8 @@ export function SearchFiltersPanel({
     onChange({ ...filters, [key]: value });
 
   return (
-    <div className="space-y-4 rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm">
+    <Card>
+      <CardBody className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-brand-950">{t("search_filters")}</h2>
         <span className="text-sm text-brand-500">
@@ -147,6 +149,7 @@ export function SearchFiltersPanel({
       <Button variant="outline" className="w-full" onClick={() => onChange({ ...defaultFilters })}>
         {t("search_clear")}
       </Button>
-    </div>
+      </CardBody>
+    </Card>
   );
 }

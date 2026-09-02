@@ -33,6 +33,13 @@ export default function HomePage() {
   const [intro, setIntro] = useState<"pending" | "crossfade" | "ready">("pending");
   useForceLightTheme();
 
+  // If client JS fails to hydrate (e.g. dev CORS), don't leave a permanent black veil.
+  useEffect(() => {
+    if (intro !== "pending") return;
+    const timer = window.setTimeout(() => setIntro("ready"), 5000);
+    return () => window.clearTimeout(timer);
+  }, [intro]);
+
   useEffect(() => {
     if (!hydrated || !user) return;
     const target = user.role === "coach" ? "/coach/dashboard" : "/bookings";

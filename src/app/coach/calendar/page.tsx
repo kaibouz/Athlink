@@ -12,6 +12,7 @@ import type { MessageKey } from "@/lib/i18n/messages";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { AddToCalendarButtons } from "@/components/calendar/AddToCalendar";
+import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
 import type { Booking, BookingStatus } from "@/types";
 
 const statusKey: Record<BookingStatus, MessageKey> = {
@@ -259,6 +260,11 @@ function CalendarInner() {
                 {(b.status === "confirmed" || b.status === "pending") && (
                   <div className="mt-3">
                     <AddToCalendarButtons booking={b} compact />
+                  </div>
+                )}
+                {b.format === "in_person" && b.status !== "cancelled" && (
+                  <div className="mt-3">
+                    <LessonVenuePanel booking={b} compact />
                   </div>
                 )}
                 {b.status === "confirmed" && (

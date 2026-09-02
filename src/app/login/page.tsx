@@ -33,6 +33,8 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [role, setRole] = useState<UserRole>(
     roleParam === "athlete" || roleParam === "parent" ? roleParam : "coach",
   );
@@ -42,11 +44,18 @@ function LoginForm() {
     router.replace(next || dashboardFor(user.role));
   }, [user, hydrated, next, router]);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || !password) return;
-    login(trimmed, nameFromEmail(trimmed), role);
+    setSubmitting(true);
+    setError(null);
+    const result = await login(trimmed, password, role);
+    setSubmitting(false);
+    if (!result.ok) {
+      setError(t("login_error"));
+      return;
+    }
     router.push(next || dashboardFor(role));
   }
 
@@ -109,9 +118,10 @@ function LoginForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full" size="lg">
-          {t("login_submit")}
+        <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+          {submitting ? t("loading") : t("login_submit")}
         </Button>
+        {error && <p className="text-center text-sm text-red-600">{error}</p>}
       </form>
 
       <p className="mt-8 text-center text-sm text-brand-500">

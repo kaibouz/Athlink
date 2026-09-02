@@ -1,19 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import {
   CalendarDays,
   Check,
   LayoutDashboard,
-  LogOut,
   MessageSquare,
   Network,
   QrCode,
   Radar,
   Search,
   Send,
-  User,
+  Settings,
   X,
 } from "lucide-react";
 import { useAuth } from "@/lib/store";
@@ -22,8 +22,7 @@ import { formatDateJa, formatPrice, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { AthLinkMark } from "@/components/brand/AthLinkMark";
 import { Button } from "@/components/ui/Button";
-import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { AppSettingsDialog } from "@/components/layout/AppSettingsPanel";
 
 type NavItem = {
   href: string;
@@ -40,9 +39,9 @@ export function AppSidebar({
   onClose?: () => void;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout, switchRole, bookings, updateBookingStatus } = useAuth();
+  const { user, bookings, updateBookingStatus } = useAuth();
   const { t, locale } = useLocale();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const isCoach = user?.role === "coach";
 
@@ -51,7 +50,6 @@ export function AppSidebar({
     { href: "/sns", label: t("nav_sns"), icon: Radar },
     { href: "/search", label: t("nav_find"), icon: Search },
     { href: "/messages", label: t("nav_messages"), icon: MessageSquare },
-    { href: "/me", label: t("nav_mypage"), icon: User },
   ];
 
   const coachNav: NavItem[] = [
@@ -61,7 +59,6 @@ export function AppSidebar({
     { href: "/search", label: t("comm_tab_search"), icon: Search },
     { href: "/messages", label: t("comm_tab_messages"), icon: MessageSquare },
     { href: "/coach/feedback", label: t("comm_tab_feedback"), icon: Send },
-    { href: "/me", label: t("nav_mypage"), icon: User },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },
     { href: "/coach/invite", label: t("coach_nav_invite"), icon: Network },
   ];
@@ -71,15 +68,11 @@ export function AppSidebar({
   const coach = getDemoCoach();
   const pending = isCoach ? pendingCoachBookings(bookings, coach.id) : [];
   const next = pending[0];
+  const onMyPage = pathname === "/me" || pathname.startsWith("/me/");
 
   function isActive(item: NavItem) {
     if (item.exact) return pathname === item.href;
     return pathname === item.href || pathname.startsWith(`${item.href}/`);
-  }
-
-  function go(href: string) {
-    onClose?.();
-    router.push(href);
   }
 
   const panel = (
@@ -117,8 +110,8 @@ export function AppSidebar({
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
                 active
-                  ? "bg-brand-600 text-white shadow-sm"
-                  : "text-brand-700 hover:bg-brand-50 hover:text-brand-900",
+                  ? "app-nav-active font-semibold"
+                  : "text-brand-700 hover:bg-brand-50/80 hover:text-brand-900",
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -166,66 +159,53 @@ export function AppSidebar({
         </div>
       )}
 
-      <div className="space-y-2 border-t border-brand-100 p-3">
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <LocaleSwitcher compact />
-        </div>
+      <div className="border-t border-brand-100 p-2">
         {user ? (
-          <>
-            <div className="flex items-center gap-2 rounded-xl bg-brand-50 px-2 py-2">
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-lg px-2 py-2 transition",
+              onMyPage ? "bg-brand-50" : "hover:bg-brand-50/80",
+            )}
+          >
+            <Link
+              href="/me"
+              onClick={() => onClose?.()}
+              aria-current={onMyPage ? "page" : undefined}
+              className="flex min-w-0 flex-1 items-center gap-2.5"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={user.avatarUrl} alt="" className="h-8 w-8 rounded-lg bg-brand-100" />
+              <img
+                src={user.avatarUrl}
+                alt=""
+                className={cn(
+                  "h-7 w-7 shrink-0 rounded-full bg-brand-200 object-cover",
+                  onMyPage && "ring-2 ring-brand-400 ring-offset-1",
+                )}
+              />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-brand-900">{user.name}</p>
-                <p className="text-[11px] text-brand-500">
-                  {isCoach
-                    ? t("role_coach")
-                    : user.role === "parent"
-                      ? t("role_parent")
-                      : t("role_athlete")}
+                <p className="truncate text-[13px] leading-tight font-medium text-brand-900">
+                  {user.name}
+                </p>
+                <p className="truncate text-[11px] leading-tight text-brand-500">
+                  {onMyPage
+                    ? t("nav_mypage")
+                    : isCoach
+                      ? t("role_coach")
+                      : user.role === "parent"
+                        ? t("role_parent")
+                        : t("role_athlete")}
                 </p>
               </div>
-            </div>
-            {isCoach ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                onClick={() => {
-                  switchRole("athlete");
-                  go("/search");
-                }}
-              >
-                {t("role_switch_athlete")}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full justify-start"
-                onClick={() => {
-                  switchRole("coach");
-                  go("/coach/dashboard");
-                }}
-              >
-                {t("role_switch_coach")}
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start"
-              onClick={() => {
-                logout();
-                onClose?.();
-                router.push("/");
-              }}
+            </Link>
+            <button
+              type="button"
+              onClick={() => setSettingsOpen(true)}
+              className="shrink-0 rounded-md p-1 text-brand-400 transition hover:bg-brand-100 hover:text-brand-700"
+              aria-label={t("me_settings")}
             >
-              <LogOut className="h-4 w-4" />
-              {t("nav_logout")}
-            </Button>
-          </>
+              <Settings className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col gap-2">
             <Link href="/login" onClick={() => onClose?.()}>
@@ -246,6 +226,8 @@ export function AppSidebar({
 
   return (
     <>
+      <AppSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
       {/* Desktop fixed sidebar */}
       <div className="fixed inset-y-0 left-0 z-40 hidden md:block">{panel}</div>
 

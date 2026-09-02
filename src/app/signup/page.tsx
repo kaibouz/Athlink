@@ -16,18 +16,27 @@ function dashboardFor(role: UserRole) {
 }
 
 export default function SignupPage() {
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const { t } = useLocale();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("coach");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim() || !password || !name.trim()) return;
-    login(email.trim(), name.trim(), role);
+    setSubmitting(true);
+    setError(null);
+    const result = await signup(email.trim(), password, name.trim(), role);
+    setSubmitting(false);
+    if (!result.ok) {
+      setError(result.error === "EMAIL_TAKEN" ? t("signup_email_taken") : t("signup_error"));
+      return;
+    }
     router.push(dashboardFor(role));
   }
 
@@ -96,9 +105,10 @@ export default function SignupPage() {
             required
           />
         </div>
-        <Button type="submit" className="w-full" size="lg">
-          {t("signup_submit")}
+        <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+          {submitting ? t("loading") : t("signup_submit")}
         </Button>
+        {error && <p className="text-center text-sm text-red-600">{error}</p>}
       </form>
 
       <p className="mt-8 text-center text-sm text-brand-500">

@@ -1,68 +1,135 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ChevronDown, History, Map } from "lucide-react";
-import {
-  CA_REGIONS,
-  choroplethColor,
-  regionLessonCounts,
-  type CaRegionId,
-} from "@/lib/dashboard-analytics";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, ChevronDown, History, type LucideIcon } from "lucide-react";
+import { regionForAthlete, regionLessonCounts, type CaRegionId } from "@/lib/dashboard-analytics";
 import type { Booking } from "@/types";
 import { useLocale } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/Card";
+import { type LessonRecord } from "@/components/social/LessonRegionMap";
+import { RecordInsightPanel, studentForRecord } from "@/components/social/RecordInsightPanel";
 
-/** Compact “Past records” + mini choropleth on profiles */
-export function PastRecordsPanel({
+function recordKey(r: LessonRecord) {
+  return `${r.date}-${r.title}`;
+}
+
+type RecordsMode = "past" | "upcoming";
+
+function filterBookings(bookings: Booking[], mode: RecordsMode) {
+  if (mode === "upcoming") {
+    return bookings
+      .filter((b) => b.status === "pending" || b.status === "confirmed")
+      .sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`));
+  }
+  return bookings
+    .filter((b) => b.status === "completed")
+    .sort((a, b) => `${b.date}${b.startTime}`.localeCompare(`${a.date}${a.startTime}`));
+}
+
+function LessonRecordsPanel({
+  mode,
   bookings = [],
   regionHint,
   records,
   defaultOpen = false,
 }: {
+  mode: RecordsMode;
   bookings?: Booking[];
-  /** Force highlight for this profile’s home region */
   regionHint?: CaRegionId;
-  records?: { date: string; title: string; note?: string }[];
+  records?: LessonRecord[];
   defaultOpen?: boolean;
 }) {
   const { t } = useLocale();
   const [open, setOpen] = useState(defaultOpen);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<CaRegionId | null>(regionHint ?? null);
+
+  const filteredBookings = useMemo(() => filterBookings(bookings, mode), [bookings, mode]);
 
   const counts = useMemo(() => {
-    const base = regionLessonCounts(bookings);
+    const base = regionLessonCounts(filteredBookings);
     if (regionHint) base[regionHint] = Math.max(base[regionHint], 1);
     return base;
-  }, [bookings, regionHint]);
+  }, [filteredBookings, regionHint]);
   const max = Math.max(...Object.values(counts), 1);
 
-  const cells: { id: CaRegionId; d: string }[] = [
-    { id: "bay", d: "M20,35 L48,28 L55,48 L42,65 L22,60 Z" },
-    { id: "sac", d: "M48,28 L70,25 L75,45 L55,48 Z" },
-    { id: "cv", d: "M42,65 L75,45 L82,90 L60,105 L38,88 Z" },
-    { id: "ie", d: "M70,105 L92,100 L97,128 L78,135 L62,122 Z" },
-    { id: "la", d: "M48,110 L70,105 L62,122 L50,130 L40,120 Z" },
-    { id: "oc", d: "M62,122 L78,135 L75,148 L60,143 Z" },
-    { id: "sd", d: "M60,143 L75,148 L72,170 L57,165 Z" },
-  ];
-
-  const demoRecords =
-    records ??
-    [
-      { date: "2026-07-20", title: t("records_sample_1") },
-      { date: "2026-07-10", title: t("records_sample_2") },
-      { date: "2026-06-28", title: t("records_sample_3") },
+  const demoRecords: LessonRecord[] = useMemo(() => {
+    if (records) return records;
+    if (mode === "upcoming") {
+      return [
+        { date: "2026-07-31", title: "Sofia Reyes", note: "16:00 · pending", region: "oc" },
+        { date: "2026-08-02", title: "Ethan Park", note: "10:00 · confirmed", region: "la" },
+        { date: "2026-08-03", title: "Kenji Nakamura", note: "14:00 · pending", region: "sd" },
+      ];
+    }
+    return [
+      { date: "2026-07-20", title: t("records_sample_1"), region: "la" },
+      { date: "2026-07-10", title: t("records_sample_2"), region: "oc" },
+      { date: "2026-06-28", title: t("records_sample_3"), note: t("records_map_online") },
     ];
+  }, [records, mode, t]);
+
+  const bookingRecords: LessonRecord[] = useMemo(
+    () =>
+      filteredBookings.map((b) => ({
+        date: b.date,
+        title: b.athleteName,
+        note: `${b.startTime} · ${b.status}`,
+        region: regionForAthlete(b.athleteName),
+        bookingId: b.id,
+        format: b.format,
+      })),
+    [filteredBookings],
+  );
+
+  const allRecords = useMemo(() => {
+    if (records) return records;
+    if (bookingRecords.length > 0) return bookingRecords;
+    return demoRecords;
+  }, [records, bookingRecords, demoRecords]);
+
+  const selectedRecord = useMemo(
+    () => allRecords.find((r) => recordKey(r) === selectedKey) ?? allRecords[0] ?? null,
+    [allRecords, selectedKey],
+  );
+
+  useEffect(() => {
+    setSelectedKey(null);
+    setSelectedRegion(regionHint ?? null);
+  }, [mode, regionHint]);
+
+  useEffect(() => {
+    if (!selectedKey && allRecords[0]) {
+      setSelectedKey(recordKey(allRecords[0]));
+      if (allRecords[0].region) setSelectedRegion(allRecords[0].region);
+    }
+  }, [allRecords, selectedKey]);
+
+  function selectRecord(r: LessonRecord) {
+    setSelectedKey(recordKey(r));
+    if (r.region) setSelectedRegion(r.region);
+  }
+
+  const title = mode === "upcoming" ? t("records_upcoming_title") : t("records_bar_title");
+  const sub = mode === "upcoming" ? t("records_upcoming_sub") : t("records_bar_sub");
+  const Icon: LucideIcon = mode === "upcoming" ? CalendarDays : History;
 
   return (
-    <div className="rounded-2xl border border-brand-100 bg-surface shadow-sm">
+    <Card className="overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
       >
         <span className="inline-flex items-center gap-2 text-sm font-bold text-brand-950">
-          <History className="h-4 w-4 text-brand-600" />
-          {t("records_bar_title")}
+          <Icon className="h-4 w-4 text-brand-600" />
+          {title}
+          {allRecords.length > 0 && (
+            <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-semibold text-brand-600">
+              {allRecords.length}
+            </span>
+          )}
         </span>
         <ChevronDown
           className={cn("h-4 w-4 text-brand-500 transition", open && "rotate-180")}
@@ -70,61 +137,84 @@ export function PastRecordsPanel({
       </button>
 
       {open && (
-        <div className="border-t border-brand-50 px-4 pb-4">
-          <p className="mt-3 text-xs text-brand-500">{t("records_bar_sub")}</p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-[120px_1fr] sm:items-start">
-            <div className="rounded-xl bg-brand-50/80 p-2">
-              <div className="mb-1 flex items-center gap-1 text-[10px] font-semibold text-brand-600 uppercase">
-                <Map className="h-3 w-3" />
-                {t("records_mini_map")}
-              </div>
-              <svg viewBox="0 0 110 180" className="mx-auto h-36 w-full" aria-hidden>
-                <path
-                  d="M35,10 L80,8 L100,60 L95,125 L80,175 L50,170 L28,125 L20,60 Z"
-                  fill="#f1f5f9"
-                  stroke="#cbd5e1"
-                  strokeWidth="1.5"
-                />
-                {cells.map((cell) => (
-                  <path
-                    key={cell.id}
-                    d={cell.d}
-                    fill={choroplethColor(counts[cell.id], max)}
-                    stroke="#fff"
-                    strokeWidth="1"
-                    opacity={regionHint && cell.id !== regionHint ? 0.55 : 1}
-                  />
-                ))}
-              </svg>
+        <div className="border-t border-brand-100">
+          <p className="border-b border-brand-50 px-4 py-2 text-xs text-brand-500">{sub}</p>
+          {selectedRecord ? (
+            <div className="grid md:grid-cols-[minmax(0,220px)_1fr] md:divide-x md:divide-brand-100">
+              <aside className="max-h-[70vh] overflow-y-auto border-b border-brand-100 md:border-b-0">
+                <ul className="divide-y divide-brand-50">
+                  {allRecords.map((r) => {
+                    const student = studentForRecord(r);
+                    const active = recordKey(r) === recordKey(selectedRecord);
+                    return (
+                      <li key={recordKey(r)}>
+                        <button
+                          type="button"
+                          onClick={() => selectRecord(r)}
+                          className={cn(
+                            "flex w-full items-start gap-2.5 px-3 py-2.5 text-left transition",
+                            active
+                              ? "bg-brand-100/70 ring-1 ring-inset ring-brand-200"
+                              : "hover:bg-brand-50/80",
+                          )}
+                        >
+                          {student ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={student.avatarUrl}
+                              alt=""
+                              className="mt-0.5 h-8 w-8 shrink-0 rounded-lg bg-brand-100"
+                            />
+                          ) : (
+                            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-200 text-xs font-bold text-brand-700">
+                              {r.title.charAt(0)}
+                            </span>
+                          )}
+                          <span className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-brand-950">{r.title}</p>
+                            <p className="text-[11px] text-brand-400">{r.date}</p>
+                            {r.note && (
+                              <p className="mt-0.5 truncate text-[11px] text-brand-600">{r.note}</p>
+                            )}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </aside>
+
+            <RecordInsightPanel
+              record={selectedRecord}
+              counts={counts}
+              max={max}
+              regionHint={regionHint}
+              records={allRecords}
+              selectedRegion={selectedRegion}
+              onRegionChange={setSelectedRegion}
+              bookings={bookings}
+            />
             </div>
-            <ul className="space-y-2">
-              {demoRecords.map((r) => (
-                <li
-                  key={`${r.date}-${r.title}`}
-                  className="rounded-xl border border-brand-50 bg-brand-50/40 px-3 py-2"
-                >
-                  <p className="text-[11px] font-semibold text-brand-400">{r.date}</p>
-                  <p className="text-sm font-medium text-brand-900">{r.title}</p>
-                  {r.note && <p className="mt-0.5 text-xs text-brand-600">{r.note}</p>}
-                </li>
-              ))}
-              <li className="flex flex-wrap gap-2 pt-1 text-[10px] text-brand-500">
-                {CA_REGIONS.filter((r) => counts[r.id] > 0)
-                  .slice(0, 4)
-                  .map((r) => (
-                    <span key={r.id} className="inline-flex items-center gap-1">
-                      <span
-                        className="h-2 w-2 rounded-sm"
-                        style={{ background: choroplethColor(counts[r.id], max) }}
-                      />
-                      {r.label}
-                    </span>
-                  ))}
-              </li>
-            </ul>
-          </div>
+          ) : (
+            <p className="px-4 py-8 text-center text-sm text-brand-500">{t("records_upcoming_empty")}</p>
+          )}
         </div>
       )}
-    </div>
+    </Card>
   );
+}
+
+type RecordsPanelProps = {
+  bookings?: Booking[];
+  regionHint?: CaRegionId;
+  records?: LessonRecord[];
+  defaultOpen?: boolean;
+};
+
+export function PastRecordsPanel(props: RecordsPanelProps) {
+  return <LessonRecordsPanel {...props} mode="past" />;
+}
+
+export function UpcomingRecordsPanel(props: RecordsPanelProps) {
+  return <LessonRecordsPanel {...props} mode="upcoming" />;
 }

@@ -12,6 +12,7 @@ import {
   AddToCalendarButtons,
   CalendarAutoPrefSelect,
 } from "@/components/calendar/AddToCalendar";
+import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
 import type { BookingStatus } from "@/types";
 
 const statusKey: Record<BookingStatus, MessageKey> = {
@@ -110,6 +111,11 @@ export default function BookingsPage() {
                 <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-sm text-brand-700">
                   {b.note}
                 </p>
+              )}
+              {b.format === "in_person" && b.status !== "cancelled" && (
+                <div className="mt-4">
+                  <LessonVenuePanel booking={b} />
+                </div>
               )}
               {b.status !== "cancelled" && b.status !== "completed" && (
                 <div className="mt-4 space-y-3">

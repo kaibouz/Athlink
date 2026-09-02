@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CoachProfile, LessonFormat, PackageType, TimeSlot } from "@/types";
 import { getSlotsByCoach } from "@/lib/data";
@@ -21,6 +21,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const router = useRouter();
   const { user, addBooking } = useAuth();
   const { t, locale } = useLocale();
+  const isCoachPublishing = user?.role === "coach";
   const slots = useMemo(() => getSlotsByCoach(coach.id), [coach.id]);
   const dates = useMemo(() => [...new Set(slots.map((s) => s.date))], [slots]);
 
@@ -36,12 +37,22 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const daySlots = slots.filter((s) => s.date === date);
   const priceMultiplier =
     packageType === "pack" ? 5 * 0.9 : packageType === "subscription" ? 4 * 0.85 : 1;
-  const total = Math.round(coach.pricePerHour * priceMultiplier);
+  const suggestedTotal = Math.round(coach.pricePerHour * priceMultiplier);
+  const [priceInput, setPriceInput] = useState(String(suggestedTotal));
   const selected: TimeSlot | undefined = daySlots.find((s) => s.id === slotId);
+
+  useEffect(() => {
+    setPriceInput(String(suggestedTotal));
+  }, [suggestedTotal]);
+
+  const total = useMemo(() => {
+    const n = Number(priceInput);
+    return Number.isFinite(n) && n > 0 ? Math.round(n) : 0;
+  }, [priceInput]);
 
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     if (!user) {
@@ -52,7 +63,11 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       setError(t("booking_pick_slot"));
       return;
     }
-    const booking = addBooking({
+    if (total <= 0) {
+      setError(t("booking_total_invalid"));
+      return;
+    }
+    const booking = await addBooking({
       coachId: coach.id,
       coachName: coach.name,
       athleteId: user.id,
@@ -73,7 +88,9 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   if (done && selected) {
     return (
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center dark:border-emerald-500/30 dark:bg-emerald-500/10">
-        <p className="text-lg font-bold text-emerald-800 dark:text-emerald-300">{t("booking_done")}</p>
+        <p className="text-lg font-bold text-emerald-800 dark:text-emerald-300">
+          {t(isCoachPublishing ? "booking_done_publish" : "booking_done")}
+        </p>
         <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-200">
           {formatDateJa(selected.date, dateLocale)} {selected.startTime}–{selected.endTime}
         </p>
@@ -88,8 +105,8 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         <div className="mt-5">
           <CalendarAutoPrefSelect />
         </div>
-        <Button className="mt-4" onClick={() => router.push("/bookings")}>
-          {t("booking_view")}
+        <Button className="mt-4" onClick={() => router.push(isCoachPublishing ? "/coach/dashboard" : "/bookings")}>
+          {t(isCoachPublishing ? "booking_view_publish" : "booking_view")}
         </Button>
       </div>
     );
@@ -100,7 +117,9 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       onSubmit={handleSubmit}
       className="space-y-4 rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm"
     >
-      <h3 className="text-lg font-bold text-brand-950">{t("booking_title")}</h3>
+      <h3 className="text-lg font-bold text-brand-950">
+        {t(isCoachPublishing ? "booking_title_publish" : "booking_title")}
+      </h3>
       <div>
         <Label htmlFor="date">{t("booking_date")}</Label>
         <Select
@@ -176,15 +195,37 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           onChange={(e) => setNote(e.target.value)}
         />
       </div>
-      <div className="flex items-center justify-between rounded-xl bg-brand-50 px-4 py-3">
-        <span className="text-sm text-brand-600">{t("booking_total")}</span>
-        <span className="text-xl font-bold text-brand-950">{formatPrice(total)}</span>
+      <div className="rounded-xl bg-brand-50 px-3 py-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <Label htmlFor="total" className="mb-0 shrink-0 text-sm">
+            {t("booking_total")}
+          </Label>
+          <div className="inline-flex h-9 items-center gap-0.5 rounded-lg border border-brand-200 bg-surface px-2">
+            <span className="text-base font-bold text-brand-500">$</span>
+            <input
+              id="total"
+              type="number"
+              min={1}
+              step={1}
+              inputMode="numeric"
+              value={priceInput}
+              onChange={(e) => setPriceInput(e.target.value)}
+              aria-label={t("booking_total")}
+              className="h-8 w-[4.5rem] border-0 bg-transparent p-0 text-right text-xl font-black tabular-nums text-brand-950 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+          </div>
+        </div>
+        <p className="mt-1 text-[11px] leading-snug text-brand-500">{t("booking_total_hint")}</p>
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" className="w-full" size="lg">
-        {user ? t("booking_submit") : t("booking_login")}
+        {user
+          ? t(isCoachPublishing ? "booking_submit_publish" : "booking_submit")
+          : t("booking_login")}
       </Button>
-      <p className="text-center text-xs text-brand-400">{t("booking_demo_note")}</p>
+      <p className="text-center text-xs text-brand-400">
+        {t(isCoachPublishing ? "booking_demo_note_publish" : "booking_demo_note")}
+      </p>
     </form>
   );
 }

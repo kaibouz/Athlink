@@ -4,13 +4,31 @@
 
 ## 起動
 
+### フロントのみ（デモモード）
+
 ```bash
-export PATH="$HOME/.tools/node/bin:$PATH"
-cd ~/athlink
-npm run dev -- -H 127.0.0.1 -p 3000
+npm install
+npm run dev
 ```
 
-開く URL: **http://127.0.0.1:3000/**
+開く URL: **http://localhost:3000/**
+
+### 本番向け（DB + API あり）
+
+```bash
+docker compose up -d
+cp .env.example .env.local
+npm run db:push
+npm run db:seed
+npm run dev
+```
+
+詳細は [docs/BACKEND.md](docs/BACKEND.md) を参照。
+
+**デモログイン（シード後）**
+
+- コーチ: `tanaka@athlink.app` / `Athlink2026!`
+- 選手: `ethan.park@athlink.app` / `Athlink2026!`
 
 ## 画面
 

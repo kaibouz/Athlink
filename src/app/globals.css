@@ -1008,6 +1008,32 @@ body {
   }
 }
 
+/* ── App shell (logged-in surfaces) ── */
+.app-canvas {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--brand-200) 35%, transparent), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, color-mix(in oklab, var(--field) 8%, transparent), transparent 50%);
+}
+
+.dark .app-canvas {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--brand-600) 12%, transparent), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, color-mix(in oklab, var(--field) 6%, transparent), transparent 50%);
+}
+
+.app-nav-active {
+  background: color-mix(in oklab, var(--brand-600) 12%, var(--surface));
+  color: var(--brand-800);
+  box-shadow: inset 3px 0 0 0 var(--brand-600);
+}
+
+.dark .app-nav-active {
+  background: color-mix(in oklab, var(--brand-500) 18%, var(--surface));
+  color: var(--brand-900);
+  box-shadow: inset 3px 0 0 0 var(--brand-500);
+}
+
 /* Soft accent panels used on cards */
 .dark .from-sky-50 {
   --tw-gradient-from: color-mix(in oklab, #0ea5e9 18%, var(--surface));

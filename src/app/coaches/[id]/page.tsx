@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
-import { coaches, getCoachById, getReviewsByCoach } from "@/lib/data";
+import { listCoaches, getCoachById, getReviewsByCoach } from "@/lib/server/data";
 import { CoachDetailView } from "@/components/coaches/CoachDetailView";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const coaches = await listCoaches();
   return coaches.map((c) => ({ id: c.id }));
 }
 
@@ -12,7 +13,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const coach = getCoachById(id);
+  const coach = await getCoachById(id);
   if (!coach) return { title: "Coach" };
   return {
     title: `${coach.name} — ${coach.sport}`,
@@ -26,7 +27,8 @@ export default async function CoachDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const coach = getCoachById(id);
+  const coach = await getCoachById(id);
   if (!coach) notFound();
-  return <CoachDetailView coach={coach} reviews={getReviewsByCoach(coach.id)} />;
+  const reviews = await getReviewsByCoach(coach.id);
+  return <CoachDetailView coach={coach} reviews={reviews} />;
 }

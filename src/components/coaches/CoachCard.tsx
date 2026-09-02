@@ -125,7 +125,7 @@ export function CoachCard({
         }
       >
         <Link href={`/coaches/${coach.id}`} className="flex-1">
-          <Button size="sm" className="btn-landing-primary w-full border-0">
+          <Button size="sm" variant="primary" className="w-full">
             <CalendarPlus className="h-3.5 w-3.5" />
             {t("card_book")}
           </Button>

@@ -4,8 +4,12 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star } from "lucide-react";
 import type { CoachProfile, Review } from "@/types";
 import { formatPrice } from "@/lib/utils";
+import { useAuth } from "@/lib/store";
+import { bookingsForCoach, getDemoCoach } from "@/lib/coach-bookings";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, loc, locList, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
+import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
+import { venueForCoach } from "@/lib/lesson-venues";
 import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { Badge } from "@/components/ui/Badge";
 import { BookingForm } from "@/components/coaches/BookingForm";
@@ -30,11 +34,14 @@ export function CoachDetailView({
   reviews: Review[];
 }) {
   const { t, locale } = useLocale();
+  const { user, bookings } = useAuth();
+  const isOwnProfile = user?.role === "coach" && coach.id === getDemoCoach().id;
+  const coachBookings = bookingsForCoach(bookings, coach.id);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <Link
-        href="/search"
+        href="/me"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -106,7 +113,21 @@ export function CoachDetailView({
             </div>
           </section>
 
-          <PastRecordsPanel regionHint={regionFromLocation(coach.location)} />
+          {coach.formats.includes("in_person") && (
+            <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-brand-950">{t("lesson_venue_title")}</h2>
+              <p className="mt-1 text-sm text-brand-600">{t("lesson_venue_home_sub")}</p>
+              <div className="mt-4">
+                <LessonVenuePanel venue={venueForCoach(coach.location)} />
+              </div>
+            </section>
+          )}
+
+          <PastRecordsPanel
+            bookings={coachBookings}
+            regionHint={regionFromLocation(coach.location)}
+            defaultOpen={isOwnProfile}
+          />
 
           <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
             <h2 className="text-lg font-bold text-brand-950">{t("coach_career")}</h2>

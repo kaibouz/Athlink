@@ -49,6 +49,42 @@ export const CA_REGIONS: {
   { id: "sd", label: "San Diego", lx: 145, ly: 318 },
 ];
 
+export const REGION_GEO: Record<
+  CaRegionId,
+  { lat: number; lng: number; label: string }
+> = {
+  bay: { lat: 37.7749, lng: -122.4194, label: "San Francisco Bay Area" },
+  sac: { lat: 38.5816, lng: -121.4944, label: "Sacramento" },
+  cv: { lat: 36.7378, lng: -119.7871, label: "Central Valley" },
+  ie: { lat: 34.0522, lng: -117.3962, label: "Inland Empire" },
+  la: { lat: 34.0522, lng: -118.2437, label: "Los Angeles" },
+  oc: { lat: 33.7175, lng: -117.8311, label: "Orange County" },
+  sd: { lat: 32.7157, lng: -117.1611, label: "San Diego" },
+};
+
+export function mapsLinks(regionId: CaRegionId) {
+  const { lat, lng, label } = REGION_GEO[regionId];
+  return {
+    google: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
+    apple: `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(label)}`,
+  };
+}
+
+/** California center — used when no region is selected */
+export const CA_MAP_CENTER = { lat: 36.7783, lng: -119.4179, zoom: 6 };
+
+export function mapEmbedUrl(lat: number, lng: number, zoom: number) {
+  return `https://maps.google.com/maps?q=${lat},${lng}&z=${zoom}&output=embed&iwloc=near`;
+}
+
+export function mapViewForRegion(regionId: CaRegionId | null, zoom: number) {
+  if (regionId) {
+    const { lat, lng } = REGION_GEO[regionId];
+    return { lat, lng, zoom: Math.max(zoom, 8) };
+  }
+  return { ...CA_MAP_CENTER, zoom };
+}
+
 /** Demo mapping: athlete names → CA metro (for choropleth) */
 const ATHLETE_REGION: Record<string, CaRegionId> = {
   "Ethan Park": "la",
