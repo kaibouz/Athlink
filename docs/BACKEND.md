@@ -66,9 +66,13 @@ curl http://localhost:3000/api/health
 | POST | `/api/auth/logout` | Logout |
 | GET | `/api/auth/me` | Current user + bookings |
 | GET | `/api/coaches` | List coaches |
+| POST | `/api/coaches` | Create coach profile (coach auth) |
+| GET | `/api/coaches/me` | Logged-in coach profile + analytics |
 | GET | `/api/coaches/[id]` | Coach detail + reviews + slots |
 | GET/POST | `/api/bookings` | List / create bookings |
 | PATCH | `/api/bookings/[id]` | Update booking status |
+| POST | `/api/events` | Record MVP analytics event |
+| GET | `/api/stats` | Platform stats (optional `X-Admin-Token`) |
 
 Auth uses **httpOnly session cookies** (30-day expiry).
 
@@ -78,11 +82,14 @@ Tables in `src/db/schema.ts`:
 
 - `users`, `sessions` — authentication
 - `coach_profiles`, `reviews`, `time_slots`, `bookings` — marketplace core
+- `analytics_events` — MVP funnel tracking (profile views, booking starts)
 - `message_threads`, `messages` — messaging
 - `athlete_profiles`, `social_posts` — SNS layer
 - `student_athletes`, `coach_feedback` — coach tools
 
 ## Production deployment (Vercel + managed Postgres)
+
+See **[DEPLOY.md](./DEPLOY.md)** for the full MVP release checklist.
 
 1. Create a PostgreSQL database (Neon, Supabase, Railway, etc.)
 2. Set environment variables on Vercel:
