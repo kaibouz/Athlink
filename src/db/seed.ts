@@ -6,10 +6,13 @@ import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { getDb } from "./index";
 import {
+  adminAlerts,
   athleteProfiles,
   bookings,
+  coachApplications,
   coachFeedback,
   coachProfiles,
+  featureFlags,
   messageThreads,
   messages,
   reviews,
@@ -43,6 +46,11 @@ async function main() {
   console.log("Resetting tables…");
   await db.execute(sql`
     TRUNCATE TABLE
+      admin_audit_log,
+      admin_alerts,
+      coach_applications,
+      feature_flags,
+      platform_config,
       coach_feedback,
       student_athletes,
       social_posts,
@@ -85,8 +93,17 @@ async function main() {
     avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(a.name)}`,
   }));
 
+  const executiveUser = {
+    id: "u-executive-1",
+    email: "ceo@athlink.app",
+    passwordHash,
+    name: "AthLink Executive",
+    role: "executive" as const,
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Executive",
+  };
+
   console.log("Seeding users…");
-  await db.insert(users).values([...coachUsers, ...athleteUsers, ...extraAthletes]);
+  await db.insert(users).values([executiveUser, ...coachUsers, ...athleteUsers, ...extraAthletes]);
 
   console.log("Seeding coach profiles…");
   await db.insert(coachProfiles).values(
@@ -263,9 +280,51 @@ async function main() {
     })),
   );
 
+  console.log("Seeding admin data…");
+  await db.insert(featureFlags).values([
+    { key: "booking_flow", enabled: true, rolloutPercent: 100, audience: "all" },
+    { key: "training_feed", enabled: true, rolloutPercent: 100, audience: "all" },
+    { key: "ai_breakdown", enabled: false, rolloutPercent: 0, audience: "all" },
+    { key: "athlete_coach_messaging", enabled: true, rolloutPercent: 100, audience: "all" },
+    { key: "scout_discovery", enabled: true, rolloutPercent: 100, audience: "all" },
+    { key: "homepage_gateway", enabled: true, rolloutPercent: 100, audience: "all" },
+  ]);
+
+  await db.insert(coachApplications).values([
+    {
+      id: "app-1",
+      name: "Jordan Reyes",
+      email: "jordan.reyes@example.com",
+      area: "Hermosa Beach",
+      specialty: "hitting",
+      yearsExperience: 8,
+      status: "pending",
+    },
+    {
+      id: "app-2",
+      name: "Sam Chen",
+      email: "sam.chen@example.com",
+      area: "Manhattan Beach",
+      specialty: "pitching",
+      yearsExperience: 12,
+      status: "pending",
+    },
+  ]);
+
+  await db.insert(adminAlerts).values([
+    {
+      id: "alert-1",
+      kind: "coach_application",
+      title: "New coach application",
+      detail: "Jordan Reyes — Hermosa Beach",
+      severity: "info",
+    },
+  ]);
+
   console.log("Done.");
   console.log("");
   console.log("Demo accounts (password for all):", DEMO_PASSWORD);
+  console.log("  Executive: ceo@athlink.app");
   console.log("  Coach:   tanaka@athlink.app");
   console.log("  Athlete: ethan.park@athlink.app");
 }

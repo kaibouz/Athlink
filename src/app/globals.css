@@ -136,10 +136,29 @@ body {
 }
 
 /* Soft lift for hero “Ath” on pale wash */
-.landing-page .font-brand .text-slate-900 {
+.landing-page .font-brand .text-slate-900,
+.landing-page .font-brand .text-brand-950 {
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.7),
     0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+.dark .landing-page .font-brand .text-brand-950 {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.landing-nav-link {
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--brand-800);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.landing-nav-link:hover {
+  background: color-mix(in oklab, white 12%, transparent);
+  color: var(--brand-950);
 }
 
 .landing-page {
@@ -429,6 +448,16 @@ body {
   );
 }
 
+.dark .landing-hero-bg {
+  background-image: linear-gradient(
+    155deg,
+    #0f1a2e 0%,
+    #0d1525 35%,
+    #0a1220 68%,
+    #070b14 100%
+  );
+}
+
 .landing-coast {
   position: absolute;
   inset: 0;
@@ -644,6 +673,31 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
+.dark .btn-landing-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foreground);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.dark .btn-landing-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
+}
+
+.dark .land-chip {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--brand-800);
+}
+
+.dark .land-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(125, 211, 252, 0.35);
+  color: var(--brand-700);
+}
+
 .land-chip {
   display: inline-flex;
   align-items: center;
@@ -826,6 +880,11 @@ body {
 .land-footer {
   background: color-mix(in oklab, var(--landing-bg) 88%, white);
   color: #334155;
+}
+
+.dark .land-footer {
+  background: color-mix(in oklab, var(--landing-bg) 92%, black);
+  color: var(--brand-700);
 }
 
 .land-title-shadow {
@@ -1206,59 +1265,83 @@ body {
   color: white;
 }
 
-.join-gateway {
-  background: #070b14;
-  background-image:
-    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(37, 99, 235, 0.18), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 100% 50%, rgba(6, 182, 212, 0.08), transparent 50%);
+/* Executive admin console — shares site dark palette */
+.admin-console {
+  --admin-bg: var(--background);
+  --admin-panel: var(--surface);
+  --admin-panel-elevated: var(--surface-elevated);
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-text: var(--foreground);
+  --admin-text-dim: color-mix(in oklab, var(--foreground) 55%, transparent);
+  color-scheme: dark;
+}
+
+.admin-panel {
+  background: var(--admin-panel);
+  border-color: var(--admin-border);
+}
+
+.admin-input {
+  background: var(--admin-panel-elevated);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}
+
+.admin-input::placeholder {
+  color: var(--admin-text-dim);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: rgba(59, 110, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(59, 110, 246, 0.15);
+}
+
+.admin-btn-ghost {
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  color: var(--admin-text-dim);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--admin-text);
+}
+
+.admin-btn-primary {
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, #3b6ef6, #22c7e0);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: white;
 }
 
-.join-gateway-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+.admin-btn-primary:hover {
+  filter: brightness(1.08);
 }
 
-.join-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  transition:
-    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.25s ease,
-    box-shadow 0.3s ease;
+.admin-auth-page {
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  min-height: 100vh;
 }
 
-.join-card:hover {
-  transform: translateY(-3px);
+.admin-auth-card {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 1rem;
 }
 
-.join-card-coach {
-  border-color: rgba(59, 130, 246, 0.22);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.06) inset;
+.admin-status-up {
+  color: #3ddc97;
 }
-
-.join-card-coach:hover {
-  border-color: rgba(96, 165, 250, 0.45);
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.12) inset,
-    0 24px 48px rgba(37, 99, 235, 0.12);
+.admin-status-down {
+  color: #ff5f6d;
 }
-
-.join-card-athlete {
-  border-color: rgba(251, 191, 36, 0.2);
-  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.05) inset;
+.admin-status-degraded,
+.admin-status-unconfigured {
+  color: #f5a623;
 }
-
-.join-card-athlete:hover {
-  border-color: rgba(251, 191, 36, 0.42);
-  box-shadow:
-    0 0 0 1px rgba(251, 191, 36, 0.1) inset,
-    0 24px 48px rgba(245, 158, 11, 0.1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .join-card:hover {
-    transform: none;
-  }
-}
-
 

@@ -1,6 +1,6 @@
 import type { Localized } from "@/lib/i18n/localize";
 
-export type UserRole = "athlete" | "coach" | "parent";
+export type UserRole = "athlete" | "coach" | "parent" | "executive";
 export type LessonFormat = "in_person" | "online";
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 export type PackageType = "single" | "pack" | "subscription";

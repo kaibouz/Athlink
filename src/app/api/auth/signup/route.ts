@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, registerUser } from "@/lib/auth-server";
+import { getCurrentUser, PUBLIC_SIGNUP_ROLES, registerUser } from "@/lib/auth-server";
 import type { UserRole } from "@/types";
 
 export async function POST(req: Request) {
@@ -23,6 +23,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "PASSWORD_TOO_SHORT" }, { status: 400 });
     }
 
+    if (!PUBLIC_SIGNUP_ROLES.includes(body.role)) {
+      return NextResponse.json({ error: "ROLE_FORBIDDEN" }, { status: 403 });
+    }
+
     const user = await registerUser({
       email: body.email,
       password: body.password,
@@ -34,6 +38,9 @@ export async function POST(req: Request) {
   } catch (err) {
     if (err instanceof Error && err.message === "EMAIL_TAKEN") {
       return NextResponse.json({ error: "EMAIL_TAKEN" }, { status: 409 });
+    }
+    if (err instanceof Error && err.message === "ROLE_FORBIDDEN") {
+      return NextResponse.json({ error: "ROLE_FORBIDDEN" }, { status: 403 });
     }
     return NextResponse.json({ error: "SIGNUP_FAILED" }, { status: 500 });
   }

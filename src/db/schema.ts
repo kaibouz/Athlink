@@ -9,7 +9,7 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-export const userRoleEnum = pgEnum("user_role", ["athlete", "coach", "parent"]);
+export const userRoleEnum = pgEnum("user_role", ["athlete", "coach", "parent", "executive"]);
 export const lessonFormatEnum = pgEnum("lesson_format", ["in_person", "online"]);
 export const bookingStatusEnum = pgEnum("booking_status", [
   "pending",
@@ -236,4 +236,64 @@ export const analyticsEvents = pgTable("analytics_events", {
   path: text("path"),
   props: jsonb("props").$type<Record<string, string>>(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/** Admin audit trail — every executive write action */
+export const adminAuditLog = pgTable("admin_audit_log", {
+  id: text("id").primaryKey(),
+  adminUserId: text("admin_user_id")
+    .notNull()
+    .references(() => users.id),
+  action: text("action").notNull(),
+  targetType: text("target_type"),
+  targetId: text("target_id"),
+  metadata: jsonb("metadata").$type<Record<string, unknown>>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/** Feature flags — read by web app via useFeatureFlag */
+export const featureFlags = pgTable("feature_flags", {
+  key: text("key").primaryKey(),
+  enabled: boolean("enabled").notNull().default(false),
+  rolloutPercent: integer("rollout_percent").notNull().default(100),
+  audience: text("audience").notNull().default("all"),
+  audienceIds: jsonb("audience_ids").$type<string[]>(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/** Platform alerts shown in admin overview */
+export const adminAlerts = pgTable("admin_alerts", {
+  id: text("id").primaryKey(),
+  kind: text("kind").notNull(),
+  title: text("title").notNull(),
+  detail: text("detail"),
+  severity: text("severity").notNull().default("info"),
+  resolved: boolean("resolved").notNull().default(false),
+  metadata: jsonb("metadata").$type<Record<string, unknown>>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/** Coach applications — Jotform / manual intake queue */
+export const coachApplications = pgTable("coach_applications", {
+  id: text("id").primaryKey(),
+  externalId: text("external_id"),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  area: text("area").notNull(),
+  specialty: text("specialty").notNull(),
+  yearsExperience: integer("years_experience").notNull().default(0),
+  status: text("status").notNull().default("pending"),
+  documents: jsonb("documents").$type<Record<string, string>>(),
+  notes: text("notes"),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).defaultNow().notNull(),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  reviewedBy: text("reviewed_by").references(() => users.id),
+});
+
+/** Editable platform config (pricing, cities, thresholds) */
+export const platformConfig = pgTable("platform_config", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").$type<unknown>().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedBy: text("updated_by").references(() => users.id),
 });

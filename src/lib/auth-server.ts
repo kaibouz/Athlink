@@ -5,9 +5,11 @@ import bcrypt from "bcryptjs";
 import { getDb } from "@/db";
 import { sessions, users } from "@/db/schema";
 import type { User, UserRole } from "@/types";
+import { isExecutiveEmail } from "@/lib/admin-auth";
 
 export const SESSION_COOKIE = "athlink_session";
 const SESSION_DAYS = 30;
+export const PUBLIC_SIGNUP_ROLES: UserRole[] = ["athlete", "coach", "parent"];
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 12);
@@ -97,6 +99,10 @@ export async function registerUser(input: {
   name: string;
   role: UserRole;
 }) {
+  if (!PUBLIC_SIGNUP_ROLES.includes(input.role)) {
+    throw new Error("ROLE_FORBIDDEN");
+  }
+
   const db = getDb();
   const email = input.email.trim().toLowerCase();
   const [existing] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -133,4 +139,54 @@ export async function loginUser(email: string, password: string) {
 
   await createSession(row.id);
   return toPublicUser(row);
+}
+
+export async function registerExecutive(input: {
+  email: string;
+  password: string;
+  name: string;
+}) {
+  const email = input.email.trim().toLowerCase();
+  if (!isExecutiveEmail(email)) {
+    throw new Error("EMAIL_DOMAIN_FORBIDDEN");
+  }
+
+  const db = getDb();
+  const [existing] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  if (existing) {
+    throw new Error("EMAIL_TAKEN");
+  }
+
+  const id = `u-${randomBytes(6).toString("hex")}`;
+  const passwordHash = await hashPassword(input.password);
+  const avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(input.name || email)}`;
+
+  await db.insert(users).values({
+    id,
+    email,
+    passwordHash,
+    name: input.name.trim(),
+    role: "executive",
+    avatarUrl,
+  });
+
+  await createSession(id);
+  const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return toPublicUser(user);
+}
+
+export async function loginExecutive(email: string, password: string) {
+  const user = await loginUser(email, password);
+  if (user.role !== "executive") {
+    await destroySession();
+    throw new Error("NOT_EXECUTIVE");
+  }
+  return user;
+}
+
+export async function requireExecutive(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("UNAUTHORIZED");
+  if (user.role !== "executive") throw new Error("FORBIDDEN");
+  return user;
 }

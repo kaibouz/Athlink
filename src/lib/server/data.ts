@@ -400,6 +400,32 @@ export async function getPlatformStats() {
   };
 }
 
+export async function countExecutives() {
+  if (!isDatabaseConfigured()) return 0;
+  const db = getDb();
+  const [row] = await db
+    .select({ n: count() })
+    .from(users)
+    .where(eq(users.role, "executive"));
+  return row?.n ?? 0;
+}
+
+export async function listUsersForAdmin(limit = 100) {
+  if (!isDatabaseConfigured()) return [];
+  const db = getDb();
+  return db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      role: users.role,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(limit);
+}
+
 export async function getCoachAnalytics(coachId: string) {
   if (!isDatabaseConfigured()) {
     return { profileViews: 0, bookingClicks: 0, bookings: 0 };

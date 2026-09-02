@@ -46,6 +46,11 @@ export function Footer() {
                 hello@athlink.app
               </a>
             </li>
+            <li>
+              <Link href="/admin" className="hover:text-white">
+                {t("nav_admin")}
+              </Link>
+            </li>
             <li>{t("footer_minor")}</li>
             <li>© 2026 AthLink Inc.</li>
           </ul>
