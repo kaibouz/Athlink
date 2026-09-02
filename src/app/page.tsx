@@ -249,18 +249,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
+      <section className="landing-coaches-section py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
                 {t("land_meet_title")}
               </h2>
-              <p className="mt-2 text-brand-600">{t("land_meet_sub")}</p>
+              <p className="mt-2 text-brand-700">{t("land_meet_sub")}</p>
             </div>
             <Link
               href="/search"
-              className="text-sm font-bold text-brand-600 underline-offset-4 hover:underline"
+              className="text-sm font-bold text-brand-500 underline-offset-4 hover:text-brand-400 hover:underline"
             >
               {t("featured_see_all")}
             </Link>

@@ -889,6 +889,20 @@ body {
   color: #fff;
 }
 
+/* Featured coaches — pure black band matching hero */
+.landing-coaches-section {
+  background: #000;
+}
+
+.landing-coaches-section .land-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.landing-coaches-section .land-panel-head {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .land-footer {
   background: color-mix(in oklab, var(--landing-bg) 92%, black);
   color: var(--brand-700);
