@@ -71,7 +71,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 48,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Tanaka",
+    avatarUrl: "/coaches/shota-tanaka.jpg",
     coverGradient: "from-sky-600 to-indigo-700",
     career: [
       L("Former NPB outfielder", "元NPB外野手", "Exjardinero de NPB"),
@@ -102,7 +102,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 36,
     verified: true,
     formats: ["in_person"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Suzuki",
+    avatarUrl: "/coaches/misaki-suzuki.jpg",
     coverGradient: "from-rose-500 to-orange-500",
     career: [
       L("Former women’s pro pitcher", "元女子プロ野球投手", "Exlanzadora profesional femenina"),
@@ -133,7 +133,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 22,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Yamada",
+    avatarUrl: "/coaches/ken-yamada.jpg",
     coverGradient: "from-emerald-600 to-teal-700",
     career: [
       L("College baseball Final Four", "大学野球全国ベスト4", "Final Four universitario"),
