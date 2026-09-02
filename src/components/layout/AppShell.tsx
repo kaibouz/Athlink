@@ -41,14 +41,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     (pathname === "/" && !user) || pathname === "/for-athletes";
   const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
-  const isAuthForm =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/dns" ||
+  const isClerkAuthRoute =
     pathname === "/sign-in" ||
     pathname.startsWith("/sign-in/") ||
     pathname === "/sign-up" ||
     pathname.startsWith("/sign-up/");
+  const isAuthForm =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/dns" ||
+    isClerkAuthRoute;
 
   if (isIosPreview || isMarketing || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
@@ -58,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isAuthForm && !user) {
+  if (isClerkAuthRoute || (isAuthForm && !user)) {
     return (
       <div className="flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
