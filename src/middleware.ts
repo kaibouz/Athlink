@@ -1,9 +1,16 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/register"];
 
-export default clerkMiddleware((_auth, request) => {
+function hasClerkKeys(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+      process.env.CLERK_SECRET_KEY,
+  );
+}
+
+function adminSessionGate(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (!pathname.startsWith("/admin")) {
     return NextResponse.next();
@@ -21,7 +28,20 @@ export default clerkMiddleware((_auth, request) => {
   }
 
   return NextResponse.next();
-});
+}
+
+/**
+ * clerkMiddleware throws MIDDLEWARE_INVOCATION_FAILED when Clerk keys are
+ * missing (common on fresh Vercel projects). Fall back to the admin cookie
+ * gate so public routes stay up and athlink_session auth still works.
+ */
+const middleware = hasClerkKeys()
+  ? clerkMiddleware((_auth, request) => adminSessionGate(request))
+  : function passThrough(request: NextRequest) {
+      return adminSessionGate(request);
+    };
+
+export default middleware;
 
 export const config = {
   matcher: [
