@@ -3,23 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  Bot,
-  CalendarDays,
-  ClipboardList,
-  Handshake,
-  Sparkles,
-  UserRound,
-  Users,
-  Wallet,
-} from "lucide-react";
-import type { CoachProfile } from "@/types";
-import { coaches as staticCoaches } from "@/lib/data";
+import { ArrowRight } from "lucide-react";
 import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
-import { CoachCard } from "@/components/coaches/CoachCard";
+import { AthleteHomeLanding } from "@/components/athlete/AthleteHomeLanding";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { AthlinkProMark } from "@/components/brand/AthlinkProMark";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
@@ -29,27 +17,16 @@ import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 
-/** Classic AthlinkPro marketing homepage — hero wordmark heading + coaches + how/why. */
+/**
+ * Hybrid athlete marketing page:
+ * Marketing splash + AthlinkPro hero (blue Start Free), then AthleteHomeLanding body
+ * (pitching how-it-works + athlete features / coaches / pricing / FAQ).
+ */
 export function MarketingHomeLanding() {
   const { t } = useLocale();
   const { user, hydrated } = useAuth();
   const router = useRouter();
-  const [featured, setFeatured] = useState<CoachProfile[]>(
-    staticCoaches.filter((c) => c.verified).slice(0, 3),
-  );
   const [intro, setIntro] = useState<"pending" | "crossfade" | "ready">("pending");
-
-  useEffect(() => {
-    void fetch("/api/coaches")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: { coaches?: CoachProfile[] } | null) => {
-        const list = data?.coaches?.filter((c) => c.verified) ?? [];
-        if (list.length > 0) setFeatured(list.slice(0, 3));
-      })
-      .catch(() => {
-        /* keep static fallback */
-      });
-  }, []);
 
   // If client JS fails to hydrate (e.g. dev CORS), don't leave a permanent black veil.
   useEffect(() => {
@@ -76,19 +53,6 @@ export function MarketingHomeLanding() {
       </div>
     );
   }
-
-  const howSteps = [
-    { n: "1", icon: ClipboardList, title: t("land_how_1_title"), desc: t("land_how_1_desc") },
-    { n: "2", icon: Handshake, title: t("land_how_2_title"), desc: t("land_how_2_desc") },
-    { n: "3", icon: Sparkles, title: t("land_how_3_title"), desc: t("land_how_3_desc") },
-  ];
-
-  const whyItems = [
-    { icon: CalendarDays, title: t("land_why_sched_title"), desc: t("land_why_sched_desc") },
-    { icon: Wallet, title: t("land_why_pay_title"), desc: t("land_why_pay_desc") },
-    { icon: Users, title: t("land_why_client_title"), desc: t("land_why_client_desc") },
-    { icon: Bot, title: t("land_why_ai_title"), desc: t("land_why_ai_desc") },
-  ];
 
   return (
     <div className="landing-page min-h-full">
@@ -213,201 +177,7 @@ export function MarketingHomeLanding() {
           <p className="pb-4 text-center text-sm font-bold tracking-wide">{t("land_band_tag")}</p>
         </div>
 
-        <section id="how" className="relative overflow-hidden py-16 sm:py-20">
-          <video
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/videos/baseball-pitch.jpg"
-            aria-hidden
-          >
-            <source src="/videos/baseball-pitch.mp4" type="video/mp4" />
-          </video>
-          <div className="land-video-wash absolute inset-0" aria-hidden />
-          <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="land-title-plate mx-auto max-w-2xl rounded-2xl px-4 py-5 text-center">
-              <h2 className="font-brand text-3xl tracking-tight text-white drop-shadow-sm sm:text-4xl">
-                {t("land_how_title")}
-              </h2>
-              <p className="mt-2 text-white/90 drop-shadow-sm">{t("land_how_sub")}</p>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/85 drop-shadow-sm">
-                {t("hero_body")}
-              </p>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {howSteps.map((step) => {
-                const Icon = step.icon;
-                return (
-                  <article
-                    key={step.n}
-                    className="rounded-2xl border border-white/15 bg-black/25 p-6 backdrop-blur-md"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-sm font-black text-white">
-                        {step.n}
-                      </span>
-                      <Icon className="h-5 w-5 text-sky-200" />
-                    </div>
-                    <h3 className="mt-4 text-lg font-bold text-white">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/80">{step.desc}</p>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section className="landing-coaches-section py-16 sm:py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <h2 className="font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
-                  {t("land_meet_title")}
-                </h2>
-                <p className="mt-2 text-brand-700">{t("land_meet_sub")}</p>
-              </div>
-              <Link
-                href="/search"
-                className="text-sm font-bold text-brand-500 underline-offset-4 hover:text-brand-400 hover:underline"
-              >
-                {t("featured_see_all")}
-              </Link>
-            </div>
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((coach) => (
-                <CoachCard key={coach.id} coach={coach} variant="landing" />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <h2 className="text-center font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
-            {t("land_why_title")}
-          </h2>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2">
-            {whyItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <article key={item.title} className="land-panel rounded-2xl p-6">
-                  <Icon className="h-6 w-6 text-brand-600" />
-                  <h3 className="mt-3 text-lg font-bold text-brand-950">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-brand-600">{item.desc}</p>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="text-center">
-              <h2 className="font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
-                {t("land_split_title")}
-              </h2>
-              <p className="mt-2 text-brand-600">{t("land_split_sub")}</p>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <article className="land-panel join-card-coach rounded-2xl p-6 sm:p-8">
-                <UserRound className="h-7 w-7 text-brand-600" />
-                <h3 className="mt-3 text-xl font-black text-brand-950">
-                  {t("land_split_coach_title")}
-                </h3>
-                <p className="mt-1 font-semibold text-brand-700">{t("land_split_coach_lead")}</p>
-                <ul className="mt-4 space-y-2 text-sm text-brand-700">
-                  <li>· {t("land_split_coach_1")}</li>
-                  <li>· {t("land_split_coach_2")}</li>
-                  <li>· {t("land_split_coach_3")}</li>
-                </ul>
-                <Link href="/join/coach" className="group mt-6 inline-block">
-                  <Button className="btn-landing-primary border-0">
-                    {t("hero_cta_coach")}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-              </article>
-              <article className="land-panel join-card-athlete rounded-2xl p-6 sm:p-8">
-                <Users className="h-7 w-7 text-amber-600 dark:text-amber-400" />
-                <h3 className="mt-3 text-xl font-black text-brand-950">
-                  {t("land_split_athlete_title")}
-                </h3>
-                <p className="mt-1 font-semibold text-brand-700">{t("land_split_athlete_lead")}</p>
-                <ul className="mt-4 space-y-2 text-sm text-brand-700">
-                  <li>· {t("land_split_athlete_1")}</li>
-                  <li>· {t("land_split_athlete_2")}</li>
-                  <li>· {t("land_split_athlete_3")}</li>
-                </ul>
-                <Link href="/join/athlete" className="group mt-6 inline-block">
-                  <Button className="btn-athlete-primary border-0 font-bold">
-                    {t("nav_signup")}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <footer className="land-footer border-t border-brand-200/20">
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
-            <div>
-              <div className="text-lg">
-                <AthlinkProMark baseClassName="text-brand-950" proClassName="text-brand-700" />
-              </div>
-              <p className="mt-3 max-w-sm text-sm leading-relaxed text-brand-600">
-                {t("land_footer_tag")}
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-brand-950">{t("footer_product")}</h4>
-              <ul className="mt-3 space-y-2 text-sm text-brand-600">
-                <li>
-                  <a href="#how" className="hover:text-brand-800">
-                    {t("land_how_title")}
-                  </a>
-                </li>
-                <li>
-                  <Link href="/search" className="hover:text-brand-800">
-                    {t("footer_find")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/coach/register" className="hover:text-brand-800">
-                    {t("footer_register")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dns" className="hover:text-brand-800">
-                    {t("land_footer_dns")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-brand-950">{t("footer_support")}</h4>
-              <ul className="mt-3 space-y-2 text-sm text-brand-600">
-                <li>
-                  <Link href="/login" className="hover:text-brand-800">
-                    {t("nav_login")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/join/athlete" className="hover:text-brand-800">
-                    {t("nav_signup")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="hover:text-brand-800">
-                    {t("nav_admin")}
-                  </Link>
-                </li>
-                <li className="text-brand-500">© 2026 AthlinkPro</li>
-              </ul>
-            </div>
-          </div>
-        </footer>
+        <AthleteHomeLanding variant="body" />
       </div>
     </div>
   );
