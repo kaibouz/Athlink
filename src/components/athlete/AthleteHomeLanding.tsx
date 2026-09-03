@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
+import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
+import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { useAthleteLandingAnim } from "@/components/athlete/useAthleteLandingAnim";
 import "./athlete-landing.css";
 
@@ -68,6 +70,8 @@ export function AthleteHomeLanding() {
 
   return (
     <div className="athlete-landing min-h-full">
+      <MarketingThemeToggle />
+
       <header className="ah-site">
         <div className="ah-wrap ah-in">
           <AthlinkProLogo href="/for-athletes" size="header" variant="monogram" tone="onGradient" priority />
@@ -81,7 +85,7 @@ export function AthleteHomeLanding() {
             <Link className="ah-hide-m" href="#pricing">
               Pricing
             </Link>
-            <Link className="ah-for-coaches" href="/join/coach">
+            <Link className="ah-for-coaches" href="/for-coaches">
               I&apos;m a coach →
             </Link>
             <Link className="ah-hide-m" href="/login">
@@ -168,6 +172,10 @@ export function AthleteHomeLanding() {
         <div>
           <b>Built for Athletes</b>, Coached by the Best
         </div>
+      </div>
+
+      <div className="landing-page">
+        <PitchingHeroVideo />
       </div>
 
       <section className="ah-block">
@@ -837,7 +845,7 @@ export function AthleteHomeLanding() {
         <div className="ah-wrap ah-in">
           <div>© 2026 AthlinkPro · South Bay, CA</div>
           <div className="ah-cols">
-            <Link href="/join/coach">For coaches</Link>
+            <Link href="/for-coaches">For coaches</Link>
             <Link href="#pricing">Pricing</Link>
             <Link href="/search">Safety &amp; verification</Link>
             <Link href="/dns">Privacy</Link>

@@ -24,9 +24,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!hydrated || !user) return;
     const exempt =
       pathname === "/" ||
+      pathname === "/for-coaches" ||
       pathname === "/for-athletes" ||
       pathname === "/login" ||
-      pathname === "/join" ||
       pathname.startsWith("/join/");
     if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
@@ -35,9 +35,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [hydrated, user, pathname, router]);
 
   const isIosPreview = pathname === "/ios";
-  const isMarketing =
-    (pathname === "/" && !user) || pathname === "/for-athletes";
-  const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
+  const isMarketingHome =
+    pathname === "/" ||
+    pathname === "/for-coaches" ||
+    pathname === "/for-athletes";
+  const isJoinFlow = pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
   const isClerkAuthRoute =
     pathname === "/sign-in" ||
@@ -50,7 +52,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     pathname === "/dns" ||
     isClerkAuthRoute;
 
-  if (isIosPreview || isMarketing || pathname === "/dns") {
+  if (isIosPreview || isMarketingHome || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 

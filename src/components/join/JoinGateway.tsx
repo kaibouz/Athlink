@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Bot,
@@ -14,8 +16,12 @@ import {
 } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
+import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
+import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
+import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
 type Feature = { icon: React.ComponentType<{ className?: string }>; text: string };
@@ -81,7 +87,7 @@ function JoinCard({
       <div className="mt-auto pt-6">
         <Link href={href} className="group inline-block">
           <Button
-            variant={isCoach ? "primary" : "primary"}
+            variant="primary"
             className={
               isCoach
                 ? "btn-landing-primary border-0"
@@ -98,8 +104,30 @@ function JoinCard({
   );
 }
 
+/** First-open role gateway — coach vs athlete marketing homepages. */
 export function JoinGateway() {
   const { t } = useLocale();
+  const { user, hydrated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!hydrated || !user) return;
+    const target = shouldEnterOnboarding(user.id)
+      ? joinPathFor(user.role === "coach" ? "coach" : "athlete")
+      : destinationFor(user.role);
+    const timer = window.setTimeout(() => {
+      router.replace(target);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [user, hydrated, router]);
+
+  if (user) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center text-sm text-brand-500">
+        {t("loading")}
+      </div>
+    );
+  }
 
   const coachFeatures: Feature[] = [
     { icon: CalendarDays, text: t("join_coach_feat_1") },
@@ -116,6 +144,8 @@ export function JoinGateway() {
 
   return (
     <div className="join-gateway-page landing-page flex min-h-screen flex-col">
+      <MarketingThemeToggle />
+
       <div className="landing-hero-bg relative flex flex-1 flex-col overflow-hidden">
         <div className="landing-hero-wind" aria-hidden>
           <div className="landing-hero-wash landing-hero-wash-a" />
@@ -128,9 +158,7 @@ export function JoinGateway() {
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
             <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link href="/login" className="landing-nav-link">
-                {t("nav_login")}
-              </Link>
+              <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} />
               <LocaleSwitcher compact />
             </div>
           </div>
@@ -156,7 +184,7 @@ export function JoinGateway() {
               title={t("join_coach_title")}
               body={t("join_coach_body")}
               features={coachFeatures}
-              href="/join/coach"
+              href="/for-coaches"
               cta={t("join_coach_cta")}
               footnote={t("join_coach_footnote")}
             />
@@ -176,9 +204,6 @@ export function JoinGateway() {
 
       <footer className="land-footer border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
-          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
-            ← {t("nav_home")}
-          </Link>
           <p className="text-xs text-brand-500">{t("land_footer_tag")}</p>
         </div>
       </footer>

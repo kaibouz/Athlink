@@ -3,9 +3,118 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light;
+
+  --app-bg: #f8fafc;
+  --app-bg-deep: #f1f5f9;
+  --app-bg-mid: #f8fafc;
+  --app-bg-accent: #eef2ff;
+  --surface-bg: rgba(255, 255, 255, 0.88);
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --surface-glass-border: rgba(15, 23, 42, 0.08);
+  --app-gradient-linear: linear-gradient(
+    155deg,
+    #f8fafc 0%,
+    #f1f5f9 28%,
+    #eef2ff 52%,
+    #f8fafc 78%,
+    #ffffff 100%
+  );
+  --app-gradient-glow-top: radial-gradient(
+    ellipse 70% 55% at 50% -8%,
+    rgba(59, 130, 246, 0.12),
+    transparent 55%
+  );
+  --app-gradient-glow-right: radial-gradient(
+    ellipse 48% 42% at 88% 42%,
+    rgba(37, 99, 235, 0.08),
+    transparent 52%
+  );
+  --app-gradient-glow-left: radial-gradient(
+    ellipse 42% 38% at 10% 58%,
+    rgba(14, 165, 233, 0.06),
+    transparent 48%
+  );
+  --app-gradient-glow-subtle-top: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    rgba(37, 99, 235, 0.06),
+    transparent 55%
+  );
+  --app-gradient-glow-subtle-corner: radial-gradient(
+    ellipse 40% 30% at 100% 0%,
+    rgba(56, 189, 248, 0.05),
+    transparent 50%
+  );
+
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-300: #93c5fd;
+  --brand-400: #60a5fa;
+  --brand-500: #3b82f6;
+  --brand-600: #1d4ed8;
+  --brand-700: #1e40af;
+  --brand-800: #1e3a8a;
+  --brand-900: #172554;
+  --brand-950: #0b1226;
+
+  --ink: #0b1226;
+  --ink-mid: #1e3a8a;
+  --field: #2f6b3a;
+  --clay: #c4a06a;
+  --sun: #eef2ff;
+
+  --athlink-ath: #0b1226;
+  --athlink-link: #1d4ed8;
+  --athlink-link-hero: #93c5fd;
+
+  --landing-bg: #f7fafc;
+  --landing-hero: #f5f9fd;
+  --landing-grad-from: #06b6d4;
+  --landing-grad-to: #2563eb;
+
+  --landing-coaches-pattern-a: linear-gradient(
+    168deg,
+    #f8fafc 0%,
+    #eef2ff 24%,
+    #e0f2fe 52%,
+    #dbeafe 76%,
+    rgba(14, 165, 233, 0.15) 92%,
+    rgba(34, 211, 238, 0.1) 100%
+  );
+  --landing-coaches-pattern-b:
+    radial-gradient(ellipse 62% 48% at 12% 88%, rgba(34, 211, 238, 0.12), transparent 58%),
+    radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.1), transparent 54%),
+    radial-gradient(ellipse 68% 44% at 50% 105%, rgba(14, 165, 233, 0.14), transparent 56%);
+
+  --athlete-clay-1: #e0a458;
+  --athlete-clay-2: #f2c94c;
+  --athlete-clay-text: #1a1206;
+
+  --land-video-wash: linear-gradient(
+    to bottom,
+    rgba(12, 40, 72, 0.35),
+    rgba(15, 35, 70, 0.3),
+    rgba(11, 18, 38, 0.45)
+  );
+  --land-video-wash-deep: linear-gradient(
+    to bottom,
+    rgba(7, 11, 20, 0.62),
+    rgba(7, 11, 20, 0.5),
+    rgba(7, 11, 20, 0.72)
+  );
+  --land-title-plate: rgba(11, 18, 38, 0.28);
+  --land-title-plate-deep: rgba(7, 11, 20, 0.5);
+}
+
+.dark {
   color-scheme: dark;
 
-  /* Sitewide black + blue gradient palette */
   --app-bg: #000000;
   --app-bg-deep: #030712;
   --app-bg-mid: #0a1220;
@@ -79,7 +188,6 @@
   --landing-grad-from: #0891b2;
   --landing-grad-to: #3b82f6;
 
-  /* Coaches band — Pattern A: diagonal black → navy → cyan glow */
   --landing-coaches-pattern-a: linear-gradient(
     168deg,
     #000000 0%,
@@ -89,7 +197,6 @@
     rgba(14, 165, 233, 0.2) 92%,
     rgba(34, 211, 238, 0.14) 100%
   );
-  /* Coaches band — Pattern B: soft 水色 radial highlights */
   --landing-coaches-pattern-b:
     radial-gradient(ellipse 62% 48% at 12% 88%, rgba(34, 211, 238, 0.18), transparent 58%),
     radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.15), transparent 54%),
@@ -98,56 +205,6 @@
   --athlete-clay-1: #e0a458;
   --athlete-clay-2: #f2c94c;
   --athlete-clay-text: #1a1206;
-
-  --land-video-wash: linear-gradient(
-    to bottom,
-    rgba(7, 11, 20, 0.62),
-    rgba(7, 11, 20, 0.5),
-    rgba(7, 11, 20, 0.72)
-  );
-  --land-video-wash-deep: linear-gradient(
-    to bottom,
-    rgba(7, 11, 20, 0.62),
-    rgba(7, 11, 20, 0.5),
-    rgba(7, 11, 20, 0.72)
-  );
-  --land-title-plate: rgba(7, 11, 20, 0.5);
-  --land-title-plate-deep: rgba(7, 11, 20, 0.5);
-}
-
-.dark {
-  color-scheme: dark;
-  --background: var(--app-bg-mid);
-  --foreground: #e8eef9;
-  --surface: #121826;
-  --surface-elevated: #182033;
-
-  --brand-50: #151c2e;
-  --brand-100: #1c2540;
-  --brand-200: #2a3654;
-  --brand-300: #3d4f73;
-  --brand-400: #6b82ab;
-  --brand-500: #60a5fa;
-  --brand-600: #3b82f6;
-  --brand-700: #93c5fd;
-  --brand-800: #bfdbfe;
-  --brand-900: #dbeafe;
-  --brand-950: #f1f5f9;
-
-  --ink: #0a1020;
-  --ink-mid: #1d4ed8;
-  --field: #3d8a4c;
-  --clay: #d4b483;
-  --sun: #151c2e;
-
-  --athlink-ath: #f8fafc;
-  --athlink-link: #7dd3fc;
-  --athlink-link-hero: #bae6fd;
-
-  --landing-bg: var(--app-bg-mid);
-  --landing-hero: var(--app-bg);
-  --landing-grad-from: #0891b2;
-  --landing-grad-to: #3b82f6;
 
   --land-video-wash: var(--land-video-wash-deep);
   --land-title-plate: var(--land-title-plate-deep);
@@ -529,6 +586,25 @@ body {
 
 .land-panel-head {
   background: rgba(56, 189, 248, 0.08);
+}
+
+/* Join gateway — cinematic atmosphere + role card accents */
+.join-gateway-page .landing-hero-bg {
+  background-image:
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
+    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
+    linear-gradient(155deg, #000 0%, #030712 28%, #0a1628 52%, #051018 78%, #000 100%);
+}
+
+.join-card-coach {
+  border-color: color-mix(in oklab, var(--brand-300) 45%, transparent);
+}
+
+.join-card-athlete {
+  border-color: rgba(242, 201, 76, 0.22);
+  background: rgba(18, 16, 10, 0.35);
+  box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
 }
 
 .landing-hero-bg {

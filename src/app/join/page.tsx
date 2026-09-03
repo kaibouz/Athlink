@@ -1,5 +1,6 @@
-import { JoinGateway } from "@/components/join/JoinGateway";
+import { redirect } from "next/navigation";
 
+/** Alias — role gateway lives at `/`. */
 export default function JoinPage() {
-  return <JoinGateway />;
+  redirect("/");
 }
