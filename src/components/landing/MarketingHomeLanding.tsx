@@ -183,7 +183,7 @@ export function MarketingHomeLanding() {
               <Link href="/join/athlete" className="group">
                 <Button
                   size="lg"
-                  className="btn-athlete-primary h-12 min-w-48 rounded-xl border-0 px-6 text-sm font-bold sm:h-14 sm:text-base"
+                  className="btn-landing-primary h-12 min-w-48 rounded-xl border-0 px-6 text-sm font-bold sm:h-14 sm:text-base"
                 >
                   {t("hero_cta_start")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
