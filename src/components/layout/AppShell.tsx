@@ -25,8 +25,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!hydrated || !user) return;
     const exempt =
       pathname === "/" ||
+      pathname === "/for-coaches" ||
+      pathname === "/for-athletes" ||
       pathname === "/login" ||
-      pathname === "/join" ||
       pathname.startsWith("/join/");
     if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
@@ -35,13 +36,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [hydrated, user, pathname, router]);
 
   const isIosPreview = pathname === "/ios";
-  const isHome = pathname === "/" && !user;
-  const isJoinFlow = pathname === "/join" || pathname.startsWith("/join/");
+  const isMarketingHome =
+    pathname === "/" ||
+    pathname === "/for-coaches" ||
+    pathname === "/for-athletes";
+  const isJoinFlow = pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
   const isAuthForm =
     pathname === "/login" || pathname === "/signup" || pathname === "/dns";
 
-  if (isIosPreview || isHome || pathname === "/dns") {
+  if (isIosPreview || isMarketingHome || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
@@ -62,6 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LocaleSwitcher compact />
           </div>
         </header>

@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Bot,
@@ -12,10 +14,13 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { AthLinkMark } from "@/components/brand/AthLinkMark";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
+import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
+import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
 type Feature = { icon: React.ComponentType<{ className?: string }>; text: string };
@@ -43,16 +48,34 @@ function JoinCard({
   const RoleIcon = isCoach ? UserRound : Users;
 
   return (
-    <article className="land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8">
-      <p className="text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase">{eyebrow}</p>
-      <RoleIcon className="mt-4 h-7 w-7 text-brand-600" />
+    <article
+      className={`land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8 ${
+        isCoach ? "join-card-coach" : "join-card-athlete"
+      }`}
+    >
+      <p
+        className={`text-xs font-semibold tracking-[0.14em] uppercase ${
+          isCoach ? "text-brand-500" : "text-amber-400"
+        }`}
+      >
+        {eyebrow}
+      </p>
+      <RoleIcon
+        className={`mt-4 h-7 w-7 ${isCoach ? "text-brand-600" : "text-amber-400"}`}
+      />
       <h2 className="mt-3 text-xl font-black tracking-tight text-brand-950 sm:text-2xl">{title}</h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-600">{body}</p>
 
       <ul className="mt-6 flex flex-1 flex-col gap-3">
         {features.map(({ icon: Icon, text }) => (
           <li key={text} className="flex gap-3 text-sm leading-snug text-brand-700">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-600">
+            <span
+              className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                isCoach
+                  ? "bg-brand-100 text-brand-600"
+                  : "bg-amber-500/15 text-amber-400"
+              }`}
+            >
               <Icon className="h-4 w-4" />
             </span>
             {text}
@@ -63,11 +86,11 @@ function JoinCard({
       <div className="mt-auto pt-6">
         <Link href={href} className="group inline-block">
           <Button
-            variant={isCoach ? "primary" : "outline"}
+            variant="primary"
             className={
               isCoach
                 ? "btn-landing-primary border-0"
-                : "btn-landing-secondary font-bold"
+                : "btn-athlete-primary border-0 font-bold"
             }
           >
             {cta}
@@ -80,8 +103,30 @@ function JoinCard({
   );
 }
 
+/** First-open role gateway — coach vs athlete marketing homepages. */
 export function JoinGateway() {
   const { t } = useLocale();
+  const { user, hydrated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!hydrated || !user) return;
+    const target = shouldEnterOnboarding(user.id)
+      ? joinPathFor(user.role === "coach" ? "coach" : "athlete")
+      : destinationFor(user.role);
+    const timer = window.setTimeout(() => {
+      router.replace(target);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [user, hydrated, router]);
+
+  if (user) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center text-sm text-brand-500">
+        {t("loading")}
+      </div>
+    );
+  }
 
   const coachFeatures: Feature[] = [
     { icon: CalendarDays, text: t("join_coach_feat_1") },
@@ -97,7 +142,9 @@ export function JoinGateway() {
   ];
 
   return (
-    <div className="landing-page flex min-h-screen flex-col">
+    <div className="join-gateway-page landing-page flex min-h-screen flex-col">
+      <MarketingThemeToggle />
+
       <div className="landing-hero-bg relative flex flex-1 flex-col overflow-hidden">
         <div className="landing-hero-wind" aria-hidden>
           <div className="landing-hero-wash landing-hero-wash-a" />
@@ -108,9 +155,7 @@ export function JoinGateway() {
 
         <header className="relative z-20">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-            <Link href="/" className="text-lg" aria-label="AthLink">
-              <AthLinkMark athClassName="text-brand-950" />
-            </Link>
+            <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
             <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/login" className="landing-nav-link">
                 {t("nav_login")}
@@ -140,7 +185,7 @@ export function JoinGateway() {
               title={t("join_coach_title")}
               body={t("join_coach_body")}
               features={coachFeatures}
-              href="/join/coach"
+              href="/for-coaches"
               cta={t("join_coach_cta")}
               footnote={t("join_coach_footnote")}
             />
@@ -150,7 +195,7 @@ export function JoinGateway() {
               title={t("join_athlete_title")}
               body={t("join_athlete_body")}
               features={athleteFeatures}
-              href="/join/athlete"
+              href="/for-athletes"
               cta={t("join_athlete_cta")}
               footnote={t("join_athlete_footnote")}
             />
@@ -158,12 +203,9 @@ export function JoinGateway() {
         </main>
       </div>
 
-      <footer className="land-footer border-t border-slate-200/80">
+      <footer className="land-footer border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
-          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
-            ← {t("nav_home")}
-          </Link>
-          <p className="text-xs text-slate-500">{t("land_footer_tag")}</p>
+          <p className="text-xs text-brand-500">{t("land_footer_tag")}</p>
         </div>
       </footer>
     </div>

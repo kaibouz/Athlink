@@ -38,6 +38,10 @@
   --landing-grad-from: #06b6d4;
   --landing-grad-to: #2563eb;
 
+  --athlete-clay-1: #e0a458;
+  --athlete-clay-2: #f2c94c;
+  --athlete-clay-text: #1a1206;
+
   /* Video sections — stay dark even when brand scale inverts in .dark */
   --land-video-wash: linear-gradient(
     to bottom,
@@ -436,6 +440,25 @@ body {
   background: rgba(56, 189, 248, 0.08);
 }
 
+/* Join gateway — cinematic atmosphere + role card accents */
+.join-gateway-page .landing-hero-bg {
+  background-image:
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
+    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
+    linear-gradient(155deg, #000 0%, #030712 28%, #0a1628 52%, #051018 78%, #000 100%);
+}
+
+.join-card-coach {
+  border-color: color-mix(in oklab, var(--brand-300) 45%, transparent);
+}
+
+.join-card-athlete {
+  border-color: rgba(242, 201, 76, 0.22);
+  background: rgba(18, 16, 10, 0.35);
+  box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
+}
+
 .landing-hero-bg {
   isolation: isolate;
   background-color: var(--landing-hero);
@@ -649,6 +672,44 @@ body {
 .btn-landing-primary:active {
   transform: translateY(0) scale(0.98);
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.24);
+}
+
+.btn-athlete-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--athlete-clay-1), var(--athlete-clay-2));
+  color: var(--athlete-clay-text);
+  box-shadow: 0 10px 28px rgba(224, 164, 88, 0.32);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    filter 0.2s ease;
+}
+.btn-athlete-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.32) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+  pointer-events: none;
+}
+.btn-athlete-primary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(224, 164, 88, 0.42);
+}
+.btn-athlete-primary:hover::after {
+  transform: translateX(120%);
+}
+.btn-athlete-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 6px 16px rgba(224, 164, 88, 0.28);
 }
 
 .btn-landing-secondary {
