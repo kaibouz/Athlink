@@ -10,6 +10,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 
 export default function QuickBookPage({
   params,
@@ -37,12 +38,7 @@ export default function QuickBookPage({
             {t("qr_landing_badge")}
           </div>
           <div className="mt-3 flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={coach.avatarUrl}
-              alt=""
-              className="h-14 w-14 rounded-xl border border-white/30 bg-surface-elevated"
-            />
+            <CoachAvatar size="sm" landing className="border border-white/30" />
             <div>
               <h1 className="text-xl font-black">{coach.name}</h1>
               <p className="text-sm text-white/75">

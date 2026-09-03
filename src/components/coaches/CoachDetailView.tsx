@@ -15,6 +15,7 @@ import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { trackEvent } from "@/lib/track-event";
 import { Badge } from "@/components/ui/Badge";
 import { BookingForm } from "@/components/coaches/BookingForm";
+import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
 function regionFromLocation(locStr: string): CaRegionId {
@@ -58,12 +59,7 @@ export function CoachDetailView({
         className={`overflow-hidden rounded-3xl bg-gradient-to-br ${coach.coverGradient} p-6 text-white sm:p-8`}
       >
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coach.avatarUrl}
-            alt={coach.name}
-            className="h-24 w-24 rounded-2xl border-4 border-white/30 bg-surface shadow-lg"
-          />
+          <CoachAvatar size="lg" landing className="border-4 border-white/30 shadow-lg" />
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-3xl font-black">{coach.name}</h1>

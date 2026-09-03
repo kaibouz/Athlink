@@ -5,6 +5,7 @@ import { CalendarPlus, MapPin, MessageSquare, ShieldCheck, Star, Video } from "l
 import type { CoachProfile } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, loc, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
@@ -36,27 +37,7 @@ export function CoachCard({
           }
         >
           <div className="flex items-start gap-4">
-            {coach.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={coach.avatarUrl}
-                alt={coach.name}
-                className={
-                  landing
-                    ? "h-16 w-16 shrink-0 rounded-2xl border-2 border-white/20 object-cover object-top shadow-sm"
-                    : "h-16 w-16 shrink-0 rounded-2xl border-2 border-white bg-surface object-cover object-top shadow-sm"
-                }
-              />
-            ) : (
-              <div
-                aria-hidden
-                className={
-                  landing
-                    ? "h-16 w-16 shrink-0 rounded-2xl border-2 border-white/20 bg-white/10 shadow-sm"
-                    : "h-16 w-16 shrink-0 rounded-2xl border-2 border-white bg-surface shadow-sm"
-                }
-              />
-            )}
+            <CoachAvatar landing={landing} />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="truncate text-lg font-bold text-brand-950 group-hover:text-brand-600">

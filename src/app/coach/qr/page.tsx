@@ -11,6 +11,7 @@ import { sportLabel } from "@/lib/i18n/localize";
 import { useAuth } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 
 function QrInner() {
   const { user } = useAuth();
@@ -64,12 +65,7 @@ function QrInner() {
       <div className="mt-8 overflow-hidden rounded-3xl border border-brand-100 bg-surface shadow-sm">
         <div className="bg-gradient-to-r from-ink to-ink-mid px-6 py-6 text-white">
           <div className="flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={coach.avatarUrl}
-              alt=""
-              className="h-16 w-16 rounded-2xl border-2 border-white/30 bg-surface-elevated"
-            />
+            <CoachAvatar landing className="border-2 border-white/30" />
             <div>
               <p className="text-xl font-black">{user?.name ?? coach.name}</p>
               <p className="text-sm text-white/75">

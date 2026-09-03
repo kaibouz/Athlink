@@ -71,7 +71,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 48,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "/coaches/shota-tanaka.jpg",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-sky-600 to-indigo-700",
     career: [
       L("Former NPB outfielder", "元NPB外野手", "Exjardinero de NPB"),
@@ -102,7 +102,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 36,
     verified: true,
     formats: ["in_person"],
-    avatarUrl: "/coaches/misaki-suzuki.jpg",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-rose-500 to-orange-500",
     career: [
       L("Former women’s pro pitcher", "元女子プロ野球投手", "Exlanzadora profesional femenina"),
@@ -133,7 +133,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 22,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "/coaches/ken-yamada.jpg",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-emerald-600 to-teal-700",
     career: [
       L("College baseball Final Four", "大学野球全国ベスト4", "Final Four universitario"),
@@ -164,7 +164,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 19,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=John",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-blue-700 to-slate-800",
     career: [
       L("Former MLB minor leaguer", "元MLBマイナー", "Exjugador de ligas menores MLB"),
@@ -195,7 +195,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 31,
     verified: false,
     formats: ["online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Sato",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-violet-600 to-purple-800",
     career: [
       L("Sport psychologist", "スポーツ心理士", "Psicólogo del deporte"),
@@ -226,7 +226,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 27,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Nakamura",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-amber-500 to-red-600",
     career: [
       L("Japan national softball", "ソフトボール日本代表", "Selección de softbol de Japón"),
@@ -257,7 +257,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 14,
     verified: true,
     formats: ["in_person"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Diego",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-lime-600 to-green-800",
     career: [
       L("NSCA-CSCS", "NSCA-CSCS", "NSCA-CSCS"),
@@ -288,7 +288,7 @@ export const coaches: CoachProfile[] = [
     reviewCount: 41,
     verified: true,
     formats: ["in_person", "online"],
-    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Takahashi",
+    avatarUrl: "/icons/person-silhouette.svg",
     coverGradient: "from-cyan-600 to-blue-800",
     career: [
       L("Koshien participant", "甲子園出場", "Participante de Koshien"),

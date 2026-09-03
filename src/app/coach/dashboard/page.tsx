@@ -21,6 +21,7 @@ import { loc, sportLabel } from "@/lib/i18n/localize";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import {
   DashboardGoalRings,
@@ -291,12 +292,7 @@ export default function CoachDashboardPage() {
         <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
           <h2 className="font-bold text-brand-950">{t("dash_sample")}</h2>
           <div className="mt-4 flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={coach.avatarUrl}
-              alt=""
-              className="h-16 w-16 rounded-2xl bg-brand-50"
-            />
+            <CoachAvatar />
             <div>
               <p className="font-bold text-brand-950">{coach.name}</p>
               <p className="text-sm text-brand-600">
