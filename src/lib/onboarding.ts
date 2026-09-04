@@ -108,7 +108,7 @@ export function shouldEnterOnboarding(userId: string | null): boolean {
 export function destinationFor(role: UserRole): string {
   if (role === "executive") return "/admin";
   // Athletes land in the marketplace (browse-first); coaches in their OS.
-  return role === "coach" ? "/coach/dashboard" : "/search";
+  return role === "coach" ? "/coach/dashboard" : "/home";
 }
 
 /** Role-specific signup / onboarding entry (after /join gateway). */

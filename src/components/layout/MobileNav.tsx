@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, MessageSquare, Radar, Search, User } from "lucide-react";
+import {
+  Activity,
+  CalendarDays,
+  CircleDollarSign,
+  Home,
+  MessageSquare,
+  Radar,
+  Search,
+  Users,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
@@ -14,7 +23,7 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
-/** 5 tabs. My Athletes lives on Home (dashboard). SNS = timeline + scout. */
+/** Mobile concept tabs — athlete: Home/Book/Feed/Messages/Progress; coach: Today/Calendar/Athletes/Messages/Earnings */
 export function MobileNav() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -28,7 +37,10 @@ export function MobileNav() {
     pathname === "/for-coaches" ||
     pathname === "/login" ||
     pathname === "/signup" ||
-    pathname === "/ios"
+    pathname === "/sign-in" ||
+    pathname === "/sign-up" ||
+    pathname === "/ios" ||
+    pathname.startsWith("/join")
   ) {
     return null;
   }
@@ -36,58 +48,57 @@ export function MobileNav() {
   const coachTabs: Tab[] = [
     {
       href: "/coach/dashboard",
-      label: t("nav_home"),
+      label: t("nav_today"),
       icon: Home,
       match: (p) =>
+        p === "/coach" ||
         p.startsWith("/coach/dashboard") ||
-        p.startsWith("/coach/students") ||
-        p.startsWith("/coach/calendar") ||
+        p.startsWith("/coach/register") ||
         p.startsWith("/coach/qr") ||
-        p.startsWith("/coach/invite") ||
-        p.startsWith("/coach/register"),
+        p.startsWith("/coach/invite"),
     },
     {
-      href: "/sns",
-      label: t("nav_sns"),
-      icon: Radar,
-      match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
+      href: "/coach/calendar",
+      label: t("nav_calendar"),
+      icon: CalendarDays,
+      match: (p) => p.startsWith("/coach/calendar"),
     },
     {
-      href: "/search",
-      label: t("comm_tab_search"),
-      icon: Search,
-      match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
+      href: "/coach/students",
+      label: t("nav_athletes"),
+      icon: Users,
+      match: (p) => p.startsWith("/coach/students"),
     },
     {
       href: "/messages",
-      label: t("comm_tab_messages"),
+      label: t("nav_messages"),
       icon: MessageSquare,
       match: (p) => p.startsWith("/messages") || p.startsWith("/coach/feedback"),
     },
     {
-      href: "/me",
-      label: t("nav_mypage"),
-      icon: User,
-      match: (p) => p === "/me" || p.startsWith("/me/"),
+      href: "/coach/analytics",
+      label: t("nav_earnings"),
+      icon: CircleDollarSign,
+      match: (p) => p.startsWith("/coach/analytics"),
     },
   ];
 
   const athleteTabs: Tab[] = [
     {
+      href: "/home",
+      label: t("nav_home"),
+      icon: Home,
+      match: (p) => p === "/home" || p.startsWith("/home/") || p.startsWith("/bookings"),
+    },
+    {
       href: "/search",
-      label: t("nav_search_short"),
+      label: t("nav_book"),
       icon: Search,
       match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
     },
     {
-      href: "/bookings",
-      label: t("nav_home"),
-      icon: Home,
-      match: (p) => p.startsWith("/bookings"),
-    },
-    {
       href: "/sns",
-      label: t("nav_sns"),
+      label: t("nav_feed"),
       icon: Radar,
       match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
     },
@@ -98,10 +109,10 @@ export function MobileNav() {
       match: (p) => p.startsWith("/messages"),
     },
     {
-      href: "/me",
-      label: t("nav_mypage"),
-      icon: User,
-      match: (p) => p === "/me" || p.startsWith("/me/"),
+      href: "/progress",
+      label: t("nav_progress"),
+      icon: Activity,
+      match: (p) => p === "/progress" || p.startsWith("/progress/"),
     },
   ];
 
@@ -119,7 +130,7 @@ export function MobileNav() {
               href={item.href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-0.5 py-1 text-[10px] font-medium",
-                active ? "text-brand-600" : "text-brand-400",
+                active ? "text-[color:var(--mx-blue-2)]" : "text-brand-400",
               )}
             >
               <Icon className={cn("h-[22px] w-[22px]", active && "stroke-[2.5]")} />
