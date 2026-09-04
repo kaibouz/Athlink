@@ -865,3 +865,97 @@
   border-radius: 3px;
   font-weight: 700;
 }
+
+
+/* AI breakdown (concept) */
+.mx-bd-stage {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid var(--mx-border);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(34, 199, 224, 0.12), transparent 60%),
+    linear-gradient(165deg, #121a2e 0%, #0b0f1a 100%);
+  padding: 12px 12px 10px;
+  overflow: hidden;
+}
+.mx-bd-stage-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.65rem;
+  color: var(--mx-dimmer);
+  margin-bottom: 6px;
+}
+.mx-bd-skel {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  margin: 4px auto 8px;
+}
+.mx-bd-skel-ref {
+  stroke: rgba(255, 255, 255, 0.22);
+}
+.mx-bd-skel-ath {
+  stroke: #22c7e0;
+}
+.mx-bd-skel-gap {
+  stroke: #f5a623;
+}
+.mx-bd-ref-note {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--mx-dimmer);
+  margin: 0;
+}
+.mx-bd-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--mx-border);
+  font-size: 0.8rem;
+}
+.mx-bd-metric:last-child {
+  border-bottom: none;
+}
+.mx-bd-metric-label {
+  color: var(--mx-dim);
+}
+.mx-bd-metric-val {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.mx-bd-metric-val b {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.mx-bd-flag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.mx-bd-flag-good {
+  color: var(--mx-green);
+  background: rgba(61, 220, 151, 0.12);
+}
+.mx-bd-flag-amber {
+  color: var(--mx-amber);
+  background: rgba(245, 166, 35, 0.14);
+}
+.mx-pill-cyan {
+  background: rgba(34, 199, 224, 0.16);
+  color: #22c7e0;
+  border: 1px solid rgba(34, 199, 224, 0.35);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 700;
+}

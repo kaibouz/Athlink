@@ -46,17 +46,17 @@ export function AthleteHomeScreen() {
 
   return (
     <div className="mx-app mx-role-athlete mx-auto max-w-2xl px-4 py-6 sm:px-6">
-      <div className="mx-toast mb-4">
+      <Link href="/breakdown" className="mx-toast mb-4 block transition hover:border-[color:var(--mx-blue-2)]">
         <span className="mx-toast-ic">
           <Play className="h-3.5 w-3.5" />
         </span>
         <div>
-          <b className="text-[0.75rem]">Your swing breakdown is ready</b>
+          <b className="text-[0.75rem]">{t("bd_home_toast_title")}</b>
           <span className="block text-[0.7rem] text-[var(--mx-dimmer)]">
-            Processed in 44s · tap to view
+            {t("bd_home_toast_sub")}
           </span>
         </div>
-      </div>
+      </Link>
 
       <header className="mx-hdr">
         <div>

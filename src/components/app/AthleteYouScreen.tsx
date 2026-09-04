@@ -181,7 +181,11 @@ export function AthleteYouScreen() {
           ) : (
             <div className="mx-apost-grid">
               {myPosts.slice(0, 9).map((p) => (
-                <Link key={p.id} href={publicHref} className="mx-apost">
+                <Link
+                  key={p.id}
+                  href={p.statsNote ? "/breakdown" : publicHref}
+                  className="mx-apost"
+                >
                   {p.statsNote ? <span className="mx-apost-tag">AI</span> : null}
                   <span className="relative z-[1] text-[9px] text-[color:var(--mx-dimmer)] line-clamp-2">
                     {p.caption}
