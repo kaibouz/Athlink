@@ -11,6 +11,7 @@ import { ScoutProvider } from "@/lib/scout-store";
 import { ThemeProvider } from "@/lib/theme";
 import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { SitePageTransition } from "@/components/layout/SitePageTransition";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -79,10 +80,12 @@ export default function RootLayout({
                   <SocialProvider>
                     <GrowthProvider>
                       <ScoutProvider>
-                        <AppShell>
-                          <main className="flex-1 pb-20 md:pb-0">{children}</main>
-                        </AppShell>
-                        <MobileNav />
+                        <SitePageTransition>
+                          <AppShell>
+                            <main className="flex-1 pb-20 md:pb-0">{children}</main>
+                          </AppShell>
+                          <MobileNav />
+                        </SitePageTransition>
                       </ScoutProvider>
                     </GrowthProvider>
                   </SocialProvider>

@@ -7,14 +7,17 @@ import {
   BarChart3,
   CalendarDays,
   Check,
-  LayoutDashboard,
+  CircleDollarSign,
+  Home,
   MessageSquare,
   Network,
+  Activity,
   QrCode,
   Radar,
   Search,
   Send,
   Settings,
+  Users,
   X,
 } from "lucide-react";
 import { useAuth } from "@/lib/store";
@@ -32,7 +35,14 @@ type NavItem = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
+  match?: (p: string) => boolean;
 };
+
+function isActive(pathname: string, item: NavItem) {
+  if (item.match) return item.match(pathname);
+  if (item.exact) return pathname === item.href;
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
 
 export function AppSidebar({
   mobileOpen,
@@ -49,22 +59,81 @@ export function AppSidebar({
   const isCoach = user?.role === "coach";
 
   const athleteNav: NavItem[] = [
-    { href: "/search", label: t("nav_find"), icon: Search, exact: true },
-    { href: "/bookings", label: t("nav_home"), icon: LayoutDashboard },
-    { href: "/sns", label: t("nav_sns"), icon: Radar },
-    { href: "/messages", label: t("nav_messages"), icon: MessageSquare },
+    {
+      href: "/home",
+      label: t("nav_home"),
+      icon: Home,
+      match: (p) => p === "/home" || p.startsWith("/home/") || p.startsWith("/bookings"),
+    },
+    {
+      href: "/search",
+      label: t("nav_book"),
+      icon: Search,
+      match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
+    },
+    {
+      href: "/sns",
+      label: t("nav_feed"),
+      icon: Radar,
+      match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
+    },
+    {
+      href: "/messages",
+      label: t("nav_messages"),
+      icon: MessageSquare,
+      match: (p) => p.startsWith("/messages"),
+    },
+    {
+      href: "/progress",
+      label: t("nav_progress"),
+      icon: Activity,
+      match: (p) => p === "/progress" || p.startsWith("/progress/"),
+    },
   ];
 
   const coachNav: NavItem[] = [
-    { href: "/coach/dashboard", label: t("nav_home"), icon: LayoutDashboard, exact: true },
-    { href: "/coach/calendar", label: t("coach_nav_calendar"), icon: CalendarDays },
-    { href: "/sns", label: t("nav_sns"), icon: Radar },
-    { href: "/search", label: t("comm_tab_search"), icon: Search },
-    { href: "/messages", label: t("comm_tab_messages"), icon: MessageSquare },
-    { href: "/coach/feedback", label: t("comm_tab_feedback"), icon: Send },
-    { href: "/coach/analytics", label: t("coach_nav_analytics"), icon: BarChart3 },
+    {
+      href: "/coach/dashboard",
+      label: t("nav_today"),
+      icon: Home,
+      match: (p) =>
+        p === "/coach" ||
+        p.startsWith("/coach/dashboard") ||
+        p.startsWith("/coach/register"),
+    },
+    {
+      href: "/coach/calendar",
+      label: t("nav_calendar"),
+      icon: CalendarDays,
+      match: (p) => p.startsWith("/coach/calendar"),
+    },
+    {
+      href: "/coach/students",
+      label: t("nav_athletes"),
+      icon: Users,
+      match: (p) => p.startsWith("/coach/students"),
+    },
+    {
+      href: "/messages",
+      label: t("nav_messages"),
+      icon: MessageSquare,
+      match: (p) => p.startsWith("/messages") || p.startsWith("/coach/feedback"),
+    },
+    {
+      href: "/coach/analytics",
+      label: t("nav_earnings"),
+      icon: CircleDollarSign,
+      match: (p) => p.startsWith("/coach/analytics"),
+    },
+  ];
+
+  const coachTools: NavItem[] = [
+    { href: "/sns", label: t("nav_feed"), icon: Radar },
+    { href: "/search", label: t("nav_book"), icon: Search },
+    { href: "/coach/feedback", label: t("coach_nav_feedback"), icon: Send },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },
     { href: "/coach/invite", label: t("coach_nav_invite"), icon: Network },
+    { href: "/coach/analytics", label: t("coach_nav_analytics"), icon: BarChart3 },
   ];
 
   const links = isCoach ? coachNav : athleteNav;
@@ -73,16 +142,12 @@ export function AppSidebar({
   const pending = isCoach ? pendingCoachBookings(bookings, coach?.id) : [];
   const next = pending[0];
   const onMyPage = pathname === "/me" || pathname.startsWith("/me/");
-
-  function isActive(item: NavItem) {
-    if (item.exact) return pathname === item.href;
-    return pathname === item.href || pathname.startsWith(`${item.href}/`);
-  }
+  const homeHref = isCoach ? "/coach/dashboard" : "/home";
 
   const panel = (
     <aside className="app-glass-solid flex h-full w-64 flex-col border-r border-white/10">
       <div className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
-        <Link href="/" onClick={() => onClose?.()} className="inline-flex shrink-0">
+        <Link href={homeHref} onClick={() => onClose?.()} className="inline-flex shrink-0">
           <AthlinkProLogo href={null} size="header" variant="monogram" tone="onGradient" />
         </Link>
         {onClose && (
@@ -100,7 +165,7 @@ export function AppSidebar({
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {links.map((item) => {
           const Icon = item.icon;
-          const active = isActive(item);
+          const active = isActive(pathname, item);
           return (
             <Link
               key={item.href}
@@ -118,6 +183,34 @@ export function AppSidebar({
             </Link>
           );
         })}
+
+        {isCoach ? (
+          <div className="mt-4 space-y-1 border-t border-white/10 pt-3">
+            <p className="px-3 pb-1 text-[10px] font-semibold tracking-wide text-brand-500 uppercase">
+              Tools
+            </p>
+            {coachTools.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(pathname, item);
+              return (
+                <Link
+                  key={`tool-${item.href}`}
+                  href={item.href}
+                  onClick={() => onClose?.()}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition",
+                    active
+                      ? "app-nav-active font-semibold"
+                      : "text-brand-600 hover:bg-brand-50/80 hover:text-brand-900",
+                  )}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
       </nav>
 
       {isCoach && (
@@ -216,10 +309,8 @@ export function AppSidebar({
     <>
       <AppSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
-      {/* Desktop fixed sidebar */}
       <div className="fixed inset-y-0 left-0 z-40 hidden md:block">{panel}</div>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <button
