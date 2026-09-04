@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getAppUser } from "@/lib/app-user";
 import { updateBookingStatus } from "@/lib/server/data";
 import type { BookingStatus } from "@/types";
 
@@ -7,7 +7,7 @@ export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const user = await getCurrentUser();
+  const user = await getAppUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
