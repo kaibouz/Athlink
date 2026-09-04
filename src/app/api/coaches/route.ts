@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-server";
 import { createCoachProfile, listCoaches } from "@/lib/server/data";
+import { getNextSlots } from "@/lib/server/athlete";
 import type { RegisterCoachInput } from "@/lib/server/data";
 
 export async function GET() {
   const coaches = await listCoaches();
-  return NextResponse.json({ coaches });
+  const nextSlots = await getNextSlots(coaches.map((c) => c.id));
+  return NextResponse.json({ coaches, nextSlots });
 }
 
 export async function POST(req: Request) {
