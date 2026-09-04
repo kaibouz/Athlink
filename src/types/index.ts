@@ -127,6 +127,8 @@ export interface LessonLogEntry {
 
 export interface StudentAthlete {
   id: string;
+  /** Linked athlete user account (shared progress data), when present */
+  userId?: string;
   name: string;
   age: number;
   level: string;

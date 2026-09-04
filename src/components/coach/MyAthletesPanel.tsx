@@ -3,22 +3,25 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Brain, MessageSquare, Search } from "lucide-react";
-import { students } from "@/lib/coach-students";
+import { students as staticStudents } from "@/lib/coach-students";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel } from "@/lib/i18n/localize";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import type { StudentAthlete } from "@/types";
 
 /** Compact / full My Athletes roster for dashboard (and optional standalone). */
 export function MyAthletesPanel({
   compact = false,
   embedded = false,
   id = "my-athletes",
+  students = staticStudents,
 }: {
   compact?: boolean;
   embedded?: boolean;
   id?: string;
+  students?: StudentAthlete[];
 }) {
   const { t } = useLocale();
   const [q, setQ] = useState("");
@@ -33,7 +36,7 @@ export function MyAthletesPanel({
         s.position.toLowerCase().includes(query) ||
         s.focusAreas.some((f) => f.toLowerCase().includes(query)),
     );
-  }, [q]);
+  }, [q, students]);
 
   const shown = compact && !embedded ? filtered.slice(0, 4) : filtered;
 

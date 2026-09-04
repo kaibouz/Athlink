@@ -23,6 +23,7 @@ import type {
   ProgressGoal,
   ProgressMetric,
   ReportCard,
+  StudentAthlete,
   ThreadMessage,
   User,
 } from "@/types";
@@ -455,6 +456,40 @@ export async function getNextSlots(coachIds: string[]): Promise<Record<string, N
     out[r.coachId] = { coachId: r.coachId, date: r.date, startTime: r.startTime, endTime: r.endTime };
   }
   return out;
+}
+
+function mapStudent(row: typeof studentAthletes.$inferSelect): StudentAthlete {
+  return {
+    id: row.id,
+    userId: row.userId ?? undefined,
+    name: row.name,
+    age: row.age,
+    level: row.level,
+    position: row.position,
+    parentName: row.parentName ?? undefined,
+    location: row.location,
+    avatarUrl: row.avatarUrl,
+    lessonsCompleted: row.lessonsCompleted,
+    nextLesson: row.nextLesson ?? undefined,
+    focusAreas: row.focusAreas,
+    aiSummary: row.aiSummary,
+    strengths: row.strengths,
+    improvements: row.improvements,
+    metrics: row.metrics as StudentAthlete["metrics"],
+    history: row.history as StudentAthlete["history"],
+    lastSessionNote: row.lastSessionNote,
+    lessonLog: row.lessonLog as StudentAthlete["lessonLog"],
+  };
+}
+
+/** Roster of a coach's linked athletes (student_athletes). */
+export async function getStudentsForCoach(user: User): Promise<StudentAthlete[]> {
+  if (!isDatabaseConfigured()) return [];
+  const coachId = await resolveCoachId(user);
+  if (!coachId) return [];
+  const db = getDb();
+  const rows = await db.select().from(studentAthletes).where(eq(studentAthletes.coachId, coachId));
+  return rows.map(mapStudent);
 }
 
 /** Progress for a coach viewing one of their athletes (auth-guarded by student link). */
