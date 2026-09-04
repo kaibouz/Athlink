@@ -6,8 +6,8 @@ export const clerkAuthAppearance = {
     colorInputText: "#f5f7fa",
     colorText: "#f5f7fa",
     colorTextSecondary: "#9aa3b2",
-    // Soft silver-blue — avoids flat #3b82f6 on primary controls
-    colorPrimary: "#c5d4e8",
+    // Cadet Blue — muted blue-gray for dark glass (chart: Cadet Blue / Cadet Blue 3)
+    colorPrimary: "#5F9EA0",
     colorDanger: "#ff5f6d",
     borderRadius: "0.75rem",
   },
@@ -21,11 +21,12 @@ export const clerkAuthAppearance = {
     formFieldInput:
       "border-white/10 bg-[var(--app-bg-mid,#0a1220)] text-foreground focus:border-brand-500",
     footerActionLink: "text-brand-400 hover:text-brand-300",
-    // Frosted glass Continue — mirrors `.btn-premium` in globals.css (SignIn + SignUp)
+    // Frosted glass Continue — Cadet Blue tint; mirrors `.btn-premium` (SignIn + SignUp)
+    // Chart: Cadet Blue #5F9EA0, Celeste accent #B8D4E8, Midnight/Presidential depth
     formButtonPrimary: {
       background:
-        "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 100%)",
-      border: "1px solid rgba(255,255,255,0.18)",
+        "linear-gradient(165deg, rgba(95,158,160,0.32) 0%, rgba(74,124,126,0.18) 45%, rgba(12,18,40,0.42) 100%)",
+      border: "1px solid rgba(184,212,232,0.28)",
       backdropFilter: "blur(14px)",
       WebkitBackdropFilter: "blur(14px)",
       color: "#f5f7fa",
@@ -37,27 +38,27 @@ export const clerkAuthAppearance = {
       height: "3.125rem",
       paddingInline: "1.5rem",
       boxShadow:
-        "inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(125,211,252,0.06)",
+        "inset 0 1px 0 rgba(184,212,232,0.28), 0 8px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(95,158,160,0.12)",
       transition:
         "background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease",
       "&:hover": {
         background:
-          "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.10) 100%)",
-        borderColor: "rgba(255,255,255,0.28)",
+          "linear-gradient(165deg, rgba(95,158,160,0.42) 0%, rgba(74,124,126,0.26) 45%, rgba(12,18,40,0.48) 100%)",
+        borderColor: "rgba(184,212,232,0.42)",
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.32), 0 10px 28px rgba(0,0,0,0.32), 0 0 28px rgba(148,200,255,0.18)",
+          "inset 0 1px 0 rgba(184,212,232,0.38), 0 10px 28px rgba(0,0,0,0.32), 0 0 28px rgba(95,158,160,0.22)",
         filter: "brightness(1.04)",
       },
       "&:active": {
         background:
-          "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)",
+          "linear-gradient(165deg, rgba(95,158,160,0.24) 0%, rgba(74,124,126,0.14) 45%, rgba(12,18,40,0.5) 100%)",
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.16), 0 4px 12px rgba(0,0,0,0.3)",
+          "inset 0 1px 0 rgba(184,212,232,0.18), 0 4px 12px rgba(0,0,0,0.3)",
         filter: "brightness(0.98)",
       },
       "&:focus": {
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.28), 0 0 0 2px rgba(197,212,232,0.35), 0 0 24px rgba(148,200,255,0.15)",
+          "inset 0 1px 0 rgba(184,212,232,0.32), 0 0 0 2px rgba(95,158,160,0.4), 0 0 24px rgba(95,158,160,0.18)",
       },
     },
     // "Secured by Clerk" + "Development mode" — not the sign-in/sign-up switch (footerAction)

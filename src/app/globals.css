@@ -870,15 +870,17 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* Frosted glass primary — shared with Clerk formButtonPrimary (clerkAppearance.ts) */
+/* Frosted glass primary — Cadet Blue tint; shared with Clerk formButtonPrimary */
+/* Chart: Cadet Blue #5F9EA0, Celeste #B8D4E8 border, Midnight depth */
 .btn-premium {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(184, 212, 232, 0.28);
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.06) 100%
+    165deg,
+    rgba(95, 158, 160, 0.32) 0%,
+    rgba(74, 124, 126, 0.18) 45%,
+    rgba(12, 18, 40, 0.42) 100%
   );
   color: #f5f7fa;
   font-weight: 500;
@@ -886,9 +888,9 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 1px 0 rgba(184, 212, 232, 0.28),
     0 8px 24px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(125, 211, 252, 0.06);
+    0 0 0 1px rgba(95, 158, 160, 0.12);
   transition:
     transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.28s ease,
@@ -899,34 +901,36 @@ body {
 .btn-premium:hover {
   transform: translateY(-2px);
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.1) 100%
+    165deg,
+    rgba(95, 158, 160, 0.42) 0%,
+    rgba(74, 124, 126, 0.26) 45%,
+    rgba(12, 18, 40, 0.48) 100%
   );
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(184, 212, 232, 0.42);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 1px 0 rgba(184, 212, 232, 0.38),
     0 10px 28px rgba(0, 0, 0, 0.32),
-    0 0 28px rgba(148, 200, 255, 0.18);
+    0 0 28px rgba(95, 158, 160, 0.22);
   filter: brightness(1.04);
 }
 .btn-premium:active {
   transform: translateY(0) scale(0.98);
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.05) 100%
+    165deg,
+    rgba(95, 158, 160, 0.24) 0%,
+    rgba(74, 124, 126, 0.14) 45%,
+    rgba(12, 18, 40, 0.5) 100%
   );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 1px 0 rgba(184, 212, 232, 0.18),
     0 4px 12px rgba(0, 0, 0, 0.3);
   filter: brightness(0.98);
 }
 .btn-premium:focus-visible {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 0 0 2px rgba(197, 212, 232, 0.35),
-    0 0 24px rgba(148, 200, 255, 0.15);
+    inset 0 1px 0 rgba(184, 212, 232, 0.32),
+    0 0 0 2px rgba(95, 158, 160, 0.4),
+    0 0 24px rgba(95, 158, 160, 0.18);
 }
 
 .land-chip {
