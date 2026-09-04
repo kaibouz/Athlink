@@ -115,92 +115,109 @@
 .dark {
   color-scheme: dark;
 
-  --app-bg: #000000;
-  --app-bg-deep: #030712;
-  --app-bg-mid: #0a1220;
-  --app-bg-accent: #0a1628;
-  --surface-bg: rgba(18, 24, 38, 0.72);
-  --surface-glass: rgba(15, 26, 46, 0.45);
-  --surface-glass-border: rgba(255, 255, 255, 0.1);
+  /*
+   * Brand blues from Pantone chart (base page):
+   * Base     — Nighttime Blue 294 → near-black navy (#002868 family)
+   * Depth    — Sapphire 2745 / Whale 280
+   * Accent   — Ocean Blue 300 (#005EB8), Marlin 285 (#0072CE)
+   * Soft     — Quilt 279 (#418FDE), Sky 2915 (#6CACE4), Teapot 284
+   * Avoid    — Backpack Blue 308, Police Officer, Ribbon (too loud)
+   */
+  --palette-nighttime: #002868;
+  --palette-sapphire: #1b1464;
+  --palette-whale: #012169;
+  --palette-ocean: #005eb8;
+  --palette-marlin: #0072ce;
+  --palette-quilt: #418fde;
+  --palette-sky: #6cace4;
+  --palette-teapot: #9cc2e5;
+
+  --app-bg: #01060f;
+  --app-bg-deep: #020b1c;
+  --app-bg-mid: #061533;
+  --app-bg-accent: #0a1a3a;
+  --surface-bg: rgba(8, 22, 52, 0.78);
+  --surface-glass: rgba(10, 28, 62, 0.48);
+  --surface-glass-border: rgba(156, 194, 229, 0.14);
   --app-gradient-linear: linear-gradient(
     155deg,
-    #000000 0%,
-    #030712 28%,
-    #0a1628 52%,
-    #051018 78%,
-    #000000 100%
+    #01060f 0%,
+    #020b1c 26%,
+    #061533 52%,
+    #0a1a3a 78%,
+    #01060f 100%
   );
   --app-gradient-glow-top: radial-gradient(
     ellipse 70% 55% at 50% -8%,
-    rgba(37, 99, 235, 0.32),
+    rgba(0, 94, 184, 0.34),
     transparent 55%
   );
   --app-gradient-glow-right: radial-gradient(
     ellipse 48% 42% at 88% 42%,
-    rgba(59, 130, 246, 0.2),
+    rgba(0, 114, 206, 0.22),
     transparent 52%
   );
   --app-gradient-glow-left: radial-gradient(
     ellipse 42% 38% at 10% 58%,
-    rgba(14, 165, 233, 0.14),
+    rgba(65, 143, 222, 0.16),
     transparent 48%
   );
   --app-gradient-glow-subtle-top: radial-gradient(
     ellipse 80% 50% at 50% -20%,
-    rgba(37, 99, 235, 0.12),
+    rgba(0, 94, 184, 0.14),
     transparent 55%
   );
   --app-gradient-glow-subtle-corner: radial-gradient(
     ellipse 40% 30% at 100% 0%,
-    rgba(56, 189, 248, 0.08),
+    rgba(108, 172, 228, 0.1),
     transparent 50%
   );
 
   --background: var(--app-bg-mid);
   --foreground: #e8eef9;
-  --surface: #121826;
-  --surface-elevated: #182033;
+  --surface: #0c1833;
+  --surface-elevated: #122447;
 
-  --brand-50: #151c2e;
-  --brand-100: #1c2540;
-  --brand-200: #2a3654;
-  --brand-300: #3d4f73;
-  --brand-400: #6b82ab;
-  --brand-500: #60a5fa;
-  --brand-600: #3b82f6;
-  --brand-700: #93c5fd;
-  --brand-800: #bfdbfe;
-  --brand-900: #dbeafe;
-  --brand-950: #f1f5f9;
+  --brand-50: #061533;
+  --brand-100: #0a1a3a;
+  --brand-200: #122447;
+  --brand-300: #1a3a6e;
+  --brand-400: #418fde;
+  --brand-500: #0072ce;
+  --brand-600: #005eb8;
+  --brand-700: #6cace4;
+  --brand-800: #9cc2e5;
+  --brand-900: #c5daf0;
+  --brand-950: #e8f1fa;
 
-  --ink: #0a1020;
-  --ink-mid: #1d4ed8;
+  --ink: #01060f;
+  --ink-mid: #005eb8;
   --field: #3d8a4c;
   --clay: #d4b483;
-  --sun: #151c2e;
+  --sun: #0a1a3a;
 
-  --athlink-ath: #f8fafc;
-  --athlink-link: #7dd3fc;
-  --athlink-link-hero: #bae6fd;
+  --athlink-ath: #f4f8fc;
+  --athlink-link: #6cace4;
+  --athlink-link-hero: #9cc2e5;
 
   --landing-bg: var(--app-bg-mid);
   --landing-hero: var(--app-bg);
-  --landing-grad-from: #0891b2;
-  --landing-grad-to: #3b82f6;
+  --landing-grad-from: #6cace4;
+  --landing-grad-to: #005eb8;
 
   --landing-coaches-pattern-a: linear-gradient(
     168deg,
-    #000000 0%,
-    #030712 24%,
-    #0a1628 52%,
-    #051a28 76%,
-    rgba(14, 165, 233, 0.2) 92%,
-    rgba(34, 211, 238, 0.14) 100%
+    #01060f 0%,
+    #020b1c 24%,
+    #061533 52%,
+    #0a1a3a 76%,
+    rgba(0, 94, 184, 0.22) 92%,
+    rgba(65, 143, 222, 0.14) 100%
   );
   --landing-coaches-pattern-b:
-    radial-gradient(ellipse 62% 48% at 12% 88%, rgba(34, 211, 238, 0.18), transparent 58%),
-    radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.15), transparent 54%),
-    radial-gradient(ellipse 68% 44% at 50% 105%, rgba(14, 165, 233, 0.24), transparent 56%);
+    radial-gradient(ellipse 62% 48% at 12% 88%, rgba(108, 172, 228, 0.16), transparent 58%),
+    radial-gradient(ellipse 52% 40% at 92% 18%, rgba(65, 143, 222, 0.14), transparent 54%),
+    radial-gradient(ellipse 68% 44% at 50% 105%, rgba(0, 94, 184, 0.22), transparent 56%);
 
   --athlete-clay-1: #e0a458;
   --athlete-clay-2: #f2c94c;
@@ -568,10 +585,10 @@ body {
 /* Join gateway — cinematic atmosphere + role card accents */
 .join-gateway-page .landing-hero-bg {
   background-image:
-    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
-    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
-    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
-    var(--app-gradient-linear);
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.08), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(0, 94, 184, 0.24), transparent 50%),
+    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(0, 114, 206, 0.28), transparent 58%),
+    linear-gradient(155deg, #01060f 0%, #020b1c 28%, #061533 52%, #0a1a3a 78%, #01060f 100%);
 }
 
 .join-card-coach {
@@ -585,26 +602,7 @@ body {
 }
 
 .land-panel-head {
-  background: rgba(56, 189, 248, 0.08);
-}
-
-/* Join gateway — cinematic atmosphere + role card accents */
-.join-gateway-page .landing-hero-bg {
-  background-image:
-    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.1), transparent 55%),
-    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(37, 99, 235, 0.22), transparent 50%),
-    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.28), transparent 58%),
-    linear-gradient(155deg, #000 0%, #030712 28%, #0a1628 52%, #051018 78%, #000 100%);
-}
-
-.join-card-coach {
-  border-color: color-mix(in oklab, var(--brand-300) 45%, transparent);
-}
-
-.join-card-athlete {
-  border-color: rgba(242, 201, 76, 0.22);
-  background: rgba(18, 16, 10, 0.35);
-  box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
+  background: rgba(108, 172, 228, 0.1);
 }
 
 .landing-hero-bg {
@@ -726,12 +724,12 @@ body {
 .landing-hero-wash-a {
   background: linear-gradient(
     90deg,
-    rgba(37, 99, 235, 0.06) 0%,
-    rgba(59, 130, 246, 0.18) 18%,
-    rgba(96, 165, 250, 0.12) 36%,
-    rgba(37, 99, 235, 0.05) 54%,
-    rgba(14, 165, 233, 0.16) 72%,
-    rgba(37, 99, 235, 0.06) 100%
+    rgba(0, 94, 184, 0.06) 0%,
+    rgba(0, 114, 206, 0.18) 18%,
+    rgba(65, 143, 222, 0.12) 36%,
+    rgba(0, 94, 184, 0.05) 54%,
+    rgba(108, 172, 228, 0.16) 72%,
+    rgba(0, 94, 184, 0.06) 100%
   );
   animation: land-wash-flow 9s linear infinite;
 }
@@ -739,11 +737,11 @@ body {
 .landing-hero-wash-b {
   background: linear-gradient(
     90deg,
-    rgba(59, 130, 246, 0.05) 0%,
-    rgba(37, 99, 235, 0.14) 25%,
+    rgba(0, 114, 206, 0.05) 0%,
+    rgba(0, 94, 184, 0.14) 25%,
     transparent 50%,
-    rgba(96, 165, 250, 0.12) 75%,
-    rgba(59, 130, 246, 0.05) 100%
+    rgba(65, 143, 222, 0.12) 75%,
+    rgba(0, 114, 206, 0.05) 100%
   );
   opacity: 0.85;
   animation: land-wash-flow 13s linear infinite;
@@ -753,11 +751,11 @@ body {
 .landing-hero-wash-c {
   background: linear-gradient(
     90deg,
-    rgba(147, 197, 253, 0.14) 0%,
-    rgba(96, 165, 250, 0.2) 30%,
+    rgba(108, 172, 228, 0.14) 0%,
+    rgba(65, 143, 222, 0.2) 30%,
     transparent 55%,
-    rgba(125, 211, 252, 0.16) 80%,
-    rgba(147, 197, 253, 0.14) 100%
+    rgba(156, 194, 229, 0.16) 80%,
+    rgba(108, 172, 228, 0.14) 100%
   );
   animation: land-wash-flow 11s linear infinite;
   animation-delay: -7s;
@@ -870,27 +868,27 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* Frosted glass primary — Cadet Blue tint; shared with Clerk formButtonPrimary */
-/* Chart: Cadet Blue #5F9EA0, Celeste #B8D4E8 border, Midnight depth */
+/* Frosted glass primary — Ocean/Marlin tint; shared with Clerk formButtonPrimary */
+/* Chart: Ocean #005EB8, Marlin #0072CE, Sky #6CACE4 border, Nighttime depth */
 .btn-premium {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(184, 212, 232, 0.28);
+  border: 1px solid rgba(156, 194, 229, 0.3);
   background: linear-gradient(
     165deg,
-    rgba(95, 158, 160, 0.32) 0%,
-    rgba(74, 124, 126, 0.18) 45%,
-    rgba(12, 18, 40, 0.42) 100%
+    rgba(0, 114, 206, 0.36) 0%,
+    rgba(0, 94, 184, 0.2) 45%,
+    rgba(2, 11, 28, 0.5) 100%
   );
-  color: #f5f7fa;
+  color: #f4f8fc;
   font-weight: 500;
   letter-spacing: 0.08em;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow:
-    inset 0 1px 0 rgba(184, 212, 232, 0.28),
-    0 8px 24px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(95, 158, 160, 0.12);
+    inset 0 1px 0 rgba(156, 194, 229, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 94, 184, 0.14);
   transition:
     transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.28s ease,
@@ -902,35 +900,35 @@ body {
   transform: translateY(-2px);
   background: linear-gradient(
     165deg,
-    rgba(95, 158, 160, 0.42) 0%,
-    rgba(74, 124, 126, 0.26) 45%,
-    rgba(12, 18, 40, 0.48) 100%
+    rgba(0, 114, 206, 0.46) 0%,
+    rgba(0, 94, 184, 0.28) 45%,
+    rgba(2, 11, 28, 0.55) 100%
   );
-  border-color: rgba(184, 212, 232, 0.42);
+  border-color: rgba(156, 194, 229, 0.45);
   box-shadow:
-    inset 0 1px 0 rgba(184, 212, 232, 0.38),
-    0 10px 28px rgba(0, 0, 0, 0.32),
-    0 0 28px rgba(95, 158, 160, 0.22);
+    inset 0 1px 0 rgba(156, 194, 229, 0.4),
+    0 10px 28px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(0, 114, 206, 0.24);
   filter: brightness(1.04);
 }
 .btn-premium:active {
   transform: translateY(0) scale(0.98);
   background: linear-gradient(
     165deg,
-    rgba(95, 158, 160, 0.24) 0%,
-    rgba(74, 124, 126, 0.14) 45%,
-    rgba(12, 18, 40, 0.5) 100%
+    rgba(0, 114, 206, 0.28) 0%,
+    rgba(0, 94, 184, 0.16) 45%,
+    rgba(2, 11, 28, 0.58) 100%
   );
   box-shadow:
-    inset 0 1px 0 rgba(184, 212, 232, 0.18),
-    0 4px 12px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 rgba(156, 194, 229, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.32);
   filter: brightness(0.98);
 }
 .btn-premium:focus-visible {
   box-shadow:
-    inset 0 1px 0 rgba(184, 212, 232, 0.32),
-    0 0 0 2px rgba(95, 158, 160, 0.4),
-    0 0 24px rgba(95, 158, 160, 0.18);
+    inset 0 1px 0 rgba(156, 194, 229, 0.34),
+    0 0 0 2px rgba(0, 94, 184, 0.42),
+    0 0 24px rgba(0, 114, 206, 0.2);
 }
 
 /* Role marketing journey — smooth scroll + sticky register path */
@@ -1159,24 +1157,24 @@ body {
 }
 
 .landing-band {
-  background: linear-gradient(90deg, #1d4ed8, #06b6d4);
+  background: linear-gradient(90deg, var(--palette-ocean, #005eb8), var(--palette-sky, #6cace4));
   color: #fff;
 }
 
-/* Featured coaches — black + cyan layered gradients (hero-adjacent, distinct band) */
+/* Featured coaches — Nighttime + Ocean layered gradients */
 .landing-coaches-section {
   isolation: isolate;
-  background-color: #000000;
+  background-color: var(--app-bg, #01060f);
   background-image: var(--landing-coaches-pattern-b), var(--landing-coaches-pattern-a);
 }
 
 /* Alt layout: horizontal top band + side glows (swap by adding this class) */
 .landing-coaches-section-alt {
   background-image:
-    radial-gradient(ellipse 78% 30% at 50% 0%, rgba(56, 189, 248, 0.2), transparent 62%),
-    radial-gradient(ellipse 46% 52% at 100% 55%, rgba(34, 211, 238, 0.14), transparent 58%),
-    radial-gradient(ellipse 46% 52% at 0% 45%, rgba(96, 165, 250, 0.12), transparent 58%),
-    linear-gradient(180deg, #000000 0%, #030712 38%, #0a1628 68%, rgba(14, 165, 233, 0.14) 100%);
+    radial-gradient(ellipse 78% 30% at 50% 0%, rgba(108, 172, 228, 0.2), transparent 62%),
+    radial-gradient(ellipse 46% 52% at 100% 55%, rgba(65, 143, 222, 0.14), transparent 58%),
+    radial-gradient(ellipse 46% 52% at 0% 45%, rgba(0, 114, 206, 0.12), transparent 58%),
+    linear-gradient(180deg, #01060f 0%, #020b1c 38%, #061533 68%, rgba(0, 94, 184, 0.16) 100%);
 }
 
 .landing-coaches-section .land-panel {

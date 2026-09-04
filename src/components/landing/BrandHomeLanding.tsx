@@ -131,7 +131,7 @@ export function BrandHomeLanding() {
             href="/for-athletes"
             className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
           >
-            <Users className="h-7 w-7 text-[#5F9EA0]" />
+            <Users className="h-7 w-7 text-brand-500" />
             <h3 className="mt-4 text-xl font-bold text-brand-950">{t("join_athlete_eyebrow")}</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">{t("join_athlete_body")}</p>
             <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-white">

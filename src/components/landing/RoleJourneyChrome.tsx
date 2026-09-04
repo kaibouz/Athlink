@@ -105,7 +105,7 @@ export function RoleJourneyChrome({
                     className={cn(
                       "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold",
                       current
-                        ? "bg-[#5F9EA0] text-white"
+                        ? "bg-[#005EB8] text-white"
                         : done
                           ? "bg-white/20 text-white"
                           : "bg-white/10 text-white/60",

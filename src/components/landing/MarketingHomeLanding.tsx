@@ -193,7 +193,7 @@ export function MarketingHomeLanding() {
                 const Icon = item.icon;
                 return (
                   <article key={item.text} className="land-panel flex gap-4 rounded-2xl p-5">
-                    <Icon className="mt-0.5 h-6 w-6 shrink-0 text-[#5F9EA0]" />
+                    <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand-500" />
                     <p className="text-sm leading-relaxed text-brand-700">{item.text}</p>
                   </article>
                 );

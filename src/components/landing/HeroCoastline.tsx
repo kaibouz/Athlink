@@ -18,10 +18,10 @@ export function HeroCoastline({ className }: { className?: string }) {
       >
         <defs>
           <linearGradient id="coast-line-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.12" />
-            <stop offset="35%" stopColor="#3b82f6" stopOpacity="0.38" />
-            <stop offset="70%" stopColor="#1d4ed8" stopOpacity="0.34" />
-            <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="#6cace4" stopOpacity="0.14" />
+            <stop offset="35%" stopColor="#0072ce" stopOpacity="0.4" />
+            <stop offset="70%" stopColor="#005eb8" stopOpacity="0.36" />
+            <stop offset="100%" stopColor="#6cace4" stopOpacity="0.12" />
           </linearGradient>
         </defs>
 
@@ -30,19 +30,19 @@ export function HeroCoastline({ className }: { className?: string }) {
           <path
             d="M520 80 L780 280 L520 480 L260 280 Z"
             fill="none"
-            stroke="#3b82f6"
+            stroke="#0072ce"
             strokeWidth="0.8"
           />
           <path
             d="M520 140 L720 280 L520 420 L320 280 Z"
             fill="none"
-            stroke="#60a5fa"
+            stroke="#6cace4"
             strokeWidth="0.6"
           />
           <path
             d="M520 200 L660 280 L520 360 L380 280 Z"
             fill="none"
-            stroke="#60a5fa"
+            stroke="#6cace4"
             strokeWidth="0.5"
           />
         </g>
@@ -72,7 +72,7 @@ export function HeroCoastline({ className }: { className?: string }) {
              C 98 402, 142 438, 178 468
              C 210 492, 248 508, 286 528"
           fill="none"
-          stroke="#60a5fa"
+          stroke="#6cace4"
           strokeOpacity="0.22"
           strokeWidth="3.5"
           strokeLinecap="round"
@@ -89,11 +89,11 @@ export function HeroCoastline({ className }: { className?: string }) {
               cy={city.y}
               r="3.2"
               fill="#f8fbff"
-              stroke="#3b82f6"
+              stroke="#005eb8"
               strokeOpacity="0.65"
               strokeWidth="1"
             />
-            <circle cx={city.x} cy={city.y} r="1.15" fill="#1d4ed8" fillOpacity="0.75" />
+            <circle cx={city.x} cy={city.y} r="1.15" fill="#0072ce" fillOpacity="0.75" />
             <text
               x={city.x + 12}
               y={city.y + 3.5}
