@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { CoachGate } from "@/components/coach/CoachGate";
+import { MyAthletesPanel } from "@/components/coach/MyAthletesPanel";
 
-/** Roster lives on the dashboard — keep deep links working. */
+/** Coach roster — the "Athletes" tab in the sidebar and mobile tab bar. */
 export default function CoachStudentsPage() {
-  const router = useRouter();
-  useEffect(() => {
-    router.replace("/coach/dashboard#my-athletes");
-  }, [router]);
-
   return (
     <CoachGate>
-      <div className="mx-auto max-w-lg px-4 py-16 text-center text-sm text-brand-500">
-        …
+      <div className="mx-app mx-auto max-w-2xl px-4 py-6 sm:px-6">
+        <MyAthletesPanel />
       </div>
     </CoachGate>
   );

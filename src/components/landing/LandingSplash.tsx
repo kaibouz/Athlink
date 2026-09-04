@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/provider";
+import { hasSeenIntro, markIntroSeen } from "@/lib/intro-session";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "athlink_intro_seen_v2";
-const ENTRY_KEY = "athlink_site_entry_v1";
 const EXIT_MS = 1200;
 const REVEAL_MS = 180;
 
@@ -13,11 +12,7 @@ type Phase = "idle" | "playing" | "exiting" | "done";
 
 function shouldPlayIntro(): boolean {
   if (typeof window === "undefined") return false;
-  try {
-    if (sessionStorage.getItem(STORAGE_KEY) === "1") return false;
-  } catch {
-    /* ignore */
-  }
+  if (hasSeenIntro()) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   return true;
 }
@@ -39,12 +34,7 @@ export function LandingSplash({
   const finish = () => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    try {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-      sessionStorage.setItem(ENTRY_KEY, "1");
-    } catch {
-      /* ignore */
-    }
+    markIntroSeen();
     setPhase("exiting");
     window.setTimeout(() => onReveal?.(), REVEAL_MS);
     window.setTimeout(() => {

@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
+import { showsAppTabBar } from "@/lib/route-layer";
 
 type Tab = {
   href: string;
@@ -29,19 +30,8 @@ export function MobileNav() {
   const { user } = useAuth();
   const { t } = useLocale();
 
-  if (
-    !user ||
-    pathname === "/" ||
-    pathname === "/get-started" ||
-    pathname === "/for-athletes" ||
-    pathname === "/for-coaches" ||
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/sign-in" ||
-    pathname === "/sign-up" ||
-    pathname === "/ios" ||
-    pathname.startsWith("/join")
-  ) {
+  // Athlete/coach tabs are platform chrome — never marketing, auth or admin.
+  if (!user || !showsAppTabBar(pathname)) {
     return null;
   }
 

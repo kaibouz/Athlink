@@ -34,7 +34,7 @@ export default function StudentDetailPage() {
       <CoachGate>
         <div className="mx-auto max-w-lg px-4 py-16 text-center">
           <p className="font-medium text-brand-800">{t("student_not_found")}</p>
-          <Link href="/coach/dashboard#my-athletes" className="mt-4 inline-block">
+          <Link href="/coach/students" className="mt-4 inline-block">
             <Button variant="outline">{t("student_back")}</Button>
           </Link>
         </div>
@@ -48,7 +48,7 @@ export default function StudentDetailPage() {
     <CoachGate>
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Link
-          href="/coach/dashboard#my-athletes"
+          href="/coach/students"
           className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800"
         >
           <ArrowLeft className="h-4 w-4" />

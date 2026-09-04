@@ -6,11 +6,8 @@ import { Brain, MessageSquare, Search } from "lucide-react";
 import { students } from "@/lib/coach-students";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel } from "@/lib/i18n/localize";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 
-/** Compact / full My Athletes roster for dashboard (and optional standalone). */
+/** Compact / full My Athletes roster for the coach roster page (and dashboard embeds). */
 export function MyAthletesPanel({
   compact = false,
   embedded = false,
@@ -40,82 +37,89 @@ export function MyAthletesPanel({
   return (
     <section id={id} className="scroll-mt-20">
       {!embedded && (
-        <div className="flex flex-wrap items-end justify-between gap-3">
+        <header className="mx-hdr">
           <div>
-            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-              <Brain className="h-3.5 w-3.5" />
+            <span className="mx-pill mx-pill-accent mb-2 gap-1">
+              <Brain className="h-3 w-3" />
               {t("students_ai_badge")}
-            </div>
-            <h2 className="text-xl font-bold text-brand-950 sm:text-2xl">
-              {t("my_athletes_title")}
-            </h2>
-            <p className="mt-1 text-sm text-brand-600">{t("my_athletes_sub")}</p>
+            </span>
+            <h1>{t("my_athletes_title")}</h1>
+            <small>{t("my_athletes_sub")}</small>
           </div>
-          <p className="text-sm font-medium text-brand-500">
+          <span className="mx-pill mx-pill-grey shrink-0">
             {t("students_count", { n: filtered.length })}
-          </p>
-        </div>
+          </span>
+        </header>
       )}
 
       {embedded && (
-        <p className="mb-3 text-xs font-medium text-brand-500">
+        <p className="mb-3 text-[0.7rem] text-[color:var(--mx-dimmer)]">
           {t("students_count", { n: filtered.length })}
         </p>
       )}
 
-      <div className={`relative max-w-md ${embedded ? "" : "mt-4"}`}>
-        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-brand-400" />
-        <Input
-          className="pl-9"
+      <div className="relative max-w-md">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[color:var(--mx-dimmer)]"
+          aria-hidden
+        />
+        <input
+          type="search"
+          className="mx-search pl-9"
           placeholder={t("students_search_ph")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
+          aria-label={t("students_search_ph")}
         />
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {shown.map((s) => (
-          <article
-            key={s.id}
-            className="rounded-2xl border border-brand-100 bg-surface p-4 shadow-sm"
-          >
+          <article key={s.id} className="mx-card">
             <div className="flex items-start gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={s.avatarUrl}
                 alt=""
-                className="h-12 w-12 rounded-xl bg-brand-50"
+                className="h-11 w-11 shrink-0 rounded-xl bg-[color:var(--mx-panel-2)]"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="truncate font-bold text-brand-950">{s.name}</h3>
-                <p className="text-xs text-brand-600">
+                <h3 className="truncate text-sm font-bold">{s.name}</h3>
+                <p className="text-[0.7rem] text-[color:var(--mx-dimmer)]">
                   {s.level} · {s.position} · {s.age}y
                 </p>
-                <div className="mt-1.5 flex flex-wrap gap-1">
+                <div className="mx-chip-row mt-1.5">
                   {s.focusAreas.slice(0, 3).map((f) => (
-                    <Badge key={f}>{specialtyLabel(t, f)}</Badge>
+                    <span key={f} className="mx-pill mx-pill-grey">
+                      {specialtyLabel(t, f)}
+                    </span>
                   ))}
                 </div>
               </div>
             </div>
 
-            <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-brand-700">
+            <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-[color:var(--mx-dim)]">
               {s.aiSummary}
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
-              <Link href={`/coach/students/${s.id}`}>
-                <Button size="sm">{t("my_athletes_open")}</Button>
+              <Link
+                href={`/coach/students/${s.id}`}
+                className="mx-btn mx-btn-accent text-[0.75rem]"
+              >
+                {t("my_athletes_open")}
               </Link>
-              <Link href={`/coach/feedback?student=${s.id}`}>
-                <Button size="sm" variant="secondary">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  {t("students_send_fb")}
-                </Button>
+              <Link
+                href={`/coach/feedback?student=${s.id}`}
+                className="mx-btn mx-btn-ghost text-[0.75rem]"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                {t("students_send_fb")}
               </Link>
             </div>
+
             {s.lessonLog[0] && (
-              <p className="mt-2 border-t border-brand-50 pt-2 text-[11px] text-brand-500">
+              <p className="mt-2.5 border-t border-[color:var(--mx-border)] pt-2 text-[0.7rem] text-[color:var(--mx-dimmer)]">
                 {t("my_athletes_last_lesson")}: {s.lessonLog[0].date} · {s.lessonLog[0].focus}
               </p>
             )}
@@ -123,8 +127,14 @@ export function MyAthletesPanel({
         ))}
       </div>
 
+      {shown.length === 0 && (
+        <p className="mt-6 text-center text-sm text-[color:var(--mx-dim)]">
+          {t("students_empty")}
+        </p>
+      )}
+
       {compact && !embedded && filtered.length > shown.length && (
-        <p className="mt-3 text-center text-sm text-brand-500">
+        <p className="mt-3 text-center text-xs text-[color:var(--mx-dimmer)]">
           {t("dash_athletes_more", { n: filtered.length - shown.length })}
         </p>
       )}

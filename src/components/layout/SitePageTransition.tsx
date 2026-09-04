@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale } from "@/lib/i18n/provider";
+import { hasSeenIntro, markIntroSeen } from "@/lib/intro-session";
+import { routeEnterClass, showsEntryCurtain } from "@/lib/route-layer";
 import { cn } from "@/lib/utils";
 
-const ENTRY_KEY = "athlink_site_entry_v1";
-const INTRO_KEY = "athlink_intro_seen_v2";
 const HOLD_MS = 520;
 const EXIT_MS = 900;
 
@@ -16,44 +16,26 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function alreadyEntered() {
-  try {
-    return (
-      sessionStorage.getItem(ENTRY_KEY) === "1" ||
-      sessionStorage.getItem(INTRO_KEY) === "1"
-    );
-  } catch {
-    return false;
-  }
-}
-
-function markEntered() {
-  try {
-    sessionStorage.setItem(ENTRY_KEY, "1");
-  } catch {
-    /* ignore */
-  }
-}
-
 /**
- * Site jump-in curtain (non-HQ routes) + soft route fade when navigating.
- * HQ (`/`) keeps the cinematic LandingSplash — this avoids a double intro.
+ * Site jump-in curtain (consumer routes) + route fade when navigating.
+ * HQ (`/`) keeps the cinematic LandingSplash and the admin console / operator
+ * tools get no consumer branding at all.
  */
 export function SitePageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useLocale();
   const [entry, setEntry] = useState<EntryPhase>(() =>
-    pathname === "/" ? "done" : "hold",
+    showsEntryCurtain(pathname) ? "hold" : "done",
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const routeReady = useRef(false);
 
   useEffect(() => {
-    if (pathname === "/") {
+    if (!showsEntryCurtain(pathname)) {
       setEntry("done");
       return;
     }
-    if (prefersReducedMotion() || alreadyEntered()) {
+    if (prefersReducedMotion() || hasSeenIntro()) {
       setEntry("done");
       return;
     }
@@ -61,7 +43,7 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
     setEntry("hold");
     const exitTimer = window.setTimeout(() => setEntry("exit"), HOLD_MS);
     const doneTimer = window.setTimeout(() => {
-      markEntered();
+      markIntroSeen();
       setEntry("done");
     }, HOLD_MS + EXIT_MS);
 
@@ -80,10 +62,10 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
     if (prefersReducedMotion()) return;
     const el = contentRef.current;
     if (!el) return;
-    el.classList.remove("site-route-enter");
+    el.classList.remove("site-route-enter", "site-route-enter-app");
     // Force reflow so the enter animation retriggers on every navigation.
     void el.offsetWidth;
-    el.classList.add("site-route-enter");
+    el.classList.add(routeEnterClass(pathname));
   }, [pathname]);
 
   return (
