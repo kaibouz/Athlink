@@ -7,6 +7,8 @@ import { getStudentById } from "@/lib/coach-students";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel } from "@/lib/i18n/localize";
 import { CoachGate } from "@/components/coach/CoachGate";
+import { CoachAthleteProgressPanel } from "@/components/coach/CoachAthleteProgressPanel";
+import { CoachReportComposer } from "@/components/coach/CoachReportComposer";
 import { MetricBar, TrendChart } from "@/components/coach/AiCharts";
 import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { Badge } from "@/components/ui/Badge";
@@ -90,6 +92,11 @@ export default function StudentDetailPage() {
               {t("student_send_feedback")}
             </Button>
           </Link>
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+          <CoachAthleteProgressPanel studentId={student.id} />
+          <CoachReportComposer studentId={student.id} studentName={student.name} />
         </div>
 
         <div className="mt-6">

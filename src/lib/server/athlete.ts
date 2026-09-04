@@ -439,6 +439,39 @@ export async function createFeedback(
   };
 }
 
+export interface CoachEarnings {
+  earned: number;
+  pending: number;
+  thisMonth: number;
+  upcoming: number;
+  completedSessions: number;
+}
+
+/** Revenue-at-a-glance for a coach, derived from real bookings. */
+export async function getCoachEarnings(user: User): Promise<CoachEarnings | null> {
+  if (!isDatabaseConfigured()) return null;
+  const coachId = await resolveCoachId(user);
+  if (!coachId) return null;
+  const db = getDb();
+  const rows = await db.select().from(bookings).where(eq(bookings.coachId, coachId));
+  const month = new Date().toISOString().slice(0, 7);
+  let earned = 0;
+  let pending = 0;
+  let thisMonth = 0;
+  let upcoming = 0;
+  let completedSessions = 0;
+  const today = todayStr();
+  for (const b of rows) {
+    if (b.status === "confirmed" || b.status === "completed") earned += b.price;
+    if (b.status === "pending") pending += b.price;
+    if (b.status === "completed") completedSessions += 1;
+    if (b.date.startsWith(month) && (b.status === "confirmed" || b.status === "completed"))
+      thisMonth += b.price;
+    if (b.date >= today && (b.status === "confirmed" || b.status === "pending")) upcoming += 1;
+  }
+  return { earned, pending, thisMonth, upcoming, completedSessions };
+}
+
 /** Earliest available future slot for each requested coach. */
 export async function getNextSlots(coachIds: string[]): Promise<Record<string, NextSlot>> {
   if (!isDatabaseConfigured() || coachIds.length === 0) return {};

@@ -11,10 +11,14 @@ import { CommSwitcher } from "@/components/layout/CommSwitcher";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
+import { useApi } from "@/lib/client/use-api";
+import type { ReportCard } from "@/types";
 
 function FeedbackComposer() {
   const { t, locale } = useLocale();
-  const { feedback, sendFeedback } = useCoachTools();
+  const { sendFeedback } = useCoachTools();
+  const { data: fbData, reload } = useApi<{ feedback: ReportCard[] }>("/api/feedback");
+  const feedback = fbData?.feedback ?? [];
   const params = useSearchParams();
   const initialStudent = params.get("student") ?? students[0]?.id ?? "";
 
@@ -27,7 +31,7 @@ function FeedbackComposer() {
   const student = useMemo(() => getStudentById(studentId), [studentId]);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!student || !subject.trim() || !body.trim()) return;
     let fullBody = body.trim();
@@ -44,6 +48,17 @@ function FeedbackComposer() {
     setSentId(item.id);
     setSubject("");
     setBody("");
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentId: student.id,
+        subject: subject.trim(),
+        body: fullBody,
+        aiAttached: attachAi,
+      }),
+    });
+    reload();
   }
 
   return (
