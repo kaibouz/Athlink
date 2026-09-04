@@ -162,12 +162,14 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
     }
   }
 
-  function ensureAthleteProfile() {
+  /**
+   * Persist athlete profile: Postgres via /api/athletes/me when DB is up;
+   * fall back to localStorage demo store only on 503 / offline demo.
+   */
+  async function ensureAthleteProfile(): Promise<string | null> {
     if (athleteProfileIdRef.current || !user) return athleteProfileIdRef.current;
-    const profile = createProfile({
-      userId: user.id,
+    const payload = {
       name: user.name || draft.name,
-      email: user.email || draft.email,
       school: draft.school.trim(),
       classYear: draft.classYear,
       height: draft.height.trim() || "—",
@@ -179,6 +181,42 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       lookingForCoach: draft.lookingForCoach,
       openToScouts: draft.openToScouts,
       seasonLabel: `${draft.classYear} season`,
+    };
+
+    try {
+      const res = await fetch("/api/athletes/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { athlete: { id: string } };
+        athleteProfileIdRef.current = data.athlete.id;
+        return data.athlete.id;
+      }
+      if (res.status !== 503) {
+        setError(t("onboard_error_save"));
+        return null;
+      }
+    } catch {
+      /* demo fallback below */
+    }
+
+    const profile = createProfile({
+      userId: user.id,
+      name: payload.name,
+      email: user.email || draft.email,
+      school: payload.school,
+      classYear: payload.classYear,
+      height: payload.height,
+      weight: payload.weight,
+      position: payload.position,
+      batsThrows: payload.batsThrows,
+      location: payload.location,
+      bio: payload.bio,
+      lookingForCoach: payload.lookingForCoach,
+      openToScouts: payload.openToScouts,
+      seasonLabel: payload.seasonLabel,
     });
     athleteProfileIdRef.current = profile.id;
     return profile.id;
@@ -241,7 +279,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
         if (!ok) return;
       }
       if (draft.role === "athlete") {
-        ensureAthleteProfile();
+        const id = await ensureAthleteProfile();
+        if (!id) return;
       }
       setStep("social");
       return;
@@ -249,7 +288,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
 
     if (step === "social") {
       if (draft.role === "athlete" && user) {
-        const profileId = ensureAthleteProfile();
+        const profileId = await ensureAthleteProfile();
         if (profileId && draft.postCaption.trim()) {
           const name = user.name || draft.name;
           addPost({
