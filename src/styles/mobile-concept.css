@@ -18,10 +18,42 @@
   --mx-red: #ff5f6d;
 }
 
+/* Role accent — one source of truth; every screen recolors from these tokens.
+   athlete = energetic cyan + amber highlight; coach = deeper, calmer blue. */
+[data-role="athlete"] {
+  --mx-blue-1: #2b8ef6;
+  --mx-blue-2: #22c7e0;
+  --mx-accent: #22c7e0;
+  --mx-accent-soft: rgba(34, 199, 224, 0.16);
+  --mx-accent-2: #f5a623;
+}
+[data-role="coach"] {
+  --mx-blue-1: #1e3a8a;
+  --mx-blue-2: #3b6ef6;
+  --mx-accent: #3b6ef6;
+  --mx-accent-soft: rgba(59, 110, 246, 0.18);
+  --mx-accent-2: #22c7e0;
+}
+
 .mx-app {
   color: var(--mx-text);
   background: var(--mx-bg);
   min-height: 100%;
+}
+
+/* Faint route-line texture (splash coastline) usable as an app-surface backdrop. */
+.mx-route-texture {
+  position: relative;
+}
+.mx-route-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(120% 80% at 100% 0%, rgba(34, 199, 224, 0.08), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, rgba(59, 110, 246, 0.08), transparent 55%);
 }
 
 .mx-hdr {

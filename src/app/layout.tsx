@@ -11,6 +11,7 @@ import { ScoutProvider } from "@/lib/scout-store";
 import { ThemeProvider } from "@/lib/theme";
 import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
 
 /** Variable axes — brand/display Latin */
@@ -76,6 +77,7 @@ export default function RootLayout({
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>
                     <GrowthProvider>
