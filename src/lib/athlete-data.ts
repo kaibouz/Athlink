@@ -190,6 +190,54 @@ export const aiBreakdownSeed: AiBreakdownSeed[] = [
   },
 ];
 
+export interface GoalSuggestion {
+  metric: string;
+  label: string;
+  unit: string;
+  target: number;
+}
+
+const GOALS_BY_POSITION: Record<string, GoalSuggestion[]> = {
+  P: [
+    { metric: "fb_velo", label: "Fastball velo", unit: "mph", target: 70 },
+    { metric: "hip_shoulder_sep", label: "Hip-shoulder sep", unit: "deg", target: 45 },
+    { metric: "command", label: "Strike %", unit: "%", target: 70 },
+  ],
+  C: [
+    { metric: "pop_time", label: "Pop time", unit: "s", target: 1.95 },
+    { metric: "transfer", label: "Transfer speed", unit: "s", target: 0.72 },
+    { metric: "framing", label: "Framing +runs", unit: "", target: 10 },
+  ],
+  OF: [
+    { metric: "exit_velo", label: "Exit velocity", unit: "mph", target: 90 },
+    { metric: "attack_angle", label: "Attack angle", unit: "deg", target: 12 },
+    { metric: "sixty_time", label: "60-yd dash", unit: "s", target: 6.8 },
+  ],
+  INF: [
+    { metric: "exit_velo", label: "Exit velocity", unit: "mph", target: 88 },
+    { metric: "first_step", label: "First-step quickness", unit: "s", target: 0.5 },
+    { metric: "sixty_time", label: "60-yd dash", unit: "s", target: 6.9 },
+  ],
+};
+
+const DEFAULT_GOALS: GoalSuggestion[] = [
+  { metric: "exit_velo", label: "Exit velocity", unit: "mph", target: 88 },
+  { metric: "bat_speed", label: "Bat speed", unit: "mph", target: 72 },
+  { metric: "sixty_time", label: "60-yd dash", unit: "s", target: 6.9 },
+];
+
+/** Position-aware starter goals for athlete onboarding. */
+export function goalsForPosition(position: string): GoalSuggestion[] {
+  const p = position.toUpperCase();
+  if (p.includes("P")) return GOALS_BY_POSITION.P;
+  if (p.includes("C")) return GOALS_BY_POSITION.C;
+  if (p.includes("OF") || p.includes("CF") || p.includes("RF") || p.includes("LF"))
+    return GOALS_BY_POSITION.OF;
+  if (p.includes("SS") || p.includes("1B") || p.includes("2B") || p.includes("3B") || p.includes("IF"))
+    return GOALS_BY_POSITION.INF;
+  return DEFAULT_GOALS;
+}
+
 /** Which breakdown to surface as the athlete's "ready" toast on Home. */
 export function latestBreakdownFor(athleteId: string): AiBreakdownSeed | undefined {
   return aiBreakdownSeed

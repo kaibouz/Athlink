@@ -16,6 +16,7 @@ import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
+import { goalsForPosition } from "@/lib/athlete-data";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import {
@@ -72,6 +73,19 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   const patchDraft = useCallback((patch: Partial<OnboardingDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch }));
   }, []);
+
+  const goalSuggestions = useMemo(
+    () => goalsForPosition(draft.position),
+    [draft.position],
+  );
+
+  function toggleGoal(metric: string) {
+    patchDraft({
+      selectedGoals: draft.selectedGoals.includes(metric)
+        ? draft.selectedGoals.filter((m) => m !== metric)
+        : [...draft.selectedGoals, metric],
+    });
+  }
 
   useEffect(() => {
     setOnboardingPending();
@@ -184,6 +198,33 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
     return profile.id;
   }
 
+  async function saveAthleteOnboarding() {
+    const goals = goalSuggestions.filter((g) => draft.selectedGoals.includes(g.metric));
+    try {
+      if (goals.length > 0) {
+        await fetch("/api/me/goals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ position: draft.position, goals }),
+        });
+      }
+      if (draft.guardianEmail.trim()) {
+        await fetch("/api/me/parent-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            guardianName: draft.guardianName.trim(),
+            guardianEmail: draft.guardianEmail.trim(),
+          }),
+        });
+      }
+    } catch {
+      /* best-effort: onboarding continues even if the write fails */
+    }
+  }
+
   async function goNext() {
     setError("");
 
@@ -230,6 +271,12 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
           setError(t("onboard_error_required"));
           return;
         }
+        // Pre-select the position's starter goals when first entering details.
+        if (draft.selectedGoals.length === 0) {
+          patchDraft({
+            selectedGoals: goalsForPosition(draft.position).map((g) => g.metric),
+          });
+        }
       }
       setStep("details");
       return;
@@ -242,6 +289,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       }
       if (draft.role === "athlete") {
         ensureAthleteProfile();
+        await saveAthleteOnboarding();
       }
       setStep("social");
       return;
@@ -659,6 +707,72 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                 />
                 <span className="text-sm font-medium text-brand-800">{t("onboard_athlete_scouts")}</span>
               </label>
+
+              <div className="sm:col-span-2">
+                <Label>{t("onboard_goals_title")}</Label>
+                <p className="mb-2 text-xs text-brand-500">{t("onboard_goals_sub")}</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {goalSuggestions.map((g) => {
+                    const selected = draft.selectedGoals.includes(g.metric);
+                    return (
+                      <button
+                        key={g.metric}
+                        type="button"
+                        onClick={() => toggleGoal(g.metric)}
+                        className={cn(
+                          "flex items-center justify-between rounded-xl border px-4 py-3 text-left transition",
+                          selected
+                            ? "border-brand-600 bg-brand-600/10"
+                            : "border-brand-200 bg-surface hover:border-brand-400",
+                        )}
+                      >
+                        <span>
+                          <span className="block text-sm font-semibold text-brand-900">{g.label}</span>
+                          <span className="text-xs text-brand-500">
+                            {t("onboard_goal_target")}: {g.target}
+                            {g.unit ? ` ${g.unit}` : ""}
+                          </span>
+                        </span>
+                        <span
+                          className={cn(
+                            "flex h-5 w-5 items-center justify-center rounded-full border",
+                            selected
+                              ? "border-brand-600 bg-brand-600 text-white"
+                              : "border-brand-300 text-transparent",
+                          )}
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="sm:col-span-2 rounded-2xl border border-brand-100 bg-brand-50/40 p-4">
+                <Label>{t("onboard_guardian_title")}</Label>
+                <p className="mb-3 text-xs text-brand-500">{t("onboard_guardian_sub")}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="ath-guardian-name">{t("onboard_guardian_name")}</Label>
+                    <Input
+                      id="ath-guardian-name"
+                      value={draft.guardianName}
+                      onChange={(e) => patchDraft({ guardianName: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ath-guardian-email">{t("onboard_guardian_email")}</Label>
+                    <Input
+                      id="ath-guardian-email"
+                      type="email"
+                      value={draft.guardianEmail}
+                      onChange={(e) => patchDraft({ guardianEmail: e.target.value })}
+                      placeholder="parent@example.com"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

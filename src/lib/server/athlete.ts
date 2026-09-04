@@ -10,6 +10,7 @@ import {
   coachProfiles,
   messageThreads,
   messages,
+  parentLinks,
   studentAthletes,
   timeSlots,
   users,
@@ -523,6 +524,56 @@ export async function getStudentsForCoach(user: User): Promise<StudentAthlete[]>
   const db = getDb();
   const rows = await db.select().from(studentAthletes).where(eq(studentAthletes.coachId, coachId));
   return rows.map(mapStudent);
+}
+
+/**
+ * Persist an athlete's position-aware starter goals chosen during onboarding.
+ * Replaces any existing goals so re-running onboarding is idempotent.
+ */
+export async function saveOnboardingGoals(
+  user: User,
+  input: {
+    position: string;
+    goals: { metric: string; label: string; unit: string; target: number }[];
+  },
+): Promise<number> {
+  if (!isDatabaseConfigured()) return 0;
+  const db = getDb();
+  await db.delete(athleteGoals).where(eq(athleteGoals.athleteId, user.id));
+  const rows = input.goals.map((g, i) => ({
+    id: `g-${randomBytes(6).toString("hex")}`,
+    athleteId: user.id,
+    metric: g.metric,
+    label: g.label,
+    unit: g.unit,
+    position: input.position || null,
+    baseline: 0,
+    current: 0,
+    target: g.target,
+    priorityRank: i,
+  }));
+  if (rows.length > 0) await db.insert(athleteGoals).values(rows);
+  return rows.length;
+}
+
+/** Invite a parent/guardian for a newly onboarded athlete (writes parent_links). */
+export async function saveParentLink(
+  user: User,
+  input: { guardianName?: string; guardianEmail: string; relationship?: string },
+): Promise<boolean> {
+  if (!isDatabaseConfigured()) return false;
+  const email = input.guardianEmail.trim();
+  if (!email) return false;
+  const db = getDb();
+  await db.insert(parentLinks).values({
+    id: `pl-${randomBytes(6).toString("hex")}`,
+    athleteId: user.id,
+    guardianName: input.guardianName?.trim() || "Guardian",
+    guardianEmail: email,
+    relationship: input.relationship?.trim() || "parent",
+    status: "invited",
+  });
+  return true;
 }
 
 /** Progress for a coach viewing one of their athletes (auth-guarded by student link). */
