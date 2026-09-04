@@ -2,7 +2,10 @@
 
 import { cn } from "@/lib/utils";
 
-/** AthlinkPro wordmark — Manrope brand face, theme-aware “Pro” contrast */
+/**
+ * AthlinkPro wordmark aligned to official logo:
+ * wide tracking, ATHLINK + PRO, mint → sky/lavender shimmer.
+ */
 export function AthlinkProMark({
   className,
   baseClassName,
@@ -14,20 +17,19 @@ export function AthlinkProMark({
   className?: string;
   baseClassName?: string;
   proClassName?: string;
-  /** default = light/dark UI surfaces; hero = always on dark blue gradient */
+  /** default = UI surfaces; hero = on black / dark canvas */
   variant?: "default" | "hero";
-  /** hero = giant landing wordmark (only h1 on the home viewport) */
   size?: "default" | "hero";
-  /** soft color shimmer on Pro (landing hero) */
+  /** soft mint→sky shimmer on Pro (landing hero) */
   animated?: boolean;
 }) {
   return (
     <span
       className={cn(
-        "font-brand tracking-tight",
+        "font-brand uppercase tracking-[0.12em]",
         size === "hero"
-          ? "text-[clamp(3rem,12vw,6.5rem)] leading-none font-extrabold"
-          : "font-black",
+          ? "text-[clamp(2.4rem,9vw,5.25rem)] leading-none font-extrabold"
+          : "text-sm font-black tracking-[0.16em] sm:text-base",
         className,
       )}
     >
@@ -42,8 +44,10 @@ export function AthlinkProMark({
       <span
         className={cn(
           !animated &&
-            (variant === "hero" ? "text-[var(--athlink-link-hero)]" : "text-[var(--athlink-link)]"),
-          animated && "athlink-link-shimmer",
+            (variant === "hero"
+              ? "bg-gradient-to-r from-[#b8e8d4] to-[#b8c8f0] bg-clip-text text-transparent"
+              : "text-[var(--athlink-link)]"),
+          animated && "athlink-logo-shimmer",
           proClassName,
         )}
       >

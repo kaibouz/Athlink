@@ -11,6 +11,8 @@ const sizeClasses = {
   default: "h-10 w-10",
   lg: "h-14 w-14",
   xl: "h-28 w-28",
+  /** Wide transparent lockup for hero / footer */
+  hero: "h-auto w-[min(100%,18rem)] sm:w-[min(100%,24rem)]",
 } as const;
 
 /** Official AthlinkPro mark — AP monogram + ATHLINKPRO wordmark */

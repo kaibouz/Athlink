@@ -75,13 +75,24 @@ export function CoachHomeLanding() {
           </header>
 
           <section className="relative z-10 mx-auto max-w-4xl px-4 pt-12 pb-10 text-center sm:px-6 sm:pt-16 sm:pb-14">
-            <p className="land-fade text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase sm:text-sm">
+            <p className="land-fade text-xs font-semibold tracking-[0.18em] text-brand-500 uppercase sm:text-sm">
               {t("join_coach_eyebrow")}
             </p>
-            <h1 className="land-fade land-fade-delay-1 mt-4 font-brand text-4xl font-bold tracking-tight text-brand-950 sm:text-5xl">
-              {t("land_split_coach_title")}
+            <h1 className="land-fade land-fade-delay-1 land-logo-reveal mx-auto mt-5 flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/athlinkpro-logo-transparent.png"
+                alt="AthlinkPro"
+                width={1154}
+                height={895}
+                className="h-auto w-[min(100%,18rem)] object-contain sm:w-[min(100%,22rem)]"
+                fetchPriority="high"
+              />
             </h1>
-            <p className="land-fade land-fade-delay-2 mx-auto mt-4 max-w-2xl text-base font-semibold leading-snug text-brand-700 sm:text-lg">
+            <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-2xl text-base font-semibold leading-snug tracking-wide text-brand-700 sm:text-lg">
+              {t("land_split_coach_title")}
+            </p>
+            <p className="land-fade land-fade-delay-2 mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-brand-600 sm:text-base">
               {t("land_split_coach_lead")}
             </p>
             <p className="land-fade land-fade-delay-3 mx-auto mt-4 max-w-xl text-sm leading-relaxed text-brand-600 sm:text-base">

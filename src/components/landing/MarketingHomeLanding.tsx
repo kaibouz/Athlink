@@ -15,7 +15,6 @@ import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboar
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
-import { AthlinkProMark } from "@/components/brand/AthlinkProMark";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
@@ -131,9 +130,17 @@ export function MarketingHomeLanding() {
                 <span className="mx-1.5 text-brand-300">·</span>
                 {t("hero_locations")}
               </p>
-              <h1 className="land-fade land-fade-delay-1 mt-5">
-                <AthlinkProMark size="hero" variant="hero" animated />
-              </h1>
+            <h1 className="land-fade land-fade-delay-1 land-logo-reveal mx-auto mt-5 flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/athlinkpro-logo-transparent.png"
+                alt="AthlinkPro"
+                width={1154}
+                height={895}
+                className="h-auto w-[min(100%,20rem)] object-contain sm:w-[min(100%,26rem)]"
+                fetchPriority="high"
+              />
+            </h1>
               <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-xl text-base font-medium leading-snug text-brand-800 sm:text-lg">
                 {t("join_athlete_title")}
               </p>

@@ -132,8 +132,8 @@
   --palette-sky: #6cace4;
   --palette-teapot: #9cc2e5;
 
-  --app-bg: #01060f;
-  --app-bg-deep: #020b1c;
+  --app-bg: #000000;
+  --app-bg-deep: #01060f;
   --app-bg-mid: #061533;
   --app-bg-accent: #0a1a3a;
   --surface-bg: rgba(8, 22, 52, 0.78);
@@ -141,11 +141,11 @@
   --surface-glass-border: rgba(156, 194, 229, 0.14);
   --app-gradient-linear: linear-gradient(
     155deg,
-    #01060f 0%,
-    #020b1c 26%,
+    #000000 0%,
+    #01060f 26%,
     #061533 52%,
     #0a1a3a 78%,
-    #01060f 100%
+    #000000 100%
   );
   --app-gradient-glow-top: radial-gradient(
     ellipse 70% 55% at 50% -8%,
@@ -198,7 +198,9 @@
 
   --athlink-ath: #f4f8fc;
   --athlink-link: #6cace4;
-  --athlink-link-hero: #9cc2e5;
+  --athlink-link-hero: #b8c8f0;
+  --athlink-mint: #b8e8d4;
+  --athlink-lavender: #b8c8f0;
 
   --landing-bg: var(--app-bg-mid);
   --landing-hero: var(--app-bg);
@@ -1027,6 +1029,50 @@ body {
   animation: athlink-shimmer 4.5s ease-in-out infinite;
 }
 
+/* Official logo wordmark shimmer — mint → lavender (matches brand PNG) */
+.athlink-logo-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--athlink-mint, #b8e8d4) 0%,
+    var(--athlink-lavender, #b8c8f0) 50%,
+    var(--athlink-mint, #b8e8d4) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: athlink-shimmer 5s ease-in-out infinite;
+}
+
+/* Pure black HQ canvas + logo reveal after splash */
+.landing-page-black {
+  background-color: #000;
+}
+.landing-hero-black {
+  background-color: #000 !important;
+  background-image:
+    var(--app-gradient-glow-top),
+    var(--app-gradient-glow-right),
+    var(--app-gradient-glow-left),
+    linear-gradient(180deg, #000 0%, #01060f 45%, #061533 100%) !important;
+}
+.land-logo-reveal {
+  animation: land-logo-reveal 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+  filter: drop-shadow(0 0 28px rgba(0, 114, 206, 0.18));
+}
+@keyframes land-logo-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(18px);
+    filter: blur(8px) brightness(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 0 28px rgba(0, 114, 206, 0.18));
+  }
+}
+
 @keyframes athlink-shimmer {
   0%,
   100% {
@@ -1303,6 +1349,8 @@ body {
   .landing-coast-node,
   .landing-coast-diamond,
   .athlink-link-shimmer,
+  .athlink-logo-shimmer,
+  .land-logo-reveal,
   .land-word-underline,
   .landing-splash-rays,
   .landing-splash-particles,
