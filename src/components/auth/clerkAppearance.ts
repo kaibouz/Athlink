@@ -21,7 +21,7 @@ export const clerkAuthAppearance = {
     formFieldInput:
       "border-white/10 bg-[var(--app-bg-mid,#0a1220)] text-foreground focus:border-brand-500",
     footerActionLink: "text-brand-400 hover:text-brand-300",
-    // Frosted glass Continue — Apple-adjacent, shared SignIn + SignUp
+    // Frosted glass Continue — mirrors `.btn-premium` in globals.css (SignIn + SignUp)
     formButtonPrimary: {
       background:
         "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 100%)",

@@ -870,6 +870,65 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
+/* Frosted glass primary — shared with Clerk formButtonPrimary (clerkAppearance.ts) */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  color: #f5f7fa;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(125, 211, 252, 0.06);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    filter 0.28s ease;
+}
+.btn-premium:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 10px 28px rgba(0, 0, 0, 0.32),
+    0 0 28px rgba(148, 200, 255, 0.18);
+  filter: brightness(1.04);
+}
+.btn-premium:active {
+  transform: translateY(0) scale(0.98);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(0.98);
+}
+.btn-premium:focus-visible {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 0 0 2px rgba(197, 212, 232, 0.35),
+    0 0 24px rgba(148, 200, 255, 0.15);
+}
+
 .land-chip {
   display: inline-flex;
   align-items: center;
@@ -1237,6 +1296,7 @@ body {
   .btn-landing-primary:hover,
   .btn-landing-secondary:hover,
   .btn-athlete-primary:hover,
+  .btn-premium:hover,
   .land-chip:hover {
     transform: none;
   }

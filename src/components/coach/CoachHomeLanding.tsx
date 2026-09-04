@@ -72,23 +72,15 @@ export function CoachHomeLanding() {
             <li>· {t("land_split_coach_2")}</li>
             <li>· {t("land_split_coach_3")}</li>
           </ul>
-          <div className="land-fade land-fade-delay-4 mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="land-fade land-fade-delay-4 mt-8 flex justify-center">
             <Link href="/join/coach" className="group">
               <Button
                 size="lg"
-                className="btn-landing-primary h-12 min-w-48 rounded-xl border-0 px-6 text-sm font-bold sm:h-14 sm:text-base"
+                variant="ghost"
+                className="btn-premium h-12 min-w-52 rounded-xl px-7 text-sm sm:h-14 sm:text-base"
               >
                 {t("hero_cta_coach")}
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link href="/coach/register" className="group">
-              <Button
-                size="lg"
-                variant="outline"
-                className="btn-landing-secondary h-12 min-w-40 rounded-xl px-5 text-sm font-bold sm:h-14 sm:text-base"
-              >
-                {t("footer_register")}
               </Button>
             </Link>
           </div>
@@ -136,7 +128,7 @@ export function CoachHomeLanding() {
           </h2>
           <p className="mt-3 text-brand-600">{t("join_coach_body")}</p>
           <Link href="/join/coach" className="group mt-8 inline-block">
-            <Button size="lg" className="btn-landing-primary border-0">
+            <Button size="lg" variant="ghost" className="btn-premium">
               {t("join_coach_cta")}
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
