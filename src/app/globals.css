@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/mobile-concept.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -132,13 +133,13 @@
   --palette-sky: #6cace4;
   --palette-teapot: #9cc2e5;
 
-  --app-bg: #000000;
-  --app-bg-deep: #01060f;
-  --app-bg-mid: #061533;
-  --app-bg-accent: #0a1a3a;
-  --surface-bg: rgba(8, 22, 52, 0.78);
-  --surface-glass: rgba(10, 28, 62, 0.48);
-  --surface-glass-border: rgba(156, 194, 229, 0.14);
+  --app-bg: #05070c;
+  --app-bg-deep: #05070c;
+  --app-bg-mid: #0b0f1a;
+  --app-bg-accent: #10162a;
+  --surface-bg: rgba(11, 15, 26, 0.92);
+  --surface-glass: rgba(16, 22, 42, 0.55);
+  --surface-glass-border: rgba(255, 255, 255, 0.08);
   --app-gradient-linear: linear-gradient(
     155deg,
     #000000 0%,
@@ -182,16 +183,16 @@
   --brand-100: #0a1a3a;
   --brand-200: #122447;
   --brand-300: #1a3a6e;
-  --brand-400: #418fde;
-  --brand-500: #0072ce;
-  --brand-600: #005eb8;
-  --brand-700: #6cace4;
-  --brand-800: #9cc2e5;
-  --brand-900: #c5daf0;
-  --brand-950: #e8f1fa;
+  --brand-400: #8db0ff;
+  --brand-500: #3b6ef6;
+  --brand-600: #22c7e0;
+  --brand-700: #22c7e0;
+  --brand-800: #9aa3b2;
+  --brand-900: #c5d0e0;
+  --brand-950: #f5f7fa;
 
-  --ink: #01060f;
-  --ink-mid: #005eb8;
+  --ink: #05070c;
+  --ink-mid: #3b6ef6;
   --field: #3d8a4c;
   --clay: #d4b483;
   --sun: #0a1a3a;
