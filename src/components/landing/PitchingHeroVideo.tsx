@@ -14,7 +14,7 @@ export function PitchingHeroVideo() {
   ];
 
   return (
-    <section id="how" className="relative overflow-hidden py-16 sm:py-20">
+    <section id="how" className="relative scroll-mt-24 overflow-hidden py-16 sm:py-20">
       <video
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         autoPlay
