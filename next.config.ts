@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Soft browser View Transitions for App Router navigations when supported.
+  experimental: {
+    viewTransition: true,
+  },
   // Cursor Simple Browser uses 127.0.0.1; allow dev assets (HMR, fonts) cross-origin.
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   images: {
