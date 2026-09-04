@@ -65,7 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="app-page-bg flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <ClerkNavAuth loginLabel={t("nav_login")} compact />
             <LocaleSwitcher compact />
           </div>

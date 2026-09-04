@@ -157,7 +157,7 @@ export function JoinGateway() {
         <header className="relative z-20">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
             <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5">
               <ClerkNavAuth loginLabel={t("nav_login")} />
               <LocaleSwitcher compact />
             </div>

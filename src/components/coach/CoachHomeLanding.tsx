@@ -12,6 +12,7 @@ import {
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
+import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
@@ -46,10 +47,10 @@ export function CoachHomeLanding() {
               <Link href="/for-athletes" className="landing-nav-link hidden sm:inline-flex">
                 {t("join_athlete_eyebrow")} →
               </Link>
-              <Link href="/login" className="landing-nav-link">
-                {t("nav_login")}
-              </Link>
-              <LocaleSwitcher compact />
+              <div className="flex items-center gap-1.5">
+                <ClerkNavAuth loginLabel={t("nav_login")} />
+                <LocaleSwitcher compact />
+              </div>
             </div>
           </div>
         </header>

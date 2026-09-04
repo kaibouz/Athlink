@@ -73,7 +73,6 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <LocaleSwitcher />
           {user ? (
             <>
               <span className="rounded-lg bg-brand-50 px-2 py-1 text-xs font-semibold text-brand-700">
@@ -127,20 +126,23 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm">
-                  {t("nav_login")}
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm">{t("nav_signup")}</Button>
-              </Link>
-            </>
+            <Link href="/login">
+              <Button variant="ghost" size="sm">
+                {t("nav_login")}
+              </Button>
+            </Link>
           )}
+          <LocaleSwitcher />
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
+          {!user && (
+            <Link href="/login">
+              <Button variant="ghost" size="sm">
+                {t("nav_login")}
+              </Button>
+            </Link>
+          )}
           <LocaleSwitcher compact />
           <button
             className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"
@@ -219,13 +221,6 @@ export function Header() {
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-brand-700 hover:bg-brand-50"
                 >
                   {t("nav_login")}
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50"
-                >
-                  {t("nav_signup")}
                 </Link>
               </>
             )}

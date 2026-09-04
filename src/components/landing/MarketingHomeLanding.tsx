@@ -125,8 +125,10 @@ export function MarketingHomeLanding() {
                 <Link href="/for-coaches" className="landing-nav-link hidden sm:inline-flex">
                   {t("join_coach_eyebrow")} →
                 </Link>
-                <ClerkNavAuth loginLabel={t("nav_login")} />
-                <LocaleSwitcher compact />
+                <div className="flex items-center gap-1.5">
+                  <ClerkNavAuth loginLabel={t("nav_login")} />
+                  <LocaleSwitcher compact />
+                </div>
               </div>
             </div>
           </header>
