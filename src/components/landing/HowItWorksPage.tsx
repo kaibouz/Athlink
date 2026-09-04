@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Search } from "lucide-react";
+import { AthleteLandingBelow } from "@/components/athlete/AthleteLandingBelow";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
@@ -89,40 +90,9 @@ export function HowItWorksPage() {
 
       <PitchingHeroVideo />
 
-      <HowAthlinkWorks />
+      <HowAthlinkWorks showCta={false} />
 
-      <section className="border-t border-white/10 bg-black py-14">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="font-brand text-2xl tracking-[0.08em] text-brand-950 uppercase sm:text-3xl">
-            {t("how_final_title")}
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-brand-600 sm:text-base">
-            {t("how_final_sub")}
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/get-started" className="group">
-              <Button size="lg" variant="ghost" className="btn-premium">
-                {t("hq_get_started")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link href="/for-coaches">
-              <Button size="lg" variant="outline" className="btn-landing-secondary">
-                {t("how_coach_link")}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <footer className="land-footer border-t border-white/10 bg-black">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
-          <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
-          <p className="text-xs tracking-[0.16em] text-brand-500 uppercase">
-            {t("land_footer_tag")}
-          </p>
-        </div>
-      </footer>
+      <AthleteLandingBelow />
     </div>
   );
 }

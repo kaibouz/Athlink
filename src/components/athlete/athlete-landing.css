@@ -26,6 +26,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* A nested instance inherits the host's wash instead of stacking a second one. */
+.athlete-landing .athlete-landing {
+  background-image: none;
+}
+
 .athlete-landing section[id] {
   scroll-margin-top: 96px;
 }
@@ -925,8 +930,7 @@
   position: relative;
 }
 
-.athlete-landing .ah-plan.ah-pro::before {
-  content: "Most popular";
+.athlete-landing .ah-plan-badge {
   position: absolute;
   top: -12px;
   left: 32px;
