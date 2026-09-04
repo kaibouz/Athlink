@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  BarChart3,
   CalendarDays,
   Check,
   CircleDollarSign,
@@ -133,7 +132,6 @@ export function AppSidebar({
     { href: "/coach/feedback", label: t("coach_nav_feedback"), icon: Send },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },
     { href: "/coach/invite", label: t("coach_nav_invite"), icon: Network },
-    { href: "/coach/analytics", label: t("coach_nav_analytics"), icon: BarChart3 },
   ];
 
   const links = isCoach ? coachNav : athleteNav;

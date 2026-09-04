@@ -75,7 +75,8 @@ export function AthleteHomeScreen() {
             <div>
               <div className="text-[0.95rem] font-bold">{next.coachName}</div>
               <div className="mt-0.5 text-[0.75rem] text-[var(--mx-dimmer)]">
-                {next.format} · {formatDateJa(next.date, dateLocale)} · {next.startTime}
+                {next.format === "online" ? "Online" : "In person"} ·{" "}
+                {formatDateJa(next.date, dateLocale)} · {next.startTime}–{next.endTime}
               </div>
               <span className="mx-pill mx-pill-green mt-2">Confirmed</span>
             </div>

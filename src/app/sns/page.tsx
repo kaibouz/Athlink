@@ -66,14 +66,14 @@ export default function SnsPage() {
   }, [profiles]);
 
   return (
-    <div className="mx-auto w-full max-w-6xl min-h-[70vh] border-x border-brand-100 bg-surface">
-      <header className="sticky top-14 z-20 border-b border-brand-100 bg-surface/90 backdrop-blur-md md:top-0">
+    <div className="mx-app mx-auto w-full max-w-6xl min-h-[70vh] border-x border-[color:var(--mx-border)]">
+      <header className="sticky top-14 z-20 border-b border-[color:var(--mx-border)] bg-[color:var(--mx-bg)]/90 backdrop-blur-md md:top-0">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           <div>
-            <h1 className="text-xl font-black tracking-tight text-brand-950">
-              {t("sns_title")}
+            <h1 className="text-xl font-black tracking-tight text-[color:var(--mx-text)]">
+              {t("nav_feed")}
             </h1>
-            <p className="text-xs text-brand-500">
+            <p className="text-xs text-[color:var(--mx-dimmer)]">
               {isCoach ? t("sns_sub_coach") : t("sns_sub")}
             </p>
           </div>
