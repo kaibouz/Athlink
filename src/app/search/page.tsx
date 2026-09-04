@@ -5,7 +5,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { SPECIALTIES } from "@/lib/data";
 import { defaultFilters, filterCoaches } from "@/lib/search";
-import type { CoachProfile, SearchFilters } from "@/types";
+import type { CoachProfile, NextSlot, SearchFilters } from "@/types";
 import { CoachBookRow } from "@/components/coaches/CoachBookRow";
 import { SearchFiltersPanel } from "@/components/coaches/SearchFiltersPanel";
 import { useLocale } from "@/lib/i18n/provider";
@@ -29,11 +29,15 @@ function SearchContent() {
     specialty: params.get("specialty") ?? "",
   }));
   const [coaches, setCoaches] = useState<CoachProfile[]>([]);
+  const [nextSlots, setNextSlots] = useState<Record<string, NextSlot>>({});
 
   useEffect(() => {
     void fetch("/api/coaches")
       .then((r) => r.json())
-      .then((d: { coaches: CoachProfile[] }) => setCoaches(d.coaches ?? []))
+      .then((d: { coaches: CoachProfile[]; nextSlots?: Record<string, NextSlot> }) => {
+        setCoaches(d.coaches ?? []);
+        setNextSlots(d.nextSlots ?? {});
+      })
       .catch(() => setCoaches([]));
   }, []);
 
@@ -138,7 +142,9 @@ function SearchContent() {
               <p className="mt-1 text-sm text-[color:var(--mx-dimmer)]">{t("search_empty_hint")}</p>
             </div>
           ) : (
-            results.map((coach) => <CoachBookRow key={coach.id} coach={coach} />)
+            results.map((coach) => (
+              <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />
+            ))
           )}
         </div>
       </div>

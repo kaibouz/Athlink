@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { ShieldCheck, Star } from "lucide-react";
-import type { CoachProfile } from "@/types";
-import { formatPrice } from "@/lib/utils";
+import type { CoachProfile, NextSlot } from "@/types";
+import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 
@@ -17,11 +17,15 @@ function initials(name: string) {
 }
 
 /** Mobile-concept coach list row: gradient avatar + next available slot */
-export function CoachBookRow({ coach }: { coach: CoachProfile }) {
-  const { t } = useLocale();
+export function CoachBookRow({ coach, nextSlot }: { coach: CoachProfile; nextSlot?: NextSlot }) {
+  const { t, locale } = useLocale();
+  const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const skill = coach.specialties[0]
     ? specialtyLabel(t, coach.specialties[0])
     : sportLabel(t, coach.sport);
+  const nextSlotLabel = nextSlot
+    ? `${formatDateJa(nextSlot.date, dateLocale)} · ${nextSlot.startTime}`
+    : coach.availabilityNote;
 
   return (
     <Link href={`/coaches/${coach.id}`} className="mx-li transition hover:border-[color:var(--mx-border-strong)]">
@@ -39,7 +43,7 @@ export function CoachBookRow({ coach }: { coach: CoachProfile }) {
           {skill} · {coach.location}
         </span>
         <span className="!text-[color:var(--mx-blue-2)]">
-          {t("search_next_slot")}: {coach.availabilityNote}
+          {t("search_next_slot")}: {nextSlotLabel}
         </span>
       </div>
       <div className="mx-r">
