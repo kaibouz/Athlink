@@ -3,21 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  Bot,
-  CalendarDays,
-  MessageSquare,
-  Search,
-  Video,
-} from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
+import { AthleteHomeLanding } from "@/components/athlete/AthleteHomeLanding";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
-import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { RoleJourneyChrome } from "@/components/landing/RoleJourneyChrome";
 import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
@@ -59,18 +52,12 @@ export function MarketingHomeLanding() {
     );
   }
 
-  const benefitItems = [
-    { icon: CalendarDays, text: t("join_athlete_feat_1") },
-    { icon: Video, text: t("join_athlete_feat_2") },
-    { icon: Bot, text: t("join_athlete_feat_3") },
-    { icon: MessageSquare, text: t("join_athlete_feat_4") },
-  ];
-
   const steps = [
     { id: "journey-hero", label: t("journey_step_welcome") },
-    { id: "how", label: t("journey_step_how") },
-    { id: "journey-benefits", label: t("journey_step_benefits") },
-    { id: "journey-register", label: t("journey_step_register") },
+    { id: "how-it-works", label: t("journey_step_how") },
+    { id: "features", label: t("journey_step_features") },
+    { id: "coaches", label: t("journey_step_coaches") },
+    { id: "pricing", label: t("journey_step_pricing") },
   ];
 
   return (
@@ -148,7 +135,7 @@ export function MarketingHomeLanding() {
                 {t("join_athlete_body")}
               </p>
               <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-                <a href="#how" className="group">
+                <a href="#how-it-works" className="group">
                   <Button
                     size="lg"
                     variant="ghost"
@@ -183,58 +170,7 @@ export function MarketingHomeLanding() {
             <p className="pb-4 text-center text-sm font-bold tracking-wide">{t("land_band_tag")}</p>
           </div>
 
-          <PitchingHeroVideo />
-
-          <section
-            id="journey-benefits"
-            className="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6 sm:py-20"
-          >
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
-                {t("journey_step_benefits")}
-              </h2>
-              <p className="mt-2 text-brand-600">{t("join_athlete_body")}</p>
-            </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {benefitItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <article key={item.text} className="land-panel flex gap-4 rounded-2xl p-5">
-                    <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand-500" />
-                    <p className="text-sm leading-relaxed text-brand-700">{item.text}</p>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-
-          <section id="journey-register" className="scroll-mt-24 py-16 sm:py-20">
-            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-              <p className="text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase">
-                {t("join_athlete_badge")}
-              </p>
-              <h2 className="mt-3 font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl">
-                {t("join_athlete_title")}
-              </h2>
-              <p className="mt-3 text-brand-600">{t("land_trust_compact")}</p>
-              <Link href="/join/athlete" className="group mt-8 inline-block">
-                <Button size="lg" variant="ghost" className="btn-premium">
-                  {t("journey_register_athlete")}
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </Link>
-              <p className="mt-4 text-xs font-medium text-brand-500">{t("join_athlete_footnote")}</p>
-            </div>
-          </section>
-
-          <footer className="land-footer border-t border-brand-200/20">
-            <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
-              <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
-                ← {t("nav_home")}
-              </Link>
-              <p className="text-xs text-brand-500">{t("land_footer_tag")}</p>
-            </div>
-          </footer>
+          <AthleteHomeLanding variant="body" />
         </div>
       </div>
     </RoleJourneyChrome>
