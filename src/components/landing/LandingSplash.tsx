@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "athlink_intro_seen";
+const STORAGE_KEY = "athlink_intro_seen_v2";
 const EXIT_MS = 1200;
 const REVEAL_MS = 180;
 
