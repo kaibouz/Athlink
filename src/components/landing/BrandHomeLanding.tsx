@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Search, UserRound, Users } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -84,6 +85,9 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
+                <Link href="/how-it-works" className="landing-nav-link hidden sm:inline-flex">
+                  {t("how_nav_link")}
+                </Link>
                 <Link href="/search" className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
@@ -160,6 +164,8 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
+        <HowAthlinkWorks />
+
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
@@ -230,6 +236,20 @@ export function BrandHomeLanding() {
         <footer className="land-footer border-t border-white/10 bg-black">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
             <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
+            <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-brand-600">
+              <Link href="/how-it-works" className="hover:text-white">
+                {t("how_nav_link")}
+              </Link>
+              <Link href="/for-athletes" className="hover:text-white">
+                {t("join_athlete_eyebrow")}
+              </Link>
+              <Link href="/for-coaches" className="hover:text-white">
+                {t("join_coach_eyebrow")}
+              </Link>
+              <Link href="/search" className="hover:text-white">
+                {t("hq_browse_coaches")}
+              </Link>
+            </nav>
             <p className="text-xs tracking-[0.16em] text-brand-500 uppercase">
               {t("land_footer_tag")}
             </p>
