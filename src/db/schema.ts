@@ -29,6 +29,8 @@ export const socialPostTypeEnum = pgEnum("social_post_type", [
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
+  /** Clerk user id for public members. NULL for admin/executive rows, which stay password-only. */
+  clerkId: text("clerk_id").unique(),
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   role: userRoleEnum("role").notNull(),
