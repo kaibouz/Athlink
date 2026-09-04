@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { useAthleteLandingAnim } from "@/components/athlete/useAthleteLandingAnim";
@@ -27,40 +28,6 @@ function PinIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
       <path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-      <path d="M3 10h18M8 3v4M16 3v4" />
-    </svg>
-  );
-}
-
-function MessageIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M4 5h16v11H9l-5 4z" />
-    </svg>
-  );
-}
-
-function VideoIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect x="2.5" y="6" width="14" height="12" rx="2" />
-      <path d="M16.5 10l5-3v10l-5-3" />
-    </svg>
-  );
-}
-
-function ChartIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M3 12h4l2-7 4 14 2-7h6" />
     </svg>
   );
 }
@@ -97,7 +64,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 Log in
               </Link>
               <MarketingThemeToggle />
-              <Link className="ah-btn ah-btn-clay ah-btn-sm" href="/join/athlete">
+              <Link className="ah-btn ah-btn-accent ah-btn-sm" href="/join/athlete">
                 Get Started
               </Link>
             </nav>
@@ -115,7 +82,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 stroke="rgba(255,255,255,0.16)"
                 strokeWidth="1.4"
               />
-              <circle cx="40" cy="40" r="4.5" fill="#f2c94c" />
+              <circle cx="40" cy="40" r="4.5" fill="#22c7e0" />
               <text x="56" y="45">
                 Book a coach
               </text>
@@ -131,7 +98,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
               <text x="316" y="465">
                 Share your progress
               </text>
-              <circle cx="480" cy="600" r="4.5" fill="#f2c94c" />
+              <circle cx="480" cy="600" r="4.5" fill="#22c7e0" />
               <text x="410" y="628">
                 Get your AI breakdown
               </text>
@@ -145,7 +112,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 rep — all in one place.
               </p>
               <div className="ah-cta-row">
-                <Link className="ah-btn ah-btn-clay" href="#pricing">
+                <Link className="ah-btn ah-btn-accent" href="#pricing">
                   Start Free — No Credit Card Needed →
                 </Link>
                 <Link className="ah-btn ah-btn-ghost" href="#coaches">
@@ -189,60 +156,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
         <PitchingHeroVideo />
       </div>
 
-      <section className="ah-block">
-        <div className="ah-wrap">
-          <div className="ah-sec-head">
-            <h3>How AthlinkPro Works for Athletes</h3>
-            <p>Getting started takes less than 2 minutes.</p>
-          </div>
-          <div className="ah-steps">
-            <div className="ah-step">
-              <div className="ah-ic">
-                <CalendarIcon />
-              </div>
-              <div className="ah-n">Step 1 — Book</div>
-              <h4>Find and book a coach</h4>
-              <p>
-                Browse verified private coaches near you, compare availability and pricing, and book a
-                session in a couple of taps.
-              </p>
-            </div>
-            <div className="ah-step">
-              <div className="ah-ic">
-                <MessageIcon />
-              </div>
-              <div className="ah-n">Step 2 — Message</div>
-              <h4>Talk to your coach</h4>
-              <p>
-                Questions, reschedules, and clips for feedback, in one thread per coach — no juggling
-                texts, DMs, and email.
-              </p>
-            </div>
-            <div className="ah-step">
-              <div className="ah-ic">
-                <VideoIcon />
-              </div>
-              <div className="ah-n">Step 3 — Share</div>
-              <h4>Post to your training feed</h4>
-              <p>
-                Share clips and progress from every session on a feed built for athletes, not
-                influencers — and get seen by coaches and scouts nearby.
-              </p>
-            </div>
-            <div className="ah-step">
-              <div className="ah-ic">
-                <ChartIcon />
-              </div>
-              <div className="ah-n">Step 4 — Breakdown</div>
-              <h4>Get your AI breakdown</h4>
-              <p>
-                Upload your swing or throw and get an automatic biomechanical breakdown — joint angles,
-                timing, and mechanics flagged for your next session.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HowAthlinkWorks showCta={false} />
 
       <section className="ah-block ah-tight" id="features" style={{ paddingTop: 0 }}>
         <div className="ah-wrap">
@@ -279,7 +193,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
               <div className="ah-coach-row">
                 <div
                   className="ah-avatar"
-                  style={{ background: "linear-gradient(135deg,#2563eb,#22d3ee)" }}
+                  style={{ background: "linear-gradient(135deg,#1e3a8a,#3b6ef6)" }}
                 >
                   JP
                 </div>
@@ -394,7 +308,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 <div className="ah-ph">
                   <div
                     className="ah-avatar ah-c"
-                    style={{ background: "linear-gradient(135deg,#3ddc97,#22c7e0)", color: "#06201a" }}
+                    style={{ background: "linear-gradient(135deg,#3ddc97,#22c7e0)", color: "#04121f" }}
                   >
                     MT
                   </div>
@@ -443,28 +357,28 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                     <g stroke="rgba(255,255,255,0.25)" strokeWidth="1" fill="none">
                       <line x1="0" y1="180" x2="200" y2="180" />
                     </g>
-                    <g className="legs" stroke="#f2c94c" strokeWidth="2.2" strokeLinecap="round" fill="none">
+                    <g className="legs" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" fill="none">
                       <line x1="92" y1="110" x2="70" y2="150" />
                       <line x1="70" y1="150" x2="62" y2="180" />
                       <line x1="92" y1="110" x2="118" y2="145" />
                       <line x1="118" y1="145" x2="130" y2="180" />
                     </g>
-                    <g fill="#f2c94c">
+                    <g fill="#22c7e0">
                       <circle cx="92" cy="110" r="3.5" />
                       <circle cx="70" cy="150" r="3.5" />
                       <circle cx="118" cy="145" r="3.5" />
                     </g>
                     <g className="body">
-                      <line x1="95" y1="60" x2="92" y2="110" stroke="#f2c94c" strokeWidth="2.2" strokeLinecap="round" />
-                      <circle cx="95" cy="60" r="3.5" fill="#f2c94c" />
-                      <circle cx="95" cy="42" r="10" fill="none" stroke="#f2c94c" strokeWidth="2.2" />
-                      <g className="arms" stroke="#f2c94c" strokeWidth="2.2" strokeLinecap="round" fill="none">
+                      <line x1="95" y1="60" x2="92" y2="110" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" />
+                      <circle cx="95" cy="60" r="3.5" fill="#22c7e0" />
+                      <circle cx="95" cy="42" r="10" fill="none" stroke="#22c7e0" strokeWidth="2.2" />
+                      <g className="arms" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" fill="none">
                         <line x1="95" y1="60" x2="60" y2="75" />
                         <line x1="60" y1="75" x2="45" y2="55" />
                         <line x1="95" y1="60" x2="125" y2="80" />
                         <line x1="125" y1="80" x2="150" y2="60" />
                         <line x1="45" y1="55" x2="150" y2="60" stroke="rgba(255,255,255,0.55)" strokeWidth="3" />
-                        <g fill="#f2c94c" stroke="none">
+                        <g fill="#22c7e0" stroke="none">
                           <circle cx="60" cy="75" r="3.5" />
                           <circle cx="125" cy="80" r="3.5" />
                           <circle cx="45" cy="55" r="3.5" />
@@ -556,11 +470,11 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 />
                 <defs>
                   <linearGradient id="ahChartGrad" x1="0" x2="1">
-                    <stop offset="0" stopColor="#e0a458" />
-                    <stop offset="1" stopColor="#f2c94c" />
+                    <stop offset="0" stopColor="#3b6ef6" />
+                    <stop offset="1" stopColor="#22c7e0" />
                   </linearGradient>
                 </defs>
-                <g fill="#f2c94c">
+                <g fill="#22c7e0">
                   <circle className="ah-chart-dot" style={{ animationDelay: "0.10s" }} cx="20" cy="150" r="4" />
                   <circle className="ah-chart-dot" style={{ animationDelay: "0.32s" }} cx="90" cy="142" r="4" />
                   <circle className="ah-chart-dot" style={{ animationDelay: "0.54s" }} cx="160" cy="146" r="4" />
@@ -669,7 +583,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
             </div>
             <div className="ah-coach-card">
               <div className="ah-top">
-                <div className="ah-avatar" style={{ background: "linear-gradient(135deg,#2563eb,#22d3ee)" }}>
+                <div className="ah-avatar" style={{ background: "linear-gradient(135deg,#1e3a8a,#3b6ef6)" }}>
                   JP
                 </div>
                 <div>
@@ -776,7 +690,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
                 <li>Priority booking on high-demand coaches</li>
                 <li>Cancel anytime</li>
               </ul>
-              <Link className="ah-btn ah-btn-clay" href="/join/athlete">
+              <Link className="ah-btn ah-btn-accent" href="/join/athlete">
                 Start Pro — No Credit Card Needed →
               </Link>
             </div>
@@ -842,7 +756,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
           <h3>Your next session starts here.</h3>
           <p>Free to start. Verified coaches across the South Bay. No credit card needed.</p>
           <div className="ah-cta-row">
-            <Link className="ah-btn ah-btn-clay" href="/join/athlete">
+            <Link className="ah-btn ah-btn-accent" href="/join/athlete">
               Start Free →
             </Link>
             <Link className="ah-btn ah-btn-ghost" href="#coaches">
