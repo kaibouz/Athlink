@@ -8,6 +8,7 @@ import {
   Bot,
   CalendarDays,
   MessageSquare,
+  Search,
   Video,
 } from "lucide-react";
 import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
@@ -150,13 +151,14 @@ export function MarketingHomeLanding() {
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </a>
-                <Link href="/join/athlete" className="group">
+                <Link href="/search" className="group">
                   <Button
                     size="lg"
                     variant="outline"
                     className="btn-landing-secondary h-12 min-w-40 rounded-xl px-5 text-sm font-semibold sm:h-14 sm:text-base"
                   >
-                    {t("journey_register_athlete")}
+                    <Search className="h-4 w-4" />
+                    {t("hq_browse_coaches")}
                   </Button>
                 </Link>
               </div>

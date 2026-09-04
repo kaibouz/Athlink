@@ -17,7 +17,7 @@ export function createAuthFinalizeNavigate(router: AppRouterInstance) {
       return;
     }
 
-    const url = decorateUrl("/");
+    const url = decorateUrl("/app");
     if (url.startsWith("http")) {
       window.location.href = url;
     } else {

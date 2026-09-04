@@ -23,7 +23,9 @@ export function MobileNav() {
   if (
     !user ||
     pathname === "/" ||
+    pathname === "/get-started" ||
     pathname === "/for-athletes" ||
+    pathname === "/for-coaches" ||
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/ios"
@@ -72,6 +74,12 @@ export function MobileNav() {
 
   const athleteTabs: Tab[] = [
     {
+      href: "/search",
+      label: t("nav_search_short"),
+      icon: Search,
+      match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
+    },
+    {
       href: "/bookings",
       label: t("nav_home"),
       icon: Home,
@@ -82,12 +90,6 @@ export function MobileNav() {
       label: t("nav_sns"),
       icon: Radar,
       match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
-    },
-    {
-      href: "/search",
-      label: t("nav_search_short"),
-      icon: Search,
-      match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
     },
     {
       href: "/messages",

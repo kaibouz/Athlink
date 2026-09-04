@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Alias — role gateway lives at `/`. */
-export default function JoinPage() {
-  redirect("/");
+/** Legacy alias — role gateway lives at /get-started. */
+export default function JoinIndexPage() {
+  redirect("/get-started");
 }

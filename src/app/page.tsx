@@ -1,5 +1,5 @@
-import { JoinGateway } from "@/components/join/JoinGateway";
+import { BrandHomeLanding } from "@/components/landing/BrandHomeLanding";
 
 export default function HomePage() {
-  return <JoinGateway />;
+  return <BrandHomeLanding />;
 }

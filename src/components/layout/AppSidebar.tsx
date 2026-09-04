@@ -49,9 +49,9 @@ export function AppSidebar({
   const isCoach = user?.role === "coach";
 
   const athleteNav: NavItem[] = [
-    { href: "/bookings", label: t("nav_home"), icon: LayoutDashboard, exact: true },
+    { href: "/search", label: t("nav_find"), icon: Search, exact: true },
+    { href: "/bookings", label: t("nav_home"), icon: LayoutDashboard },
     { href: "/sns", label: t("nav_sns"), icon: Radar },
-    { href: "/search", label: t("nav_find"), icon: Search },
     { href: "/messages", label: t("nav_messages"), icon: MessageSquare },
   ];
 

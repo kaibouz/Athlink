@@ -25,9 +25,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!hydrated || !user) return;
     const exempt =
       pathname === "/" ||
+      pathname === "/get-started" ||
       pathname === "/for-coaches" ||
       pathname === "/for-athletes" ||
       pathname === "/login" ||
+      pathname === "/app" ||
       pathname.startsWith("/join/");
     if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
@@ -38,6 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isIosPreview = pathname === "/ios";
   const isMarketingHome =
     pathname === "/" ||
+    pathname === "/get-started" ||
     pathname === "/for-coaches" ||
     pathname === "/for-athletes";
   const isJoinFlow = pathname.startsWith("/join/");
