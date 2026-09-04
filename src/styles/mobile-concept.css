@@ -321,6 +321,24 @@
   font-weight: 700;
 }
 
+/* Processing skeleton shimmer (AI breakdown "analyzing" overlay). */
+.mx-skel-bar {
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+.mx-skel-bar > span {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: mx-shimmer 1.2s infinite;
+}
+@keyframes mx-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 .mx-sys {
   align-self: center;
   font-size: 0.7rem;
