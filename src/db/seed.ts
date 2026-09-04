@@ -41,28 +41,6 @@ import {
   studentUserLinks,
 } from "@/lib/athlete-data";
 
-/** Concept: coach + session + breakdown tags on selected feed clips */
-const POST_TAGS: Record<
-  string,
-  { coachName: string; sessionLabel: string; breakdownId?: string; metricChips?: { label: string; value: string }[] }
-> = {
-  p1: {
-    coachName: "Shota Tanaka",
-    sessionLabel: "Hitting · Jul 20",
-    breakdownId: "bd-a1-1",
-    metricChips: [
-      { label: "Exit velo", value: "84 mph" },
-      { label: "Attack angle", value: "8°" },
-    ],
-  },
-  p2: {
-    coachName: "Open to coaches",
-    sessionLabel: "Bullpen · Jul 27",
-    breakdownId: "bd-a2-1",
-    metricChips: [{ label: "FB velo", value: "64 mph" }],
-  },
-};
-
 const DEMO_PASSWORD = "Athlink2026!";
 
 /** Date string N days from today (local midnight). Keeps demo slots/bookings always current. */
@@ -354,10 +332,10 @@ async function main() {
       videoUrl: p.videoUrl,
       posterUrl: p.posterUrl,
       statsNote: p.statsNote,
-      coachName: POST_TAGS[p.id]?.coachName ?? null,
-      sessionLabel: POST_TAGS[p.id]?.sessionLabel ?? null,
-      breakdownId: POST_TAGS[p.id]?.breakdownId ?? null,
-      metricChips: POST_TAGS[p.id]?.metricChips ?? null,
+      coachName: p.coachName ?? null,
+      sessionLabel: p.sessionLabel ?? null,
+      breakdownId: p.breakdownId ?? null,
+      metricChips: p.metricChips ?? null,
       createdAt: new Date(p.createdAt),
       likes: p.likes,
     })),

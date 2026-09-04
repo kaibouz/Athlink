@@ -321,6 +321,31 @@
   font-weight: 700;
 }
 
+/* Immersive one-at-a-time vertical feed viewer. */
+.mx-feed {
+  height: calc(100vh - 12rem);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+.mx-feed::-webkit-scrollbar {
+  display: none;
+}
+.mx-feed-item {
+  position: relative;
+  height: calc(100vh - 12rem);
+  min-height: 460px;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background: #000;
+}
+.mx-feed-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%, transparent 55%, rgba(0, 0, 0, 0.82) 100%);
+}
+
 /* Processing skeleton shimmer (AI breakdown "analyzing" overlay). */
 .mx-skel-bar {
   background: rgba(255, 255, 255, 0.12);
