@@ -5,6 +5,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "athlink_intro_seen_v2";
+const ENTRY_KEY = "athlink_site_entry_v1";
 const EXIT_MS = 1200;
 const REVEAL_MS = 180;
 
@@ -40,6 +41,7 @@ export function LandingSplash({
     finishedRef.current = true;
     try {
       sessionStorage.setItem(STORAGE_KEY, "1");
+      sessionStorage.setItem(ENTRY_KEY, "1");
     } catch {
       /* ignore */
     }
