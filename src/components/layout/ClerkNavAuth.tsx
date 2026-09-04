@@ -1,15 +1,14 @@
 "use client";
 
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
 
 type ClerkNavAuthProps = {
   loginLabel: string;
-  signupLabel: string;
   compact?: boolean;
 };
 
-export function ClerkNavAuth({ loginLabel, signupLabel, compact }: ClerkNavAuthProps) {
+export function ClerkNavAuth({ loginLabel, compact }: ClerkNavAuthProps) {
   return (
     <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
       <Show when="signed-out">
@@ -18,9 +17,6 @@ export function ClerkNavAuth({ loginLabel, signupLabel, compact }: ClerkNavAuthP
             {loginLabel}
           </Button>
         </SignInButton>
-        <SignUpButton mode="redirect">
-          <Button size="sm">{signupLabel}</Button>
-        </SignUpButton>
       </Show>
       <Show when="signed-in">
         <UserButton

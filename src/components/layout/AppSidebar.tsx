@@ -206,7 +206,7 @@ export function AppSidebar({
             </button>
           </div>
         ) : (
-          <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} />
+          <ClerkNavAuth loginLabel={t("nav_login")} />
         )}
       </div>
     </aside>

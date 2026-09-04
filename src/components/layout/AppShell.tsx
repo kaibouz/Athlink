@@ -66,7 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
           <div className="flex items-center gap-2">
-            <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
+            <ClerkNavAuth loginLabel={t("nav_login")} compact />
             <LocaleSwitcher compact />
           </div>
         </header>
@@ -97,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               tone="onGradient"
             />
             <div className="flex items-center gap-1">
-              <ClerkNavAuth loginLabel={t("nav_login")} signupLabel={t("nav_signup")} compact />
+              <ClerkNavAuth loginLabel={t("nav_login")} compact />
               <LocaleSwitcher compact />
             </div>
           </header>
