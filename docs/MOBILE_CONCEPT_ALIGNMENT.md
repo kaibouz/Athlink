@@ -25,11 +25,13 @@ Source of truth: `docs/athlinkpro-mobile-concept-coaches-athletes.html`
 | Athlete Home | `/home` (`AthleteHomeScreen`) |
 | Coach Today | `/coach/dashboard` (`CoachTodayScreen`) |
 | Tab bars | `MobileNav` — athlete cyan / coach indigo |
+| AI breakdown | `/breakdown` (`AthleteBreakdownScreen`) — Home toast / Progress / You AI posts |
 
 ## Still open (later)
-AI breakdown polish, Progress real data, coach Calendar colour codes, Scout feed, Earnings `$0` fee line-item.
+Progress real data (not hardcoded cards), coach Calendar colour codes, Scout feed, Earnings `$0` fee line-item, real CV pipeline behind `/breakdown`.
 
 ## Done in this pass
 - Book month-view picker (`AvailabilityMonthGrid` in `BookingForm`)
 - Athlete You (`AthleteYouScreen` on `/me`, 5th tab)
 - Coach profile X-shell + Book discovery grid (prior)
+- AI breakdown demo screen + entry points (`/breakdown`)
