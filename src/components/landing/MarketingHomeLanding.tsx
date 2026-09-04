@@ -56,7 +56,6 @@ export function MarketingHomeLanding() {
 
   return (
     <div className="landing-page min-h-full">
-      <MarketingThemeToggle />
       {intro === "pending" && (
         <div className="fixed inset-0 z-[79] bg-black" aria-hidden />
       )}
@@ -127,6 +126,7 @@ export function MarketingHomeLanding() {
                 </Link>
                 <div className="flex items-center gap-1.5">
                   <ClerkNavAuth loginLabel={t("nav_login")} />
+                  <MarketingThemeToggle />
                   <LocaleSwitcher compact />
                 </div>
               </div>

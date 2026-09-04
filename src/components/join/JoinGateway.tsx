@@ -144,8 +144,6 @@ export function JoinGateway() {
 
   return (
     <div className="join-gateway-page landing-page flex min-h-screen flex-col">
-      <MarketingThemeToggle />
-
       <div className="landing-hero-bg relative flex flex-1 flex-col overflow-hidden">
         <div className="landing-hero-wind" aria-hidden>
           <div className="landing-hero-wash landing-hero-wash-a" />
@@ -159,6 +157,7 @@ export function JoinGateway() {
             <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
             <div className="flex items-center gap-1.5">
               <ClerkNavAuth loginLabel={t("nav_login")} />
+              <MarketingThemeToggle />
               <LocaleSwitcher compact />
             </div>
           </div>

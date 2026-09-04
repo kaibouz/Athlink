@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
@@ -67,6 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
           <div className="flex items-center gap-1.5">
             <ClerkNavAuth loginLabel={t("nav_login")} compact />
+            <MarketingThemeToggle />
             <LocaleSwitcher compact />
           </div>
         </header>
@@ -98,6 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             />
             <div className="flex items-center gap-1">
               <ClerkNavAuth loginLabel={t("nav_login")} compact />
+              <MarketingThemeToggle />
               <LocaleSwitcher compact />
             </div>
           </header>

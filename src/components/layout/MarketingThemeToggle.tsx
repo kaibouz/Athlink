@@ -1,12 +1,16 @@
 "use client";
 
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { cn } from "@/lib/utils";
 
-/** Fixed corner light/dark toggle for marketing pages (gateway, role homepages). */
-export function MarketingThemeToggle() {
+/** Inline light/dark toggle for marketing / chrome headers (next to locale). */
+export function MarketingThemeToggle({ className }: { className?: string }) {
   return (
-    <div className="pointer-events-none fixed right-4 top-4 z-[60] sm:right-6 sm:top-5">
-      <ThemeToggle className="pointer-events-auto border-white/15 bg-black/35 text-brand-100 backdrop-blur-md hover:bg-white/10 dark:border-white/15 dark:bg-black/45 dark:text-brand-100 dark:hover:bg-white/10" />
-    </div>
+    <ThemeToggle
+      className={cn(
+        "border-brand-200/80 bg-surface/90 text-brand-800 shadow-sm backdrop-blur-sm hover:bg-brand-50 dark:border-white/25 dark:bg-white/10 dark:text-white dark:hover:bg-white/15",
+        className,
+      )}
+    />
   );
 }

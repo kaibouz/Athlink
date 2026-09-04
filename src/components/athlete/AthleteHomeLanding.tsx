@@ -76,8 +76,6 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
 
   return (
     <div className={bodyOnly ? "athlete-landing" : "athlete-landing min-h-full"}>
-      {!bodyOnly && <MarketingThemeToggle />}
-
       {!bodyOnly && (
         <header className="ah-site">
           <div className="ah-wrap ah-in">
@@ -98,6 +96,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
               <Link className="ah-hide-m" href="/login">
                 Log in
               </Link>
+              <MarketingThemeToggle />
               <Link className="ah-btn ah-btn-clay ah-btn-sm" href="/join/athlete">
                 Get Started
               </Link>

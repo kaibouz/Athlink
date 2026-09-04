@@ -30,8 +30,6 @@ export function CoachHomeLanding() {
 
   return (
     <div className="landing-page min-h-full">
-      <MarketingThemeToggle />
-
       <div className="landing-hero-bg relative overflow-hidden">
         <div className="landing-hero-wind" aria-hidden>
           <div className="landing-hero-wash landing-hero-wash-a" />
@@ -49,6 +47,7 @@ export function CoachHomeLanding() {
               </Link>
               <div className="flex items-center gap-1.5">
                 <ClerkNavAuth loginLabel={t("nav_login")} />
+                <MarketingThemeToggle />
                 <LocaleSwitcher compact />
               </div>
             </div>
