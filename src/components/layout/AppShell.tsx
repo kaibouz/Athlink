@@ -11,9 +11,15 @@ import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
+import {
+  isClerkAuthRoute,
+  isCredentialFormRoute,
+  isJoinRoute,
+  layerFor,
+} from "@/lib/route-layer";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 
-/** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
+/** Chrome per route layer: marketing/admin/join bare, auth minimal bar, platform sidebar. */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useLocale();
   const { user, hydrated } = useAuth();
@@ -21,52 +27,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
+  const layer = layerFor(pathname);
+
   useEffect(() => {
     if (!hydrated || !user) return;
     const exempt =
-      pathname === "/" ||
-      pathname === "/get-started" ||
-      pathname === "/for-coaches" ||
-      pathname === "/for-athletes" ||
-      pathname === "/how-it-works" ||
+      layerFor(pathname) === "marketing" ||
+      isJoinRoute(pathname) ||
       pathname === "/login" ||
-      pathname === "/app" ||
-      pathname.startsWith("/join/");
+      pathname === "/app";
     if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
       router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
     }
   }, [hydrated, user, pathname, router]);
 
-  const isIosPreview = pathname === "/ios";
-  const isMarketingHome =
-    pathname === "/" ||
-    pathname === "/get-started" ||
-    pathname === "/for-coaches" ||
-    pathname === "/for-athletes" ||
-    pathname === "/how-it-works";
-  const isJoinFlow = pathname.startsWith("/join/");
-  const isAdminFlow = pathname.startsWith("/admin");
-  const isClerkAuthRoute =
-    pathname === "/sign-in" ||
-    pathname.startsWith("/sign-in/") ||
-    pathname === "/sign-up" ||
-    pathname.startsWith("/sign-up/");
-  const isAuthForm =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/dns" ||
-    isClerkAuthRoute;
+  // Marketing pages, operator tools, the join wizard and the admin console
+  // all ship their own chrome.
+  const bringsOwnChrome =
+    layer === "marketing" ||
+    layer === "utility" ||
+    layer === "admin" ||
+    isJoinRoute(pathname);
 
-  if (isIosPreview || isMarketingHome || pathname === "/dns") {
+  if (bringsOwnChrome) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isJoinFlow || isAdminFlow) {
-    return <div className="min-h-full flex-1">{children}</div>;
-  }
-
-  if (isClerkAuthRoute || (isAuthForm && !user)) {
+  if (isClerkAuthRoute(pathname) || (isCredentialFormRoute(pathname) && !user)) {
     return (
       <div className="app-page-bg flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">

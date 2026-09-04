@@ -68,6 +68,17 @@ export function AthleteProgressScreen() {
         ))}
       </div>
 
+      <div className="mx-card mb-3">
+        <div className="mx-t">{t("bd_progress_latest")}</div>
+        <Link href="/breakdown" className="mx-li">
+          <div className="mx-w">
+            <b>{t("bd_title")}</b>
+            <span>{t("bd_subtitle")}</span>
+          </div>
+          <span className="text-[var(--mx-dimmer)]">›</span>
+        </Link>
+      </div>
+
       <div className="mx-card">
         <div className="mx-t">Report cards</div>
         <Link href="/messages" className="mx-li mb-2">

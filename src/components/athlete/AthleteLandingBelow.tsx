@@ -10,7 +10,8 @@ import "./athlete-landing.css";
 /**
  * Everything below the "How AthlinkPro works" section of the athlete marketing
  * flow: feature rows, progress, coaches, pricing, FAQ, final CTA and footer.
- * Shared by /for-athletes and /how-it-works so both pages tell the same story.
+ * Shared by the athlete role LP (`/for-athletes`). HQ embeds How Athlink works
+ * as a section; this is the longer feature body below that story.
  */
 export function AthleteLandingBelow() {
   useAthleteLandingAnim();

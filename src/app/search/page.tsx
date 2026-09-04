@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { SPECIALTIES } from "@/lib/data";
 import { defaultFilters, filterCoaches } from "@/lib/search";
 import type { CoachProfile, SearchFilters } from "@/types";
-import { CoachBookRow } from "@/components/coaches/CoachBookRow";
+import { CoachBookCard } from "@/components/coaches/CoachBookCard";
 import { SearchFiltersPanel } from "@/components/coaches/SearchFiltersPanel";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel } from "@/lib/i18n/localize";
@@ -14,6 +14,8 @@ import { CommSwitcher } from "@/components/layout/CommSwitcher";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/lib/store";
 import { cn } from "@/lib/utils";
+
+const BANNER_ROTATION = ["b1", "b2", "b3", "b4", "b5", "b6"] as const;
 
 function SearchContent() {
   const { t } = useLocale();
@@ -112,7 +114,7 @@ function SearchContent() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
         <aside
           className={cn(
             "lg:sticky lg:top-6 lg:self-start",
@@ -128,17 +130,28 @@ function SearchContent() {
           </div>
         </aside>
 
-        <div className="space-y-2.5">
-          <p className="mb-1 text-sm font-medium text-[color:var(--mx-dim)]">
-            {t("search_results", { n: results.length })}
-          </p>
+        <div>
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <p className="text-sm font-semibold text-[color:var(--mx-text)]">
+              {t("search_verified_count", { n: results.length })}
+            </p>
+            <p className="text-xs text-[color:var(--mx-dimmer)]">{t("search_sort_nearest")}</p>
+          </div>
           {results.length === 0 ? (
             <div className="mx-card border-dashed text-center">
               <p className="font-medium">{t("search_empty")}</p>
               <p className="mt-1 text-sm text-[color:var(--mx-dimmer)]">{t("search_empty_hint")}</p>
             </div>
           ) : (
-            results.map((coach) => <CoachBookRow key={coach.id} coach={coach} />)
+            <div className="mx-cgrid">
+              {results.map((coach, i) => (
+                <CoachBookCard
+                  key={coach.id}
+                  coach={coach}
+                  bannerClass={BANNER_ROTATION[i % BANNER_ROTATION.length]}
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>

@@ -8,11 +8,11 @@ import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboar
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { AthleteHomeLanding } from "@/components/athlete/AthleteHomeLanding";
+import "@/components/athlete/athlete-landing.css";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { RoleJourneyChrome } from "@/components/landing/RoleJourneyChrome";
-import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
@@ -61,13 +61,8 @@ export function MarketingHomeLanding() {
   ];
 
   return (
-    <RoleJourneyChrome
-      steps={steps}
-      ctaHref="/join/athlete"
-      ctaLabel={t("journey_register_athlete")}
-      ctaFootnote={t("journey_sticky_athlete")}
-    >
-      <div className="landing-page min-h-full">
+    <RoleJourneyChrome steps={steps} tone="concept">
+      <div className="athlete-landing min-h-full">
         {intro === "pending" && (
           <div className="fixed inset-0 z-[79] bg-black" aria-hidden />
         )}
@@ -89,8 +84,8 @@ export function MarketingHomeLanding() {
               <div className="landing-hero-wash landing-hero-wash-c" />
             </div>
             <HeroCoastline className="landing-coast" />
-            <header className="relative z-20">
-              <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+            <header className="ah-site relative z-20">
+              <div className="ah-wrap ah-in mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
                 <AthlinkProLogo
                   href="/for-athletes"
                   size="header"
@@ -112,9 +107,9 @@ export function MarketingHomeLanding() {
             </header>
 
             <section className="relative z-10 mx-auto max-w-4xl px-4 pt-12 pb-16 text-center sm:px-6 sm:pt-16 sm:pb-20">
-              <p className="land-fade text-xs font-semibold tracking-[0.14em] text-brand-500 uppercase sm:text-sm">
+              <p className="land-fade ah-hero-kicker text-xs font-semibold tracking-[0.14em] uppercase sm:text-sm">
                 {t("join_athlete_eyebrow")}
-                <span className="mx-1.5 text-brand-300">·</span>
+                <span className="mx-1.5 opacity-50">·</span>
                 {t("hero_locations")}
               </p>
             <h1 className="land-fade land-fade-delay-1 land-logo-reveal mx-auto mt-5 flex justify-center">
@@ -128,35 +123,23 @@ export function MarketingHomeLanding() {
                 fetchPriority="high"
               />
             </h1>
-              <p className="land-fade land-fade-delay-2 mx-auto mt-5 max-w-xl text-base font-medium leading-snug text-brand-800 sm:text-lg">
+              <p className="land-fade land-fade-delay-2 ah-hero-title mx-auto mt-5 max-w-xl text-base font-medium leading-snug sm:text-lg">
                 {t("join_athlete_title")}
               </p>
-              <p className="land-fade land-fade-delay-2 mx-auto mt-3 max-w-xl text-sm leading-relaxed text-brand-600 sm:text-base">
+              <p className="land-fade land-fade-delay-2 ah-hero-lead mx-auto mt-3 max-w-xl text-sm leading-relaxed sm:text-base">
                 {t("join_athlete_body")}
               </p>
               <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-                <a href="#how-it-works" className="group">
-                  <Button
-                    size="lg"
-                    variant="ghost"
-                    className="btn-premium h-12 min-w-48 rounded-xl px-6 text-sm sm:h-14 sm:text-base"
-                  >
-                    {t("journey_step_how")}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Button>
+                <a href="#how-it-works" className="ah-btn ah-btn-accent group">
+                  {t("journey_step_how")}
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
-                <Link href="/search" className="group">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="btn-landing-secondary h-12 min-w-40 rounded-xl px-5 text-sm font-semibold sm:h-14 sm:text-base"
-                  >
-                    <Search className="h-4 w-4" />
-                    {t("hq_browse_coaches")}
-                  </Button>
+                <Link href="/search" className="ah-btn ah-btn-ghost group">
+                  <Search className="h-4 w-4" />
+                  {t("hq_browse_coaches")}
                 </Link>
               </div>
-              <p className="land-fade land-fade-delay-4 mt-6 text-xs font-medium tracking-wide text-brand-500 sm:text-sm">
+              <p className="land-fade land-fade-delay-4 ah-hero-note mt-6 text-xs font-medium tracking-wide sm:text-sm">
                 {t("join_athlete_footnote")}
               </p>
             </section>

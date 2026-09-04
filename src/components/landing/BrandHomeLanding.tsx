@@ -18,8 +18,8 @@ import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
 /**
- * Athlink HQ — black canvas + official logo reveal motion, then marketplace path.
- * Ocean / Marlin accents retained from brand palette.
+ * Athlink HQ — concept charcoal (#05070c) + logo reveal, then marketplace path.
+ * Accents match mobile concept: indigo #3b6ef6 → cyan #22c7e0.
  */
 export function BrandHomeLanding() {
   const { t } = useLocale();
@@ -85,9 +85,9 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
-                <Link href="/how-it-works" className="landing-nav-link hidden sm:inline-flex">
+                <a href="#how-it-works" className="landing-nav-link hidden sm:inline-flex">
                   {t("how_nav_link")}
-                </Link>
+                </a>
                 <Link href="/search" className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
@@ -175,33 +175,33 @@ export function BrandHomeLanding() {
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-2">
             <Link
-              href="/for-athletes"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
+              href="/join/athlete"
+              className="land-panel join-card-athlete group flex flex-col rounded-2xl p-6 transition hover:border-[rgba(34,199,224,0.45)] sm:p-8"
             >
-              <Users className="h-7 w-7 text-brand-500" />
+              <Users className="h-7 w-7 text-[#22c7e0]" />
               <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
                 {t("join_athlete_eyebrow")}
               </h3>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
                 {t("join_athlete_body")}
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[#22c7e0] group-hover:text-white">
                 {t("hq_athlete_path")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
             <Link
-              href="/for-coaches"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
+              href="/join/coach"
+              className="land-panel join-card-coach group flex flex-col rounded-2xl p-6 transition hover:border-[rgba(59,110,246,0.45)] sm:p-8"
             >
-              <UserRound className="h-7 w-7 text-brand-500" />
+              <UserRound className="h-7 w-7 text-[#3b6ef6]" />
               <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
                 {t("join_coach_eyebrow")}
               </h3>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
                 {t("join_coach_body")}
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[#8db0ff] group-hover:text-white">
                 {t("hq_coach_path")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
@@ -218,9 +218,9 @@ export function BrandHomeLanding() {
               {t("hq_platform_body")}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/search" className="group">
+              <Link href="/get-started" className="group">
                 <Button size="lg" variant="ghost" className="btn-premium">
-                  {t("hq_open_marketplace")}
+                  {t("hq_get_started")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -237,9 +237,9 @@ export function BrandHomeLanding() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
             <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
             <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-brand-600">
-              <Link href="/how-it-works" className="hover:text-white">
+              <a href="#how-it-works" className="hover:text-white">
                 {t("how_nav_link")}
-              </Link>
+              </a>
               <Link href="/for-athletes" className="hover:text-white">
                 {t("join_athlete_eyebrow")}
               </Link>

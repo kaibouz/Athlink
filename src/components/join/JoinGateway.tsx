@@ -56,13 +56,13 @@ function JoinCard({
     >
       <p
         className={`text-xs font-semibold tracking-[0.14em] uppercase ${
-          isCoach ? "text-brand-500" : "text-amber-400"
+          isCoach ? "text-[#8db0ff]" : "text-[#22c7e0]"
         }`}
       >
         {eyebrow}
       </p>
       <RoleIcon
-        className={`mt-4 h-7 w-7 ${isCoach ? "text-brand-600" : "text-amber-400"}`}
+        className={`mt-4 h-7 w-7 ${isCoach ? "text-[#3b6ef6]" : "text-[#22c7e0]"}`}
       />
       <h2 className="mt-3 text-xl font-black tracking-tight text-brand-950 sm:text-2xl">{title}</h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-600">{body}</p>
@@ -73,8 +73,8 @@ function JoinCard({
             <span
               className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                 isCoach
-                  ? "bg-brand-100 text-brand-600"
-                  : "bg-amber-500/15 text-amber-400"
+                  ? "bg-[rgba(59,110,246,0.16)] text-[#8db0ff]"
+                  : "bg-[rgba(34,199,224,0.14)] text-[#22c7e0]"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -183,7 +183,7 @@ export function JoinGateway() {
               title={t("join_coach_title")}
               body={t("join_coach_body")}
               features={coachFeatures}
-              href="/for-coaches"
+              href="/join/coach"
               cta={t("join_coach_cta")}
               footnote={t("join_coach_footnote")}
             />
@@ -193,7 +193,7 @@ export function JoinGateway() {
               title={t("join_athlete_title")}
               body={t("join_athlete_body")}
               features={athleteFeatures}
-              href="/for-athletes"
+              href="/join/athlete"
               cta={t("join_athlete_cta")}
               footnote={t("join_athlete_footnote")}
             />

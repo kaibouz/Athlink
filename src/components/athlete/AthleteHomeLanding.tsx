@@ -151,9 +151,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
         </div>
       )}
 
-      <div className="landing-page">
-        <PitchingHeroVideo />
-      </div>
+      <PitchingHeroVideo />
 
       <HowAthlinkWorks showCta={false} />
 

@@ -37,12 +37,7 @@ export function CoachHomeLanding() {
   ];
 
   return (
-    <RoleJourneyChrome
-      steps={steps}
-      ctaHref="/join/coach"
-      ctaLabel={t("journey_register_coach")}
-      ctaFootnote={t("journey_sticky_coach")}
-    >
+    <RoleJourneyChrome steps={steps}>
       <div className="landing-page min-h-full">
         <div id="journey-hero" className="landing-hero-bg relative overflow-hidden">
           <div className="landing-hero-wind" aria-hidden>

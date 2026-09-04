@@ -12,6 +12,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
+import { ClerkAuthBridge } from "@/components/auth/ClerkAuthBridge";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -76,6 +77,7 @@ export default function RootLayout({
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <ClerkAuthBridge />
                 <CoachToolsProvider>
                   <SocialProvider>
                     <GrowthProvider>

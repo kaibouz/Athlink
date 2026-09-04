@@ -14,7 +14,7 @@ type HowAthlinkWorksProps = {
 
 /**
  * "How AthlinkPro works" — the four-step athlete loop (book, message, share,
- * AI breakdown). Shared by /for-athletes and the standalone /how-it-works page.
+ * AI breakdown). Lives on the HQ marketing site (`/#how-it-works`).
  */
 export function HowAthlinkWorks({ id = "how-it-works", showCta = true }: HowAthlinkWorksProps) {
   const { t } = useLocale();
@@ -78,7 +78,7 @@ export function HowAthlinkWorks({ id = "how-it-works", showCta = true }: HowAthl
 
         {showCta && (
           <div className="how-works-foot">
-            <Link href="/join/athlete" className="how-works-cta">
+            <Link href="/get-started" className="how-works-cta">
               {t("how_cta_start")}
               <ArrowRight className="h-4 w-4" />
             </Link>
