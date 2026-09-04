@@ -28,6 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       pathname === "/get-started" ||
       pathname === "/for-coaches" ||
       pathname === "/for-athletes" ||
+      pathname === "/how-it-works" ||
       pathname === "/login" ||
       pathname === "/app" ||
       pathname.startsWith("/join/");
@@ -42,7 +43,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     pathname === "/" ||
     pathname === "/get-started" ||
     pathname === "/for-coaches" ||
-    pathname === "/for-athletes";
+    pathname === "/for-athletes" ||
+    pathname === "/how-it-works";
   const isJoinFlow = pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
   const isClerkAuthRoute =
