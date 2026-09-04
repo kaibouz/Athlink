@@ -145,6 +145,14 @@ export const messages = pgTable("messages", {
   senderName: text("sender_name").notNull(),
   senderNameKey: text("sender_name_key"),
   body: jsonb("body").$type<{ en: string; ja: string; es: string } | string>().notNull(),
+  /** text | system | clip — drives rendering (system = booking event chip, clip = attached video) */
+  kind: text("kind").notNull().default("text"),
+  /** For clip messages: URL of the attached video */
+  attachmentUrl: text("attachment_url"),
+  /** For system messages: the booking whose state produced this chip */
+  bookingId: text("booking_id"),
+  /** For clip/report messages: the AI breakdown being shared into the thread */
+  breakdownId: text("breakdown_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
 });
 
@@ -184,6 +192,12 @@ export const socialPosts = pgTable("social_posts", {
   videoUrl: text("video_url").notNull(),
   posterUrl: text("poster_url").notNull(),
   statsNote: text("stats_note"),
+  /** Concept: coach + session tagged on every clip */
+  coachName: text("coach_name"),
+  sessionLabel: text("session_label"),
+  /** Concept: metrics from breakdowns show as chips */
+  breakdownId: text("breakdown_id"),
+  metricChips: jsonb("metric_chips").$type<{ label: string; value: string }[]>(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
   likes: integer("likes").notNull().default(0),
 });
@@ -193,6 +207,8 @@ export const studentAthletes = pgTable("student_athletes", {
   coachId: text("coach_id")
     .notNull()
     .references(() => coachProfiles.id, { onDelete: "cascade" }),
+  /** Links a coach's student record to the athlete's own user account (shared progress data) */
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
   name: text("name").notNull(),
   age: integer("age").notNull(),
   level: text("level").notNull(),
@@ -225,6 +241,70 @@ export const coachFeedback = pgTable("coach_feedback", {
   body: text("body").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
   aiAttached: boolean("ai_attached").notNull().default(false),
+});
+
+/** Athlete performance metric samples (time series) — drives Home headline numbers + Progress sparkline */
+export const athleteMetrics = pgTable("athlete_metrics", {
+  id: text("id").primaryKey(),
+  athleteId: text("athlete_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  metric: text("metric").notNull(),
+  label: text("label").notNull(),
+  unit: text("unit").notNull(),
+  value: real("value").notNull(),
+  recordedAt: text("recorded_at").notNull(),
+});
+
+/** Position-aware athlete goals shown as ranked bars on the Progress tab */
+export const athleteGoals = pgTable("athlete_goals", {
+  id: text("id").primaryKey(),
+  athleteId: text("athlete_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  metric: text("metric").notNull(),
+  label: text("label").notNull(),
+  unit: text("unit").notNull(),
+  position: text("position"),
+  baseline: real("baseline").notNull(),
+  current: real("current").notNull(),
+  target: real("target").notNull(),
+  priorityRank: integer("priority_rank").notNull().default(0),
+});
+
+/** AI swing/pitch breakdowns — skeleton overlay, flags, metric chips, report to coach thread */
+export const aiBreakdowns = pgTable("ai_breakdowns", {
+  id: text("id").primaryKey(),
+  athleteId: text("athlete_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  coachId: text("coach_id"),
+  coachName: text("coach_name"),
+  title: text("title").notNull(),
+  videoUrl: text("video_url").notNull(),
+  posterUrl: text("poster_url").notNull(),
+  status: text("status").notNull().default("ready"),
+  processedSeconds: integer("processed_seconds").notNull().default(0),
+  pose: jsonb("pose").$type<{ ref: number[][]; user: number[][] }>().notNull(),
+  flags: jsonb("flags").$type<{ label: string; severity: "warn" | "ok"; note: string }[]>().notNull(),
+  metrics: jsonb("metrics").$type<{ label: string; value: string; delta?: string }[]>().notNull(),
+  summary: text("summary").notNull(),
+  threadId: text("thread_id"),
+  sentToCoach: boolean("sent_to_coach").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+});
+
+/** Guardian links captured during athlete onboarding (most athletes are minors) */
+export const parentLinks = pgTable("parent_links", {
+  id: text("id").primaryKey(),
+  athleteId: text("athlete_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  guardianName: text("guardian_name").notNull(),
+  guardianEmail: text("guardian_email").notNull(),
+  relationship: text("relationship").notNull().default("parent"),
+  status: text("status").notNull().default("invited"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 /** MVP analytics — page views, clicks, funnel events */

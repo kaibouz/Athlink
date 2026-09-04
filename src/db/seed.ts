@@ -7,6 +7,9 @@ import { sql } from "drizzle-orm";
 import { getDb } from "./index";
 import {
   adminAlerts,
+  aiBreakdowns,
+  athleteGoals,
+  athleteMetrics,
   athleteProfiles,
   bookings,
   coachApplications,
@@ -15,6 +18,7 @@ import {
   featureFlags,
   messageThreads,
   messages,
+  parentLinks,
   reviews,
   sessions,
   socialPosts,
@@ -32,6 +36,34 @@ import {
 } from "@/lib/data";
 import { athleteProfiles as staticAthletes, seedSocialPosts } from "@/lib/social-data";
 import { seedFeedback, students } from "@/lib/coach-students";
+import {
+  aiBreakdownSeed,
+  athleteGoalSeed,
+  athleteMetricSeed,
+  studentUserLinks,
+} from "@/lib/athlete-data";
+
+/** Concept: coach + session + breakdown tags on selected feed clips */
+const POST_TAGS: Record<
+  string,
+  { coachName: string; sessionLabel: string; breakdownId?: string; metricChips?: { label: string; value: string }[] }
+> = {
+  p1: {
+    coachName: "Shota Tanaka",
+    sessionLabel: "Hitting · Jul 20",
+    breakdownId: "bd-a1-1",
+    metricChips: [
+      { label: "Exit velo", value: "84 mph" },
+      { label: "Attack angle", value: "8°" },
+    ],
+  },
+  p2: {
+    coachName: "Open to coaches",
+    sessionLabel: "Bullpen · Jul 27",
+    breakdownId: "bd-a2-1",
+    metricChips: [{ label: "FB velo", value: "64 mph" }],
+  },
+};
 
 const DEMO_PASSWORD = "Athlink2026!";
 
@@ -51,6 +83,10 @@ async function main() {
       coach_applications,
       feature_flags,
       platform_config,
+      ai_breakdowns,
+      athlete_goals,
+      athlete_metrics,
+      parent_links,
       coach_feedback,
       student_athletes,
       social_posts,
@@ -201,6 +237,26 @@ async function main() {
     })),
   );
 
+  // Concept: clips attach into the thread (from the feed / camera roll / AI breakdown)
+  await db.insert(messages).values([
+    {
+      id: "m-clip-1",
+      threadId: "t1",
+      senderId: "u-athlete-1",
+      senderName: "you",
+      senderNameKey: "you" as const,
+      body: {
+        en: "Sharing my swing breakdown — the attack-angle notes you mentioned.",
+        ja: "スイング分析を共有します — 話していたアタックアングルのメモです。",
+        es: "Comparto mi análisis de swing — las notas del ángulo de ataque.",
+      },
+      kind: "clip",
+      attachmentUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      breakdownId: "bd-a1-1",
+      createdAt: new Date("2026-07-26T18:05:00"),
+    },
+  ]);
+
   console.log("Seeding athlete profiles & social…");
   await db.insert(athleteProfiles).values(
     staticAthletes.map((a) => ({
@@ -237,6 +293,10 @@ async function main() {
       videoUrl: p.videoUrl,
       posterUrl: p.posterUrl,
       statsNote: p.statsNote,
+      coachName: POST_TAGS[p.id]?.coachName ?? null,
+      sessionLabel: POST_TAGS[p.id]?.sessionLabel ?? null,
+      breakdownId: POST_TAGS[p.id]?.breakdownId ?? null,
+      metricChips: POST_TAGS[p.id]?.metricChips ?? null,
       createdAt: new Date(p.createdAt),
       likes: p.likes,
     })),
@@ -247,6 +307,7 @@ async function main() {
     students.map((s) => ({
       id: s.id,
       coachId: "c1",
+      userId: studentUserLinks[s.id] ?? null,
       name: s.name,
       age: s.age,
       level: s.level,
@@ -280,11 +341,71 @@ async function main() {
     })),
   );
 
+  console.log("Seeding athlete metrics, goals & AI breakdowns…");
+  await db.insert(athleteMetrics).values(
+    athleteMetricSeed.map((m) => ({
+      id: m.id,
+      athleteId: m.athleteId,
+      metric: m.metric,
+      label: m.label,
+      unit: m.unit,
+      value: m.value,
+      recordedAt: m.recordedAt,
+    })),
+  );
+
+  await db.insert(athleteGoals).values(
+    athleteGoalSeed.map((g) => ({
+      id: g.id,
+      athleteId: g.athleteId,
+      metric: g.metric,
+      label: g.label,
+      unit: g.unit,
+      position: g.position,
+      baseline: g.baseline,
+      current: g.current,
+      target: g.target,
+      priorityRank: g.priorityRank,
+    })),
+  );
+
+  await db.insert(aiBreakdowns).values(
+    aiBreakdownSeed.map((b) => ({
+      id: b.id,
+      athleteId: b.athleteId,
+      coachId: b.coachId,
+      coachName: b.coachName,
+      title: b.title,
+      videoUrl: b.videoUrl,
+      posterUrl: b.posterUrl,
+      status: b.status,
+      processedSeconds: b.processedSeconds,
+      pose: b.pose,
+      flags: b.flags,
+      metrics: b.metrics,
+      summary: b.summary,
+      threadId: b.threadId,
+      sentToCoach: b.sentToCoach,
+      createdAt: new Date(b.createdAt),
+    })),
+  );
+
+  await db.insert(parentLinks).values([
+    {
+      id: "pl-1",
+      athleteId: "u-athlete-1",
+      guardianName: "Jennifer Park",
+      guardianEmail: "jennifer.park@example.com",
+      relationship: "parent",
+      status: "linked",
+    },
+  ]);
+
   console.log("Seeding admin data…");
   await db.insert(featureFlags).values([
     { key: "booking_flow", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "training_feed", enabled: true, rolloutPercent: 100, audience: "all" },
-    { key: "ai_breakdown", enabled: false, rolloutPercent: 0, audience: "all" },
+    { key: "ai_breakdown", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "athlete_coach_messaging", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "scout_discovery", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "homepage_gateway", enabled: true, rolloutPercent: 100, audience: "all" },
