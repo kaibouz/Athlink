@@ -10,12 +10,12 @@ import {
   Home,
   MessageSquare,
   Network,
-  Activity,
   QrCode,
   Radar,
   Search,
   Send,
   Settings,
+  UserRound,
   Users,
   X,
 } from "lucide-react";
@@ -83,10 +83,14 @@ export function AppSidebar({
       match: (p) => p.startsWith("/messages"),
     },
     {
-      href: "/progress",
-      label: t("nav_progress"),
-      icon: Activity,
-      match: (p) => p === "/progress" || p.startsWith("/progress/"),
+      href: "/me",
+      label: t("you"),
+      icon: UserRound,
+      match: (p) =>
+        p === "/me" ||
+        p.startsWith("/me/") ||
+        p === "/progress" ||
+        p.startsWith("/progress/"),
     },
   ];
 

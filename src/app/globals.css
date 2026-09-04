@@ -93,9 +93,10 @@
     radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.1), transparent 54%),
     radial-gradient(ellipse 68% 44% at 50% 105%, rgba(14, 165, 233, 0.14), transparent 56%);
 
-  --athlete-clay-1: #e0a458;
-  --athlete-clay-2: #f2c94c;
-  --athlete-clay-text: #1a1206;
+  /* Concept accents (athlete cyan / coach indigo) — was gold “clay” */
+  --athlete-clay-1: #3b6ef6;
+  --athlete-clay-2: #22c7e0;
+  --athlete-clay-text: #04121a;
 
   --land-video-wash: linear-gradient(
     to bottom,
@@ -205,8 +206,8 @@
 
   --landing-bg: var(--app-bg-mid);
   --landing-hero: var(--app-bg);
-  --landing-grad-from: #6cace4;
-  --landing-grad-to: #005eb8;
+  --landing-grad-from: #3b6ef6;
+  --landing-grad-to: #22c7e0;
 
   --landing-coaches-pattern-a: linear-gradient(
     168deg,
@@ -222,9 +223,10 @@
     radial-gradient(ellipse 52% 40% at 92% 18%, rgba(65, 143, 222, 0.14), transparent 54%),
     radial-gradient(ellipse 68% 44% at 50% 105%, rgba(0, 94, 184, 0.22), transparent 56%);
 
-  --athlete-clay-1: #e0a458;
-  --athlete-clay-2: #f2c94c;
-  --athlete-clay-text: #1a1206;
+  /* Concept accents (athlete cyan / coach indigo) — was gold “clay” */
+  --athlete-clay-1: #3b6ef6;
+  --athlete-clay-2: #22c7e0;
+  --athlete-clay-text: #04121a;
 
   --land-video-wash: var(--land-video-wash-deep);
   --land-title-plate: var(--land-title-plate-deep);
@@ -718,23 +720,26 @@ body {
   box-shadow: none;
 }
 
-/* Join gateway — cinematic atmosphere + role card accents */
+/* Join gateway — concept charcoal + cyan/indigo role cards */
 .join-gateway-page .landing-hero-bg {
+  background-color: #05070c;
   background-image:
-    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.08), transparent 55%),
-    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(0, 94, 184, 0.24), transparent 50%),
-    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(0, 114, 206, 0.28), transparent 58%),
-    linear-gradient(155deg, #01060f 0%, #020b1c 28%, #061533 52%, #0a1a3a 78%, #01060f 100%);
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(34, 199, 224, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(59, 110, 246, 0.2), transparent 50%),
+    radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 110, 246, 0.16), transparent 58%),
+    linear-gradient(155deg, #05070c 0%, #0b0f1a 45%, #05070c 100%);
 }
 
 .join-card-coach {
-  border-color: color-mix(in oklab, var(--brand-300) 45%, transparent);
+  border-color: rgba(59, 110, 246, 0.28);
+  background: rgba(11, 15, 26, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(59, 110, 246, 0.08);
 }
 
 .join-card-athlete {
-  border-color: rgba(242, 201, 76, 0.22);
-  background: rgba(18, 16, 10, 0.35);
-  box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
+  border-color: rgba(34, 199, 224, 0.28);
+  background: rgba(11, 15, 26, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(34, 199, 224, 0.08);
 }
 
 .land-panel-head {
@@ -860,12 +865,12 @@ body {
 .landing-hero-wash-a {
   background: linear-gradient(
     90deg,
-    rgba(0, 94, 184, 0.06) 0%,
-    rgba(0, 114, 206, 0.18) 18%,
-    rgba(65, 143, 222, 0.12) 36%,
-    rgba(0, 94, 184, 0.05) 54%,
-    rgba(108, 172, 228, 0.16) 72%,
-    rgba(0, 94, 184, 0.06) 100%
+    rgba(59, 110, 246, 0.06) 0%,
+    rgba(59, 110, 246, 0.2) 18%,
+    rgba(34, 199, 224, 0.14) 36%,
+    rgba(59, 110, 246, 0.05) 54%,
+    rgba(34, 199, 224, 0.16) 72%,
+    rgba(59, 110, 246, 0.06) 100%
   );
   animation: land-wash-flow 9s linear infinite;
 }
@@ -873,11 +878,11 @@ body {
 .landing-hero-wash-b {
   background: linear-gradient(
     90deg,
-    rgba(0, 114, 206, 0.05) 0%,
-    rgba(0, 94, 184, 0.14) 25%,
+    rgba(34, 199, 224, 0.05) 0%,
+    rgba(59, 110, 246, 0.14) 25%,
     transparent 50%,
-    rgba(65, 143, 222, 0.12) 75%,
-    rgba(0, 114, 206, 0.05) 100%
+    rgba(34, 199, 224, 0.12) 75%,
+    rgba(59, 110, 246, 0.05) 100%
   );
   opacity: 0.85;
   animation: land-wash-flow 13s linear infinite;
@@ -887,11 +892,11 @@ body {
 .landing-hero-wash-c {
   background: linear-gradient(
     90deg,
-    rgba(108, 172, 228, 0.14) 0%,
-    rgba(65, 143, 222, 0.2) 30%,
+    rgba(34, 199, 224, 0.12) 0%,
+    rgba(59, 110, 246, 0.18) 30%,
     transparent 55%,
-    rgba(156, 194, 229, 0.16) 80%,
-    rgba(108, 172, 228, 0.14) 100%
+    rgba(34, 199, 224, 0.14) 80%,
+    rgba(59, 110, 246, 0.1) 100%
   );
   animation: land-wash-flow 11s linear infinite;
   animation-delay: -7s;
@@ -947,9 +952,9 @@ body {
 .btn-athlete-primary {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(90deg, var(--athlete-clay-1), var(--athlete-clay-2));
-  color: var(--athlete-clay-text);
-  box-shadow: 0 10px 28px rgba(224, 164, 88, 0.32);
+  background: linear-gradient(90deg, #3b6ef6, #22c7e0);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(59, 110, 246, 0.28);
   transition:
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.25s ease,
@@ -962,7 +967,7 @@ body {
   background: linear-gradient(
     105deg,
     transparent 35%,
-    rgba(255, 255, 255, 0.32) 50%,
+    rgba(255, 255, 255, 0.28) 50%,
     transparent 65%
   );
   transform: translateX(-120%);
@@ -972,14 +977,14 @@ body {
 .btn-athlete-primary:hover {
   filter: brightness(1.06);
   transform: translateY(-2px);
-  box-shadow: 0 14px 34px rgba(224, 164, 88, 0.42);
+  box-shadow: 0 14px 34px rgba(34, 199, 224, 0.32);
 }
 .btn-athlete-primary:hover::after {
   transform: translateX(120%);
 }
 .btn-athlete-primary:active {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 6px 16px rgba(224, 164, 88, 0.28);
+  box-shadow: 0 6px 16px rgba(59, 110, 246, 0.24);
 }
 
 .btn-landing-secondary {
@@ -1070,7 +1075,6 @@ body {
 /* Role marketing journey — smooth scroll + sticky register path */
 .role-journey {
   scroll-behavior: smooth;
-  padding-bottom: 5.5rem;
 }
 .role-journey-progress {
   position: sticky;
@@ -1087,34 +1091,9 @@ body {
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
-.role-journey-sticky-cta {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 45;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(6, 10, 18, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transform: translateY(110%);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.35s ease;
-}
-.role-journey-sticky-cta-in {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
 @media (prefers-reduced-motion: reduce) {
   .role-journey {
     scroll-behavior: auto;
-  }
-  .role-journey-sticky-cta {
-    transition: none;
   }
 }
 
@@ -1183,16 +1162,15 @@ body {
   background-color: #000;
 }
 .landing-hero-black {
-  background-color: #000 !important;
+  background-color: #05070c !important;
   background-image:
-    var(--app-gradient-glow-top),
-    var(--app-gradient-glow-right),
-    var(--app-gradient-glow-left),
-    linear-gradient(180deg, #000 0%, #01060f 45%, #061533 100%) !important;
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(34, 199, 224, 0.08), transparent 55%),
+    radial-gradient(ellipse 50% 38% at 18% 42%, rgba(59, 110, 246, 0.16), transparent 50%),
+    linear-gradient(180deg, #05070c 0%, #0b0f1a 45%, #05070c 100%) !important;
 }
 .land-logo-reveal {
   animation: land-logo-reveal 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
-  filter: drop-shadow(0 0 28px rgba(0, 114, 206, 0.18));
+  filter: drop-shadow(0 0 28px rgba(59, 110, 246, 0.22));
 }
 @keyframes land-logo-reveal {
   from {
@@ -1203,7 +1181,7 @@ body {
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
-    filter: drop-shadow(0 0 28px rgba(0, 114, 206, 0.18));
+    filter: drop-shadow(0 0 28px rgba(34, 199, 224, 0.2));
   }
 }
 

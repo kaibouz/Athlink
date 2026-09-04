@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
 import { useLocale } from "@/lib/i18n/provider";
+import { AthleteYouScreen } from "@/components/app/AthleteYouScreen";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
@@ -48,11 +49,11 @@ export default function MyPage() {
   }
 
   const isCoach = user.role === "coach";
-  const roleLabel = isCoach
-    ? t("role_coach")
-    : user.role === "parent"
-      ? t("role_parent")
-      : t("role_athlete");
+  if (!isCoach) {
+    return <AthleteYouScreen />;
+  }
+
+  const roleLabel = t("role_coach");
 
   return (
     <PageContainer>
@@ -64,13 +65,7 @@ export default function MyPage() {
             <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={
-                  user.avatarUrl ??
-                  (isCoach
-                    ? coach?.avatarUrl
-                    : "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete") ??
-                  "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete"
-                }
+                src={user.avatarUrl ?? coach?.avatarUrl ?? "https://api.dicebear.com/9.x/avataaars/svg?seed=Coach"}
                 alt=""
                 className="h-16 w-16 shrink-0 rounded-2xl border-2 border-white/30 bg-brand-500 object-cover sm:h-20 sm:w-20"
               />
@@ -83,40 +78,25 @@ export default function MyPage() {
           </div>
 
           <div className="grid divide-y divide-brand-50 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            {isCoach ? (
-              <>
-                <Link href="/coach/register" className={`${linkClass} rounded-none border-0`}>
-                  <span className="inline-flex items-center gap-2">
-                    <UserRound className="h-4 w-4 text-brand-600" />
-                    {t("me_edit_coach_profile")}
-                  </span>
-                  <ChevronRight className="h-4 w-4 text-brand-400" />
-                </Link>
-                <Link href={hasProfile && coach ? `/coaches/${coach.id}` : "/coach/register"} className={`${linkClass} rounded-none border-0`}>
-                  <span>{t("me_view_public")}</span>
-                  <ChevronRight className="h-4 w-4 text-brand-400" />
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/athletes/a1/edit" className={`${linkClass} rounded-none border-0`}>
-                  <span className="inline-flex items-center gap-2">
-                    <UserRound className="h-4 w-4 text-brand-600" />
-                    {t("me_edit_athlete_profile")}
-                  </span>
-                  <ChevronRight className="h-4 w-4 text-brand-400" />
-                </Link>
-                <Link href="/athletes/a1" className={`${linkClass} rounded-none border-0`}>
-                  <span>{t("me_view_public")}</span>
-                  <ChevronRight className="h-4 w-4 text-brand-400" />
-                </Link>
-              </>
-            )}
+            <Link href="/coach/register" className={`${linkClass} rounded-none border-0`}>
+              <span className="inline-flex items-center gap-2">
+                <UserRound className="h-4 w-4 text-brand-600" />
+                {t("me_edit_coach_profile")}
+              </span>
+              <ChevronRight className="h-4 w-4 text-brand-400" />
+            </Link>
+            <Link
+              href={hasProfile && coach ? `/coaches/${coach.id}` : "/coach/register"}
+              className={`${linkClass} rounded-none border-0`}
+            >
+              <span>{t("me_view_public")}</span>
+              <ChevronRight className="h-4 w-4 text-brand-400" />
+            </Link>
           </div>
         </CardBody>
       </Card>
 
-      {isCoach && coach && (
+      {coach && (
         <div className="mt-6 space-y-4">
           <UpcomingRecordsPanel
             bookings={coachBookings}

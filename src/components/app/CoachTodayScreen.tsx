@@ -73,7 +73,7 @@ export function CoachTodayScreen() {
   const first = (user?.name ?? coach.name).split(" ")[0];
 
   return (
-    <div className="mx-app mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-role-coach mx-auto max-w-2xl px-4 py-6 sm:px-6">
       <header className="mx-hdr">
         <div>
           <h1>{t("dash_today_title")}</h1>

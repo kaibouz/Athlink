@@ -1467,3 +1467,93 @@
     opacity: 1;
   }
 }
+
+/* Header / hero / band share the same canvas as the body so the page
+   does not flip from Ocean navy to concept charcoal mid-scroll. */
+.athlete-landing .landing-hero-bg {
+  background-color: var(--ah-bg);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% -8%, rgba(59, 110, 246, 0.18), transparent 58%),
+    radial-gradient(ellipse 48% 42% at 88% 38%, rgba(34, 199, 224, 0.1), transparent 52%),
+    radial-gradient(ellipse 42% 38% at 8% 62%, rgba(59, 110, 246, 0.08), transparent 48%);
+}
+
+.athlete-landing .landing-hero-wash-a {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 110, 246, 0.05) 0%,
+    rgba(59, 110, 246, 0.14) 22%,
+    rgba(34, 199, 224, 0.08) 48%,
+    rgba(59, 110, 246, 0.04) 100%
+  );
+}
+
+.athlete-landing .landing-hero-wash-b {
+  background: linear-gradient(
+    90deg,
+    rgba(34, 199, 224, 0.05) 0%,
+    rgba(59, 110, 246, 0.1) 28%,
+    transparent 52%,
+    rgba(34, 199, 224, 0.08) 100%
+  );
+}
+
+.athlete-landing .landing-hero-wash-c {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 110, 246, 0.1) 0%,
+    rgba(34, 199, 224, 0.12) 32%,
+    transparent 58%,
+    rgba(59, 110, 246, 0.08) 100%
+  );
+}
+
+.athlete-landing header.ah-site {
+  background: color-mix(in oklab, var(--ah-bg) 88%, transparent);
+  border-bottom: 1px solid var(--ah-border);
+}
+
+.athlete-landing .landing-nav-link {
+  color: var(--ah-dim);
+}
+
+.athlete-landing .landing-nav-link:hover {
+  color: var(--ah-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.athlete-landing .ah-hero-kicker {
+  color: var(--ah-blue-2);
+}
+
+.athlete-landing .ah-hero-title {
+  color: var(--ah-text);
+}
+
+.athlete-landing .ah-hero-lead,
+.athlete-landing .ah-hero-note {
+  color: var(--ah-dim);
+}
+
+.athlete-landing .landing-band {
+  background: linear-gradient(90deg, var(--ah-accent-1), var(--ah-accent-2));
+  color: #fff;
+}
+
+.athlete-landing .land-video-wash {
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 7, 12, 0.62),
+    rgba(5, 7, 12, 0.48),
+    rgba(5, 7, 12, 0.78)
+  );
+}
+
+.athlete-landing .land-logo-reveal {
+  filter: drop-shadow(0 0 28px rgba(59, 110, 246, 0.22));
+}
+
+.role-journey-concept .role-journey-progress {
+  border-color: var(--mx-border-strong, rgba(255, 255, 255, 0.16));
+  background: color-mix(in oklab, var(--mx-bg, #05070c) 78%, transparent);
+}

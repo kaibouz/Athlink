@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Activity,
   CalendarDays,
   CircleDollarSign,
   Home,
   MessageSquare,
   Radar,
   Search,
+  UserRound,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
-/** Mobile concept tabs — athlete: Home/Book/Feed/Messages/Progress; coach: Today/Calendar/Athletes/Messages/Earnings */
+/** Mobile concept tabs — athlete: Home/Book/Feed/Messages/You; coach: Today/Calendar/Athletes/Messages/Earnings */
 export function MobileNav() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -99,17 +99,27 @@ export function MobileNav() {
       match: (p) => p.startsWith("/messages"),
     },
     {
-      href: "/progress",
-      label: t("nav_progress"),
-      icon: Activity,
-      match: (p) => p === "/progress" || p.startsWith("/progress/"),
+      href: "/me",
+      label: t("you"),
+      icon: UserRound,
+      match: (p) =>
+        p === "/me" ||
+        p.startsWith("/me/") ||
+        p === "/progress" ||
+        p.startsWith("/progress/"),
     },
   ];
 
   const items = user.role === "coach" ? coachTabs : athleteTabs;
+  const roleAccent = user.role === "coach" ? "mx-role-coach" : "mx-role-athlete";
 
   return (
-    <nav className="app-glass-solid fixed inset-x-0 bottom-0 z-40 border-t border-white/10 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]">
+    <nav
+      className={cn(
+        "app-glass-solid fixed inset-x-0 bottom-0 z-40 border-t border-white/10 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]",
+        roleAccent,
+      )}
+    >
       <div className="mx-auto flex h-[52px] max-w-lg items-center justify-around px-1">
         {items.map((item) => {
           const active = item.match(pathname);
@@ -120,7 +130,7 @@ export function MobileNav() {
               href={item.href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-0.5 py-1 text-[10px] font-medium",
-                active ? "text-[color:var(--mx-blue-2)]" : "text-brand-400",
+                active ? "mx-tab-active" : "text-brand-400",
               )}
             >
               <Icon className={cn("h-[22px] w-[22px]", active && "stroke-[2.5]")} />

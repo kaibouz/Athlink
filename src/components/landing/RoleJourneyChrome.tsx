@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 export type JourneyStep = {
@@ -13,25 +10,18 @@ export type JourneyStep = {
 
 type RoleJourneyChromeProps = {
   steps: JourneyStep[];
-  ctaHref: string;
-  ctaLabel: string;
-  ctaFootnote?: string;
+  /** `concept` uses the athlete-landing blues so the rail matches the page body. */
+  tone?: "default" | "concept";
   children: React.ReactNode;
 };
 
-/**
- * Smooth-scroll marketing journey: section progress + sticky register CTA
- * that appears after the hero — gives a clear path and sense of progress.
- */
+/** Smooth-scroll marketing journey with a section progress rail. */
 export function RoleJourneyChrome({
   steps,
-  ctaHref,
-  ctaLabel,
-  ctaFootnote,
+  tone = "default",
   children,
 }: RoleJourneyChromeProps) {
   const [activeId, setActiveId] = useState(steps[0]?.id ?? "");
-  const [showSticky, setShowSticky] = useState(false);
   const stepIds = useMemo(() => steps.map((s) => s.id), [steps]);
 
   useEffect(() => {
@@ -56,24 +46,9 @@ export function RoleJourneyChrome({
     return () => observer.disconnect();
   }, [stepIds]);
 
-  useEffect(() => {
-    const hero = document.getElementById(steps[0]?.id ?? "journey-hero");
-    if (!hero) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowSticky(!entry.isIntersecting),
-      { threshold: 0.2 },
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, [steps]);
-
   return (
-    <div className="role-journey">
-      <nav
-        className="role-journey-progress"
-        aria-label="Page sections"
-      >
+    <div className={cn("role-journey", tone === "concept" && "role-journey-concept")}>
+      <nav className="role-journey-progress" aria-label="Page sections">
         <ol className="mx-auto flex max-w-3xl items-center justify-center gap-1.5 px-4 sm:gap-2">
           {steps.map((step, index) => {
             const activeIndex = steps.findIndex((s) => s.id === activeId);
@@ -85,7 +60,11 @@ export function RoleJourneyChrome({
                   <span
                     className={cn(
                       "hidden h-px w-4 sm:block sm:w-6",
-                      done || current ? "bg-sky-300/70" : "bg-white/15",
+                      done || current
+                        ? tone === "concept"
+                          ? "bg-[#22c7e0]/70"
+                          : "bg-sky-300/70"
+                        : "bg-white/15",
                     )}
                     aria-hidden
                   />
@@ -105,7 +84,9 @@ export function RoleJourneyChrome({
                     className={cn(
                       "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold",
                       current
-                        ? "bg-[#005EB8] text-white"
+                        ? tone === "concept"
+                          ? "bg-[#3b6ef6] text-white"
+                          : "bg-[#005EB8] text-white"
                         : done
                           ? "bg-white/20 text-white"
                           : "bg-white/10 text-white/60",
@@ -122,31 +103,6 @@ export function RoleJourneyChrome({
       </nav>
 
       {children}
-
-      <div
-        className={cn(
-          "role-journey-sticky-cta",
-          showSticky && "role-journey-sticky-cta-in",
-        )}
-        aria-hidden={!showSticky}
-      >
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <p className="hidden text-xs font-medium text-white/70 sm:block sm:text-sm">
-            {ctaFootnote}
-          </p>
-          <Link href={ctaHref} className="group ml-auto">
-            <Button
-              size="lg"
-              variant="ghost"
-              className="btn-premium h-11 rounded-xl px-5 text-sm sm:h-12 sm:px-6"
-              tabIndex={showSticky ? 0 : -1}
-            >
-              {ctaLabel}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Button>
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

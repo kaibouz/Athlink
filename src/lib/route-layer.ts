@@ -21,7 +21,6 @@ export type RouteLayer =
 
 const MARKETING_ROUTES = new Set([
   "/",
-  "/how-it-works",
   "/for-athletes",
   "/for-coaches",
   "/get-started",

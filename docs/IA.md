@@ -14,15 +14,16 @@
 
 ```
 訪客
-  └─ / （本部）
-       ├─ Find coaches → /search          ← メイン（未ログイン可）
+  └─ / （本部 = コンセプト + How Athlink works）
+       ├─ How it works → /#how-it-works   ← 別ページにしない
+       ├─ Find coaches → /search          ← 未ログイン可
        ├─ Get started  → /get-started     ← 役割選択
-       │                  ├─ /for-athletes → /join/athlete
-       │                  └─ /for-coaches  → /join/coach
+       │                  ├─ /join/athlete → 登録完了 → /home
+       │                  └─ /join/coach   → 登録完了 → /coach/dashboard
        └─ Log in → /sign-in → /app → 役割ホーム
 
 ログイン後
-  ├─ 選手 → /search（マーケット）
+  ├─ 選手 → /home（プラットフォーム）
   └─ コーチ → /coach/dashboard
 ```
 

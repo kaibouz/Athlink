@@ -1,12 +1,16 @@
-import type { Metadata } from "next";
-import { HowItWorksPage } from "@/components/landing/HowItWorksPage";
+"use client";
 
-export const metadata: Metadata = {
-  title: "How AthlinkPro works — book, message, share, and get your AI breakdown",
-  description:
-    "Find and book a verified private coach, message them directly, post to your training feed, and get an automatic biomechanical breakdown after every session.",
-};
+import { useEffect } from "react";
 
-export default function HowItWorksRoute() {
-  return <HowItWorksPage />;
+/** Old standalone page — How AthlinkPro works now lives on HQ. */
+export default function HowItWorksRedirect() {
+  useEffect(() => {
+    window.location.replace("/#how-it-works");
+  }, []);
+
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center bg-black text-sm text-brand-500">
+      …
+    </div>
+  );
 }

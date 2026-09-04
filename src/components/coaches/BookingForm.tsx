@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { CoachProfile, LessonFormat, PackageType, TimeSlot } from "@/types";
+import type { CoachProfile, LessonFormat, PackageType, TimeSlot, Booking } from "@/types";
 import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
 import { formatDateJa, formatPrice } from "@/lib/utils";
@@ -16,11 +16,11 @@ import {
   CalendarAutoPrefSelect,
   CalendarSyncedNote,
 } from "@/components/calendar/AddToCalendar";
-import type { Booking } from "@/types";
+import { AvailabilityMonthGrid } from "@/components/calendar/AvailabilityMonthGrid";
 
 export function BookingForm({ coach }: { coach: CoachProfile }) {
   const router = useRouter();
-  const { user, addBooking } = useAuth();
+  const { user, addBooking, bookings } = useAuth();
   const { t, locale } = useLocale();
   const isCoachPublishing = user?.role === "coach";
   const [slots, setSlots] = useState<TimeSlot[]>(() => getSlotsByCoach(coach.id));
@@ -33,6 +33,18 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState<Booking | null>(null);
+
+  const myBookedDates = useMemo(() => {
+    if (!user) return [] as string[];
+    return bookings
+      .filter(
+        (b) =>
+          b.athleteId === user.id &&
+          b.coachId === coach.id &&
+          (b.status === "pending" || b.status === "confirmed"),
+      )
+      .map((b) => b.date);
+  }, [bookings, user, coach.id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,12 +65,13 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   useEffect(() => {
     if (dates.length === 0) return;
     if (!date || !dates.includes(date)) {
-      setDate(dates[0]);
+      setDate(dates[0]!);
       setSlotId("");
     }
   }, [dates, date]);
 
-  const daySlots = slots.filter((s) => s.date === date);
+  const daySlots = slots.filter((s) => s.date === date && s.available);
+  const openOnDay = daySlots.length;
   const priceMultiplier =
     packageType === "pack" ? 5 * 0.9 : packageType === "subscription" ? 4 * 0.85 : 1;
   const suggestedTotal = Math.round(coach.pricePerHour * priceMultiplier);
@@ -130,7 +143,10 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         <div className="mt-5">
           <CalendarAutoPrefSelect />
         </div>
-        <Button className="mt-4" onClick={() => router.push(isCoachPublishing ? "/coach/dashboard" : "/bookings")}>
+        <Button
+          className="mt-4"
+          onClick={() => router.push(isCoachPublishing ? "/coach/dashboard" : "/bookings")}
+        >
           {t(isCoachPublishing ? "booking_view_publish" : "booking_view")}
         </Button>
       </div>
@@ -140,50 +156,43 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm"
+      className="space-y-4 rounded-2xl border border-[color:var(--mx-border)] bg-[color:var(--mx-panel)] p-5 shadow-sm"
     >
-      <h3 className="text-lg font-bold text-brand-950">
+      <h3 className="text-lg font-bold text-[color:var(--mx-text)]">
         {t(isCoachPublishing ? "booking_title_publish" : "booking_title")}
       </h3>
-      <div>
-        <Label htmlFor="date">{t("booking_date")}</Label>
-        <Select
-          id="date"
-          value={date}
-          onChange={(e) => {
-            setDate(e.target.value);
-            setSlotId("");
-          }}
-        >
-          {dates.map((d) => (
-            <option key={d} value={d}>
-              {formatDateJa(d, dateLocale)}
-            </option>
-          ))}
-        </Select>
+
+      <AvailabilityMonthGrid
+        slots={slots}
+        selectedDate={date}
+        onSelectDate={(d) => {
+          setDate(d);
+          setSlotId("");
+        }}
+        bookedDates={myBookedDates}
+      />
+
+      <div className="mx-slot-head">
+        <b>{date ? formatDateJa(date, dateLocale) : t("booking_date")}</b>
+        <span>{t("booking_slots_open", { open: openOnDay, total: Math.max(openOnDay, 6) })}</span>
       </div>
-      <div>
-        <Label>{t("booking_slots")}</Label>
-        <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {daySlots.length === 0 && (
-            <p className="col-span-full text-sm text-brand-500">{t("booking_no_slots")}</p>
-          )}
-          {daySlots.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setSlotId(s.id)}
-              className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-                slotId === s.id
-                  ? "border-brand-600 bg-brand-600 text-white"
-                  : "border-brand-200 bg-surface text-brand-800 hover:border-brand-400"
-              }`}
-            >
-              {s.startTime}–{s.endTime}
-            </button>
-          ))}
-        </div>
+
+      <div className="mx-slots">
+        {daySlots.length === 0 && (
+          <p className="col-span-full text-sm text-[color:var(--mx-dimmer)]">{t("booking_no_slots")}</p>
+        )}
+        {daySlots.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => setSlotId(s.id)}
+            className={slotId === s.id ? "mx-slot mx-slot-on" : "mx-slot"}
+          >
+            {s.startTime}
+          </button>
+        ))}
       </div>
+
       <div>
         <Label htmlFor="format">{t("booking_format")}</Label>
         <Select
@@ -220,13 +229,13 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           onChange={(e) => setNote(e.target.value)}
         />
       </div>
-      <div className="rounded-xl bg-brand-50 px-3 py-2.5">
+      <div className="rounded-xl border border-[color:var(--mx-border)] bg-[color:var(--mx-panel-2)] px-3 py-2.5">
         <div className="flex items-center justify-between gap-2">
-          <Label htmlFor="total" className="mb-0 shrink-0 text-sm">
+          <Label htmlFor="total" className="mb-0 shrink-0 text-sm text-[color:var(--mx-dim)]">
             {t("booking_total")}
           </Label>
-          <div className="inline-flex h-9 items-center gap-0.5 rounded-lg border border-brand-200 bg-surface px-2">
-            <span className="text-base font-bold text-brand-500">$</span>
+          <div className="inline-flex h-9 items-center gap-0.5 rounded-lg border border-[color:var(--mx-border-strong)] bg-[color:var(--mx-panel)] px-2">
+            <span className="text-base font-bold text-[color:var(--mx-blue-2)]">$</span>
             <input
               id="total"
               type="number"
@@ -236,19 +245,21 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               value={priceInput}
               onChange={(e) => setPriceInput(e.target.value)}
               aria-label={t("booking_total")}
-              className="h-8 w-[4.5rem] border-0 bg-transparent p-0 text-right text-xl font-black tabular-nums text-brand-950 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="h-8 w-[4.5rem] border-0 bg-transparent p-0 text-right text-xl font-black tabular-nums text-[color:var(--mx-text)] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
           </div>
         </div>
-        <p className="mt-1 text-[11px] leading-snug text-brand-500">{t("booking_total_hint")}</p>
+        <p className="mt-1 text-[11px] leading-snug text-[color:var(--mx-dimmer)]">
+          {t("booking_zero_fees")}
+        </p>
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <Button type="submit" className="w-full" size="lg">
+      {error && <p className="text-sm text-[color:var(--mx-red)]">{error}</p>}
+      <Button type="submit" className="mx-btn mx-btn-accent w-full border-0" size="lg">
         {user
           ? t(isCoachPublishing ? "booking_submit_publish" : "booking_submit")
           : t("booking_login")}
       </Button>
-      <p className="text-center text-xs text-brand-400">
+      <p className="text-center text-xs text-[color:var(--mx-dimmer)]">
         {t(isCoachPublishing ? "booking_demo_note_publish" : "booking_demo_note")}
       </p>
     </form>
