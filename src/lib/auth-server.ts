@@ -16,6 +16,9 @@ export async function hashPassword(password: string) {
 }
 
 export async function verifyPassword(password: string, hash: string) {
+  // Clerk-provisioned rows carry a placeholder instead of a digest; reject
+  // anything that is not a bcrypt hash before it reaches bcrypt.compare.
+  if (!/^\$2[aby]?\$/.test(hash)) return false;
   return bcrypt.compare(password, hash);
 }
 

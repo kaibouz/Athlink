@@ -38,6 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isMarketingHome = isMarketingPath(pathname);
   const isJoinFlow = isAuthFunnelPath(pathname) && pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
+  const isAppEntry = pathname === "/app";
   const isClerkAuthRoute =
     pathname === "/sign-in" ||
     pathname.startsWith("/sign-in/") ||
@@ -53,7 +54,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isJoinFlow || isAdminFlow) {
+  if (isJoinFlow || isAdminFlow || isAppEntry) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 

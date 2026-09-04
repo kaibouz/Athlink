@@ -6,17 +6,26 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import type { Booking, User, UserRole } from "@/types";
 import { demoBookings } from "@/lib/data";
 
+/** Which backend answered for the current user. "clerk" = Clerk session. */
+export type AuthSource = "session" | "clerk" | null;
+
 interface AuthState {
   user: User | null;
   bookings: Booking[];
   hydrated: boolean;
   apiEnabled: boolean;
+  authSource: AuthSource;
+  /** Re-reads /api/auth/me (athlink_session, then Clerk). Returns the resolved user. */
+  refreshUser: () => Promise<User | null>;
+  /** Lets the Clerk bridge hand the provider a signOut() without importing Clerk here. */
+  registerClerkSignOut: (signOut: (() => Promise<void>) | null) => void;
   login: (email: string, password: string, role: UserRole) => Promise<{ ok: boolean; error?: string }>;
   signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -46,22 +55,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookings] = useState<Booking[]>(freshDemoBookings);
   const [hydrated, setHydrated] = useState(false);
   const [apiEnabled, setApiEnabled] = useState(false);
+  const [authSource, setAuthSource] = useState<AuthSource>(null);
+  const clerkSignOutRef = useRef<(() => Promise<void>) | null>(null);
 
+  const registerClerkSignOut = useCallback((signOut: (() => Promise<void>) | null) => {
+    clerkSignOutRef.current = signOut;
+  }, []);
+
+  /**
+   * /api/auth/me resolves the athlink_session cookie first and falls back to
+   * the Clerk server session, so a Clerk-only member hydrates here too. Without
+   * this the /app entry page saw user === null and bounced to /sign-in, which
+   * Clerk immediately bounced back — the redirect loop this replaces.
+   */
   const hydrateFromApi = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/me", { credentials: "include" });
       if (!res.ok) return false;
-      const data = (await res.json()) as { user: User | null; bookings: Booking[] };
+      const data = (await res.json()) as {
+        user: User | null;
+        bookings: Booking[];
+        authSource?: AuthSource;
+      };
+      setApiEnabled(true);
+      setAuthSource(data.authSource ?? (data.user ? "session" : null));
       if (data.user) {
         setUser(data.user);
         setBookings(data.bookings);
-        setApiEnabled(true);
-        return true;
       }
-      setApiEnabled(true);
       return true;
     } catch {
       return false;
+    }
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/me", { credentials: "include" });
+      if (!res.ok) return null;
+      const data = (await res.json()) as {
+        user: User | null;
+        bookings: Booking[];
+        authSource?: AuthSource;
+      };
+      setApiEnabled(true);
+      setAuthSource(data.authSource ?? (data.user ? "session" : null));
+      setUser(data.user);
+      if (data.user) setBookings(data.bookings);
+      return data.user;
+    } catch {
+      return null;
     }
   }, []);
 
@@ -107,6 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const data = (await res.json()) as { user: User };
           setUser(data.user);
           setApiEnabled(true);
+          setAuthSource("session");
           const meRes = await fetch("/api/auth/me", { credentials: "include" });
           if (meRes.ok) {
             const me = (await meRes.json()) as { bookings: Booking[] };
@@ -155,6 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(data.user);
           setBookings([]);
           setApiEnabled(true);
+          setAuthSource("session");
           return { ok: true };
         }
         if (res.status === 503) {
@@ -191,18 +236,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       /* ignore */
     }
+    // Only tear down Clerk when Clerk is what signed this user in; calling it
+    // for an athlink_session holder would navigate admins away for no reason.
+    if (authSource === "clerk" && clerkSignOutRef.current) {
+      try {
+        await clerkSignOutRef.current();
+      } catch {
+        /* ignore */
+      }
+    }
     setUser(null);
     setBookings(freshDemoBookings());
     setApiEnabled(false);
+    setAuthSource(null);
     try {
       localStorage.removeItem(USER_KEY);
       localStorage.removeItem(BOOKINGS_KEY);
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [authSource]);
 
   const switchRole = useCallback((role: UserRole) => {
+    if (authSource === "clerk") {
+      // Persist so the role survives a reload; the optimistic update below
+      // keeps the sidebar/nav responsive in the meantime.
+      void fetch("/api/auth/role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ role }),
+      }).catch(() => {});
+      setUser((prev) => (prev ? { ...prev, role } : prev));
+      return;
+    }
     setUser((prev) => {
       if (!prev) {
         return {
@@ -219,7 +286,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role,
       };
     });
-  }, []);
+  }, [authSource]);
 
   const addBooking = useCallback(
     async (input: Omit<Booking, "id" | "createdAt" | "status">) => {
@@ -290,6 +357,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       bookings,
       hydrated,
       apiEnabled,
+      authSource,
+      refreshUser,
+      registerClerkSignOut,
       login,
       signup,
       logout,
@@ -297,7 +367,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       addBooking,
       updateBookingStatus,
     }),
-    [user, bookings, hydrated, apiEnabled, login, signup, logout, switchRole, addBooking, updateBookingStatus],
+    [
+      user,
+      bookings,
+      hydrated,
+      apiEnabled,
+      authSource,
+      refreshUser,
+      registerClerkSignOut,
+      login,
+      signup,
+      logout,
+      switchRole,
+      addBooking,
+      updateBookingStatus,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
