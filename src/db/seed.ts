@@ -425,6 +425,13 @@ async function main() {
       summary: b.summary,
       threadId: b.threadId,
       sentToCoach: b.sentToCoach,
+      analysisType: b.title.toLowerCase().includes("delivery") ? "pitching" : "swing",
+      sport: "baseball",
+      provider: "athlink-motion-v1",
+      model: null,
+      latencyMs: 1200,
+      notes: null,
+      error: null,
       createdAt: new Date(b.createdAt),
     })),
   );

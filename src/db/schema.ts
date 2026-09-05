@@ -291,6 +291,14 @@ export const aiBreakdowns = pgTable("ai_breakdowns", {
   summary: text("summary").notNull(),
   threadId: text("thread_id"),
   sentToCoach: boolean("sent_to_coach").notNull().default(false),
+  // Analysis pipeline metadata (production-style observability)
+  analysisType: text("analysis_type").notNull().default("swing"),
+  sport: text("sport").notNull().default("baseball"),
+  provider: text("provider"),
+  model: text("model"),
+  latencyMs: integer("latency_ms"),
+  notes: text("notes"),
+  error: text("error"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
 });
 

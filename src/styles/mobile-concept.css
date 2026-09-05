@@ -143,6 +143,23 @@
   background: transparent;
 }
 
+.mx-input {
+  background: var(--mx-panel);
+  border: 1px solid var(--mx-border-strong);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  color: var(--mx-text);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.mx-input::placeholder {
+  color: var(--mx-dimmer);
+}
+.mx-input:focus {
+  border-color: var(--mx-accent);
+}
+
 .mx-avatar {
   width: 36px;
   height: 36px;

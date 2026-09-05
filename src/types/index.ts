@@ -294,6 +294,13 @@ export interface AiBreakdown {
   summary: string;
   threadId: string | null;
   sentToCoach: boolean;
+  analysisType: string;
+  sport: string;
+  provider: string | null;
+  model: string | null;
+  latencyMs: number | null;
+  notes: string | null;
+  error: string | null;
   createdAt: string;
 }
 

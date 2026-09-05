@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, MessageSquare, Navigation, Play } from "lucide-react";
+import { MapPin, MessageSquare, Navigation, Play, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
@@ -73,7 +73,7 @@ export function AthleteHomeScreen() {
   return (
     <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
       {breakdown && (
-        <Link href={`/breakdown/${breakdown.id}`} className="mx-toast mb-4 block">
+        <Link href={`/breakdown/${breakdown.id}`} className="mx-toast mb-3 block">
           <span className="mx-toast-ic">
             <Play className="h-3.5 w-3.5" />
           </span>
@@ -85,6 +85,11 @@ export function AthleteHomeScreen() {
           </div>
         </Link>
       )}
+
+      <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0">
+        <Sparkles className="h-4 w-4" />
+        Analyze a clip with AI
+      </Link>
 
       <header className="mx-hdr">
         <div>

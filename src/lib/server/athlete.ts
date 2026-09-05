@@ -124,6 +124,13 @@ function mapBreakdown(row: typeof aiBreakdowns.$inferSelect, athleteName?: strin
     summary: row.summary,
     threadId: row.threadId,
     sentToCoach: row.sentToCoach,
+    analysisType: row.analysisType,
+    sport: row.sport,
+    provider: row.provider ?? null,
+    model: row.model ?? null,
+    latencyMs: row.latencyMs ?? null,
+    notes: row.notes ?? null,
+    error: row.error ?? null,
     createdAt: row.createdAt.toISOString(),
   };
 }
