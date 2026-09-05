@@ -38,7 +38,10 @@ export function MobileNav() {
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/sign-in" ||
+    pathname.startsWith("/sign-in/") ||
     pathname === "/sign-up" ||
+    pathname.startsWith("/sign-up/") ||
+    pathname === "/app" ||
     pathname === "/ios" ||
     pathname.startsWith("/join")
   ) {
