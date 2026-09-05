@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarDays, MessageSquare, QrCode } from "lucide-react";
+import { CalendarDays, MessageSquare, QrCode, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
-import type { Booking } from "@/types";
+import { useApi } from "@/lib/client/use-api";
+import type { AthleteProgress, Booking, StudentAthlete } from "@/types";
 
 function initials(name: string) {
   return name
@@ -24,12 +25,38 @@ function noteFor(booking: Booking) {
   return "Review last swing notes before warm-up.";
 }
 
-/** Coach Today — run sheet, money glance, pre-session athlete breakdown */
+/** Coach Today — day-scoped run sheet, money glance, pre-session athlete breakdown */
 export function CoachTodayScreen() {
   const { user, bookings } = useAuth();
   const { t, locale } = useLocale();
   const { coach, loading: coachLoading, hasProfile } = useMyCoach();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data: rosterData } = useApi<{ students: StudentAthlete[] }>(
+    user?.role === "coach" ? "/api/coach/students" : null,
+  );
+  const roster = rosterData?.students ?? [];
+
+  const coachBookings = coach ? bookingsForCoach(bookings, coach.id) : [];
+  const todaysActive = coachBookings.filter(
+    (b) => b.date === today && (b.status === "pending" || b.status === "confirmed"),
+  );
+  const runSheet = [...todaysActive].sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const todayConfirmed = coachBookings
+    .filter((b) => b.date === today && (b.status === "confirmed" || b.status === "completed"))
+    .reduce((s, b) => s + b.price, 0);
+  const todayPending = runSheet.filter((b) => b.status === "pending");
+  const todayPendingTotal = todayPending.reduce((s, b) => s + b.price, 0);
+
+  const firstBooking = runSheet[0];
+  const firstStudent = firstBooking
+    ? roster.find((s) => s.userId === firstBooking.athleteId)
+    : undefined;
+  const { data: firstProgress } = useApi<{ progress: AthleteProgress | null }>(
+    firstStudent ? `/api/coach/students/${firstStudent.id}/progress` : null,
+  );
+  const preBreakdown = firstProgress?.progress?.latestBreakdown ?? null;
 
   if (coachLoading) {
     return (
@@ -51,29 +78,16 @@ export function CoachTodayScreen() {
     );
   }
 
-  const coachBookings = bookingsForCoach(bookings, coach.id);
-  const active = coachBookings.filter(
-    (b) => b.status === "pending" || b.status === "confirmed",
-  );
-  const runSheet = [...active].sort((a, b) =>
-    `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`),
-  );
-  const confirmedTotal = coachBookings
-    .filter((b) => b.status === "confirmed" || b.status === "completed")
-    .reduce((s, b) => s + b.price, 0);
-  const pendingTotal = coachBookings
-    .filter((b) => b.status === "pending")
-    .reduce((s, b) => s + b.price, 0);
-
   const weekday = new Date().toLocaleDateString(dateLocale, {
     weekday: "long",
     month: "short",
     day: "numeric",
   });
   const first = (user?.name ?? coach.name).split(" ")[0];
+  const athleteHref = firstStudent ? `/coach/students/${firstStudent.id}` : "/coach/students";
 
   return (
-    <div className="mx-app mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
       <header className="mx-hdr">
         <div>
           <h1>{t("dash_today_title")}</h1>
@@ -88,65 +102,95 @@ export function CoachTodayScreen() {
 
       <div className="mx-stat-grid mb-3">
         <div className="mx-card">
-          <div className="mx-t">{t("dash_today_money")}</div>
-          <div className="mx-big">{formatPrice(confirmedTotal)}</div>
+          <div className="mx-t">Today · confirmed</div>
+          <div className="mx-big">{formatPrice(todayConfirmed)}</div>
           <div className="mt-1 text-[0.7rem] text-[color:var(--mx-dimmer)]">
-            {t("dash_today_earned")}
+            {runSheet.filter((b) => b.status === "confirmed").length} sessions
           </div>
         </div>
         <div className="mx-card">
-          <div className="mx-t">{t("dash_today_pending_pay")}</div>
-          <div className="mx-big text-[color:var(--mx-amber)]">{formatPrice(pendingTotal)}</div>
+          <div className="mx-t">Today · pending</div>
+          <div className="mx-big text-[color:var(--mx-amber)]">{formatPrice(todayPendingTotal)}</div>
           <div className="mt-1 text-[0.7rem] text-[color:var(--mx-dimmer)]">
-            {active.filter((b) => b.status === "pending").length} requests
+            {todayPending.length} requests
           </div>
         </div>
       </div>
 
       <div className="mx-card mb-3">
-        <div className="mx-t">{t("dash_today_runsheet")}</div>
+        <div className="mx-t">{t("dash_today_runsheet")} · today</div>
         {runSheet.length === 0 ? (
           <p className="text-sm text-[color:var(--mx-dim)]">{t("dash_today_no_sessions")}</p>
         ) : (
           <div className="space-y-2">
-            {runSheet.map((b) => (
-              <div key={b.id} className="mx-li !bg-[color:var(--mx-panel-2)]">
-                <div className="mx-avatar" aria-hidden>
-                  {initials(b.athleteName)}
+            {runSheet.map((b) => {
+              const s = roster.find((r) => r.userId === b.athleteId);
+              const row = (
+                <>
+                  <div className="mx-avatar" aria-hidden>
+                    {initials(b.athleteName)}
+                  </div>
+                  <div className="mx-w">
+                    <b>{b.athleteName}</b>
+                    <span>
+                      {b.startTime}–{b.endTime}
+                      {b.note ? ` · ${b.note}` : ""}
+                    </span>
+                  </div>
+                  <div className="mx-r">
+                    {formatPrice(b.price)}
+                    <em>{b.status === "confirmed" ? "Ready" : "Pending"}</em>
+                  </div>
+                </>
+              );
+              return s ? (
+                <Link
+                  key={b.id}
+                  href={`/coach/students/${s.id}`}
+                  className="mx-li !bg-[color:var(--mx-panel-2)] transition hover:border-[color:var(--mx-border-strong)]"
+                >
+                  {row}
+                </Link>
+              ) : (
+                <div key={b.id} className="mx-li !bg-[color:var(--mx-panel-2)]">
+                  {row}
                 </div>
-                <div className="mx-w">
-                  <b>{b.athleteName}</b>
-                  <span>
-                    {formatDateJa(b.date, dateLocale)} · {b.startTime}–{b.endTime}
-                  </span>
-                </div>
-                <div className="mx-r">
-                  {formatPrice(b.price)}
-                  <em>{b.status === "confirmed" ? "Ready" : "Pending"}</em>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
 
-      {runSheet[0] ? (
+      {firstBooking ? (
         <div className="mx-card mb-3">
-          <div className="mx-t">
-            {t("dash_today_presession")} · {runSheet[0].athleteName}
-          </div>
+          <div className="mx-t">Pre-session · {firstBooking.athleteName}</div>
           <p className="text-sm leading-relaxed text-[color:var(--mx-text)]">
-            “{noteFor(runSheet[0])}”
+            “{noteFor(firstBooking)}”
           </p>
+          {preBreakdown && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {preBreakdown.metrics.slice(0, 3).map((m) => (
+                <span key={m.label} className="mx-pill mx-pill-accent">
+                  {m.label} {m.value}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href="/messages" className="mx-btn mx-btn-ghost text-[0.75rem]">
               <MessageSquare className="h-3.5 w-3.5" />
               Message
             </Link>
-            <Link
-              href={`/coach/students`}
-              className="mx-btn mx-btn-accent text-[0.75rem]"
-            >
+            {preBreakdown && (
+              <Link
+                href={`/breakdown/${preBreakdown.id}`}
+                className="mx-btn mx-btn-ghost text-[0.75rem]"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Breakdown
+              </Link>
+            )}
+            <Link href={athleteHref} className="mx-btn mx-btn-accent text-[0.75rem]">
               Open athlete
             </Link>
           </div>

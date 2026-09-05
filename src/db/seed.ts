@@ -7,6 +7,9 @@ import { sql } from "drizzle-orm";
 import { getDb } from "./index";
 import {
   adminAlerts,
+  aiBreakdowns,
+  athleteGoals,
+  athleteMetrics,
   athleteProfiles,
   bookings,
   coachApplications,
@@ -15,6 +18,7 @@ import {
   featureFlags,
   messageThreads,
   messages,
+  parentLinks,
   reviews,
   sessions,
   socialPosts,
@@ -24,16 +28,109 @@ import {
 } from "./schema";
 import {
   coaches,
-  demoBookings,
   messageThreads as staticThreads,
   messages as staticMessages,
   reviews as staticReviews,
-  timeSlots as staticSlots,
 } from "@/lib/data";
 import { athleteProfiles as staticAthletes, seedSocialPosts } from "@/lib/social-data";
 import { seedFeedback, students } from "@/lib/coach-students";
+import {
+  aiBreakdownSeed,
+  athleteGoalSeed,
+  athleteMetricSeed,
+  studentUserLinks,
+} from "@/lib/athlete-data";
 
 const DEMO_PASSWORD = "Athlink2026!";
+
+/** Date string N days from today (local midnight). Keeps demo slots/bookings always current. */
+function dayOffset(offset: number): string {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+}
+
+const SLOT_TIMES: [string, string][] = [
+  ["09:00", "10:00"],
+  ["10:30", "11:30"],
+  ["13:00", "14:00"],
+  ["15:00", "16:00"],
+  ["17:00", "18:00"],
+  ["18:30", "19:30"],
+];
+
+/** Fresh, today-relative availability for every coach (14-day rolling window). */
+function generateSlots(coachIds: string[]) {
+  const rows: (typeof timeSlots.$inferInsert)[] = [];
+  coachIds.forEach((coachId) => {
+    for (let d = 0; d < 14; d++) {
+      const date = dayOffset(d);
+      SLOT_TIMES.forEach(([startTime, endTime], ti) => {
+        rows.push({
+          id: `${coachId}-${date}-${startTime}`,
+          coachId,
+          date,
+          startTime,
+          endTime,
+          // Deterministic but varied availability; keep some open every day
+          available: (d * 7 + ti) % 3 !== 0,
+        });
+      });
+    }
+  });
+  return rows;
+}
+
+/** Upcoming + recent bookings anchored to today so Home/Coach-Today/earnings all populate. */
+function generateBookings(): (typeof bookings.$inferInsert)[] {
+  const mk = (
+    id: string,
+    coachId: string,
+    coachName: string,
+    athleteId: string,
+    athleteName: string,
+    offset: number,
+    startTime: string,
+    endTime: string,
+    status: "pending" | "confirmed" | "completed" | "cancelled",
+    format: "in_person" | "online",
+    price: number,
+    packageType: "single" | "pack" | "subscription",
+    note?: string,
+  ): typeof bookings.$inferInsert => ({
+    id,
+    coachId,
+    coachName,
+    athleteId,
+    athleteName,
+    date: dayOffset(offset),
+    startTime,
+    endTime,
+    format,
+    packageType,
+    price,
+    status,
+    note,
+    createdAt: new Date(),
+  });
+
+  return [
+    // Today — coach c1 run-sheet + athlete next session
+    mk("b1", "c1", "Shota Tanaka", "u-athlete-1", "Ethan Park", 0, "17:00", "18:00", "confirmed", "in_person", 95, "single", "Review outside-pitch attack angle"),
+    mk("b3", "c1", "Shota Tanaka", "u-athlete-2", "Sofia Reyes", 0, "15:00", "16:00", "confirmed", "in_person", 95, "single", "Bullpen — glove-side finish"),
+    mk("b4", "c1", "Shota Tanaka", "u-athlete-3", "Kenji Nakamura", 0, "18:30", "19:30", "pending", "in_person", 70, "single", "Defense footwork"),
+    // Upcoming
+    mk("b5", "c1", "Shota Tanaka", "u-athlete-4", "Maya Chen", 1, "10:00", "11:00", "confirmed", "in_person", 95, "single", "Transfer + framing"),
+    mk("b2", "c1", "Shota Tanaka", "u-athlete-1", "Ethan Park", 3, "16:00", "17:00", "pending", "in_person", 95, "single", "Barrel path progression"),
+    mk("b6", "c5", "Naoki Sato", "u-athlete-1", "Ethan Park", 6, "19:00", "20:00", "pending", "online", 80, "single", "Video review session"),
+    // Recent completed — earnings + history
+    mk("b7", "c1", "Shota Tanaka", "u-athlete-1", "Ethan Park", -7, "17:00", "18:00", "completed", "in_person", 95, "single"),
+    mk("b8", "c1", "Shota Tanaka", "u-athlete-2", "Sofia Reyes", -9, "15:00", "16:00", "completed", "in_person", 95, "single"),
+    mk("b9", "c1", "Shota Tanaka", "u-athlete-4", "Maya Chen", -12, "10:00", "11:00", "completed", "in_person", 95, "single"),
+    mk("b10", "c1", "Shota Tanaka", "u-athlete-1", "Ethan Park", -14, "17:00", "18:00", "completed", "in_person", 95, "single"),
+  ];
+}
 
 async function main() {
   if (!process.env.DATABASE_URL) {
@@ -51,6 +148,10 @@ async function main() {
       coach_applications,
       feature_flags,
       platform_config,
+      ai_breakdowns,
+      athlete_goals,
+      athlete_metrics,
+      parent_links,
       coach_feedback,
       student_athletes,
       social_posts,
@@ -145,35 +246,9 @@ async function main() {
     })),
   );
 
-  await db.insert(timeSlots).values(
-    staticSlots.map((s) => ({
-      id: s.id,
-      coachId: s.coachId,
-      date: s.date,
-      startTime: s.startTime,
-      endTime: s.endTime,
-      available: s.available,
-    })),
-  );
+  await db.insert(timeSlots).values(generateSlots(coaches.map((c) => c.id)));
 
-  await db.insert(bookings).values(
-    demoBookings.map((b) => ({
-      id: b.id,
-      coachId: b.coachId,
-      coachName: b.coachName,
-      athleteId: b.athleteId,
-      athleteName: b.athleteName,
-      date: b.date,
-      startTime: b.startTime,
-      endTime: b.endTime,
-      format: b.format,
-      packageType: b.packageType,
-      price: b.price,
-      status: b.status,
-      note: b.note,
-      createdAt: new Date(b.createdAt),
-    })),
-  );
+  await db.insert(bookings).values(generateBookings());
 
   console.log("Seeding messages…");
   await db.insert(messageThreads).values(
@@ -200,6 +275,26 @@ async function main() {
       createdAt: new Date(m.createdAt),
     })),
   );
+
+  // Concept: clips attach into the thread (from the feed / camera roll / AI breakdown)
+  await db.insert(messages).values([
+    {
+      id: "m-clip-1",
+      threadId: "t1",
+      senderId: "u-athlete-1",
+      senderName: "you",
+      senderNameKey: "you" as const,
+      body: {
+        en: "Sharing my swing breakdown — the attack-angle notes you mentioned.",
+        ja: "スイング分析を共有します — 話していたアタックアングルのメモです。",
+        es: "Comparto mi análisis de swing — las notas del ángulo de ataque.",
+      },
+      kind: "clip",
+      attachmentUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      breakdownId: "bd-a1-1",
+      createdAt: new Date("2026-07-26T18:05:00"),
+    },
+  ]);
 
   console.log("Seeding athlete profiles & social…");
   await db.insert(athleteProfiles).values(
@@ -237,6 +332,10 @@ async function main() {
       videoUrl: p.videoUrl,
       posterUrl: p.posterUrl,
       statsNote: p.statsNote,
+      coachName: p.coachName ?? null,
+      sessionLabel: p.sessionLabel ?? null,
+      breakdownId: p.breakdownId ?? null,
+      metricChips: p.metricChips ?? null,
       createdAt: new Date(p.createdAt),
       likes: p.likes,
     })),
@@ -247,6 +346,7 @@ async function main() {
     students.map((s) => ({
       id: s.id,
       coachId: "c1",
+      userId: studentUserLinks[s.id] ?? null,
       name: s.name,
       age: s.age,
       level: s.level,
@@ -280,11 +380,78 @@ async function main() {
     })),
   );
 
+  console.log("Seeding athlete metrics, goals & AI breakdowns…");
+  await db.insert(athleteMetrics).values(
+    athleteMetricSeed.map((m) => ({
+      id: m.id,
+      athleteId: m.athleteId,
+      metric: m.metric,
+      label: m.label,
+      unit: m.unit,
+      value: m.value,
+      recordedAt: m.recordedAt,
+    })),
+  );
+
+  await db.insert(athleteGoals).values(
+    athleteGoalSeed.map((g) => ({
+      id: g.id,
+      athleteId: g.athleteId,
+      metric: g.metric,
+      label: g.label,
+      unit: g.unit,
+      position: g.position,
+      baseline: g.baseline,
+      current: g.current,
+      target: g.target,
+      priorityRank: g.priorityRank,
+    })),
+  );
+
+  await db.insert(aiBreakdowns).values(
+    aiBreakdownSeed.map((b) => ({
+      id: b.id,
+      athleteId: b.athleteId,
+      coachId: b.coachId,
+      coachName: b.coachName,
+      title: b.title,
+      videoUrl: b.videoUrl,
+      posterUrl: b.posterUrl,
+      status: b.status,
+      processedSeconds: b.processedSeconds,
+      pose: b.pose,
+      flags: b.flags,
+      metrics: b.metrics,
+      summary: b.summary,
+      threadId: b.threadId,
+      sentToCoach: b.sentToCoach,
+      analysisType: b.title.toLowerCase().includes("delivery") ? "pitching" : "swing",
+      sport: "baseball",
+      provider: "athlink-motion-v1",
+      model: null,
+      latencyMs: 1200,
+      notes: null,
+      error: null,
+      createdAt: new Date(b.createdAt),
+    })),
+  );
+
+  await db.insert(parentLinks).values([
+    {
+      id: "pl-1",
+      athleteId: "u-athlete-1",
+      guardianName: "Jennifer Park",
+      guardianEmail: "jennifer.park@example.com",
+      relationship: "parent",
+      status: "linked",
+    },
+  ]);
+
   console.log("Seeding admin data…");
   await db.insert(featureFlags).values([
     { key: "booking_flow", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "training_feed", enabled: true, rolloutPercent: 100, audience: "all" },
-    { key: "ai_breakdown", enabled: false, rolloutPercent: 0, audience: "all" },
+    { key: "ai_breakdown", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "athlete_coach_messaging", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "scout_discovery", enabled: true, rolloutPercent: 100, audience: "all" },
     { key: "homepage_gateway", enabled: true, rolloutPercent: 100, audience: "all" },

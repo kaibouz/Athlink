@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/store";
 import { useSocial } from "@/lib/social-store";
 import { useLocale } from "@/lib/i18n/provider";
 import { PostCard } from "@/components/social/PostCard";
+import { FeedViewer } from "@/components/social/FeedViewer";
 import { AthleteOutreachButtons } from "@/components/social/AthleteOutreachButtons";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -26,6 +27,7 @@ export default function SnsPage() {
   const [type, setType] = useState<"" | SocialPostType>("");
   const [scoutOpenOnly, setScoutOpenOnly] = useState(true);
   const [position, setPosition] = useState("");
+  const [feedMode, setFeedMode] = useState<"reel" | "list">("reel");
 
   const isCoach = user?.role === "coach";
 
@@ -196,28 +198,51 @@ export default function SnsPage() {
       </div>
 
       {tab === "timeline" ? (
-        <div className="divide-y divide-brand-100">
-          {user && user.role !== "coach" && (
-            <Link
-              href="/feed/compose"
-              className="flex items-center gap-3 px-4 py-4 transition hover:bg-brand-50/50"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
-                {user.name.slice(0, 1)}
-              </span>
-              <span className="flex-1 text-sm text-brand-400">{t("sns_compose_ph")}</span>
-              <Plus className="h-5 w-5 text-brand-500" />
-            </Link>
-          )}
-
-          {filteredPosts.length === 0 ? (
-            <div className="px-4 py-16 text-center text-brand-500">
-              {t("social_feed_empty")}
+        <div>
+          <div className="flex items-center gap-2 border-b border-[color:var(--mx-border)] px-4 py-2">
+            <div className="inline-flex overflow-hidden rounded-full border border-[color:var(--mx-border-strong)] text-xs font-semibold">
+              {(
+                [
+                  ["reel", "Reel"],
+                  ["list", "List"],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setFeedMode(id)}
+                  className={cn(
+                    "px-3 py-1",
+                    feedMode === id
+                      ? "bg-[color:var(--mx-accent)] text-black"
+                      : "text-[color:var(--mx-dim)]",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
+            {user && user.role !== "coach" && (
+              <Link href="/feed/compose" className="mx-btn mx-btn-ghost ml-auto text-[0.72rem]">
+                <Plus className="h-3.5 w-3.5" /> {t("sns_post")}
+              </Link>
+            )}
+          </div>
+
+          {feedMode === "reel" ? (
+            <FeedViewer posts={filteredPosts} />
           ) : (
-            filteredPosts.map((post) => (
-              <PostCard key={post.id} post={post} variant="timeline" />
-            ))
+            <div className="divide-y divide-brand-100">
+              {filteredPosts.length === 0 ? (
+                <div className="px-4 py-16 text-center text-brand-500">
+                  {t("social_feed_empty")}
+                </div>
+              ) : (
+                filteredPosts.map((post) => (
+                  <PostCard key={post.id} post={post} variant="timeline" />
+                ))
+              )}
+            </div>
           )}
         </div>
       ) : (

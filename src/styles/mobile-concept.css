@@ -18,10 +18,42 @@
   --mx-red: #ff5f6d;
 }
 
+/* Role accent — one source of truth; every screen recolors from these tokens.
+   athlete = energetic cyan + amber highlight; coach = deeper, calmer blue. */
+[data-role="athlete"] {
+  --mx-blue-1: #2b8ef6;
+  --mx-blue-2: #22c7e0;
+  --mx-accent: #22c7e0;
+  --mx-accent-soft: rgba(34, 199, 224, 0.16);
+  --mx-accent-2: #f5a623;
+}
+[data-role="coach"] {
+  --mx-blue-1: #1e3a8a;
+  --mx-blue-2: #3b6ef6;
+  --mx-accent: #3b6ef6;
+  --mx-accent-soft: rgba(59, 110, 246, 0.18);
+  --mx-accent-2: #22c7e0;
+}
+
 .mx-app {
   color: var(--mx-text);
   background: var(--mx-bg);
   min-height: 100%;
+}
+
+/* Faint route-line texture (splash coastline) usable as an app-surface backdrop. */
+.mx-route-texture {
+  position: relative;
+}
+.mx-route-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(120% 80% at 100% 0%, rgba(34, 199, 224, 0.08), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, rgba(59, 110, 246, 0.08), transparent 55%);
 }
 
 .mx-hdr {
@@ -109,6 +141,23 @@
   border: 1px solid var(--mx-border-strong);
   color: var(--mx-text);
   background: transparent;
+}
+
+.mx-input {
+  background: var(--mx-panel);
+  border: 1px solid var(--mx-border-strong);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  color: var(--mx-text);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.mx-input::placeholder {
+  color: var(--mx-dimmer);
+}
+.mx-input:focus {
+  border-color: var(--mx-accent);
 }
 
 .mx-avatar {
@@ -287,6 +336,49 @@
 .mx-rank .v {
   margin-left: auto;
   font-weight: 700;
+}
+
+/* Immersive one-at-a-time vertical feed viewer. */
+.mx-feed {
+  height: calc(100vh - 12rem);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+.mx-feed::-webkit-scrollbar {
+  display: none;
+}
+.mx-feed-item {
+  position: relative;
+  height: calc(100vh - 12rem);
+  min-height: 460px;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background: #000;
+}
+.mx-feed-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%, transparent 55%, rgba(0, 0, 0, 0.82) 100%);
+}
+
+/* Processing skeleton shimmer (AI breakdown "analyzing" overlay). */
+.mx-skel-bar {
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+.mx-skel-bar > span {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: mx-shimmer 1.2s infinite;
+}
+@keyframes mx-shimmer {
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .mx-sys {

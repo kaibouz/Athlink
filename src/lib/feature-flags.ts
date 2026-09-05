@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const DEFAULT_FLAGS: Record<string, boolean> = {
   booking_flow: true,
   training_feed: true,
-  ai_breakdown: false,
+  ai_breakdown: true,
   athlete_coach_messaging: true,
   scout_discovery: true,
   homepage_gateway: true,

@@ -1,21 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, MessageSquare, Navigation, Play } from "lucide-react";
+import { MapPin, MessageSquare, Navigation, Play, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { formatDateJa } from "@/lib/utils";
+import { useApi } from "@/lib/client/use-api";
+import type { AthleteProgress, ProgressMetric } from "@/types";
 
-const HEAT = [
-  0, 1, 0, 2, 1, 0, 3, 1, 2, 0, 1, 3, 2, 1, 0, 2, 3, 1, 0, 1, 2, 0, 1, 3, 2, 1, 0, 2,
-];
+/** Metrics where a lower value is an improvement (delta arrow flips). */
+const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
 
-/** Athlete Home — mobile concept: next session, stats, coach note, heatmap */
+function DeltaTag({ metric }: { metric: ProgressMetric }) {
+  if (metric.delta === null || metric.delta === 0) return null;
+  const improved = LOWER_BETTER.has(metric.metric) ? metric.delta < 0 : metric.delta > 0;
+  const arrow = metric.delta > 0 ? "▲" : "▼";
+  return (
+    <span
+      className="text-sm font-600"
+      style={{ color: improved ? "var(--mx-green)" : "var(--mx-amber)" }}
+    >
+      {arrow}
+      {Math.abs(metric.delta)}
+    </span>
+  );
+}
+
+/** Athlete Home — mobile concept: breakdown toast, next session, live stats, coach note, heat map */
 export function AthleteHomeScreen() {
   const { user, bookings } = useAuth();
   const { t, locale } = useLocale();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
+  const { data } = useApi<{ progress: AthleteProgress | null }>(user ? "/api/me/progress" : null);
+  const progress = data?.progress ?? null;
 
   if (!user) {
     return (
@@ -29,7 +47,10 @@ export function AthleteHomeScreen() {
     );
   }
 
-  const next = bookings.find((b) => b.status === "pending" || b.status === "confirmed");
+  const next =
+    progress?.nextSession ??
+    bookings.find((b) => b.status === "pending" || b.status === "confirmed") ??
+    null;
   const first = user.name.split(" ")[0] || user.name;
   const initials = user.name
     .split(" ")
@@ -44,19 +65,31 @@ export function AthleteHomeScreen() {
     day: "numeric",
   });
 
+  const headline = progress?.headline ?? [];
+  const coachNote = progress?.reportCards?.[0] ?? null;
+  const breakdown = progress?.latestBreakdown ?? null;
+  const heat = progress?.heatmap ?? [];
+
   return (
-    <div className="mx-app mx-auto max-w-2xl px-4 py-6 sm:px-6">
-      <div className="mx-toast mb-4">
-        <span className="mx-toast-ic">
-          <Play className="h-3.5 w-3.5" />
-        </span>
-        <div>
-          <b className="text-[0.75rem]">Your swing breakdown is ready</b>
-          <span className="block text-[0.7rem] text-[var(--mx-dimmer)]">
-            Processed in 44s · tap to view
+    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
+      {breakdown && (
+        <Link href={`/breakdown/${breakdown.id}`} className="mx-toast mb-3 block">
+          <span className="mx-toast-ic">
+            <Play className="h-3.5 w-3.5" />
           </span>
-        </div>
-      </div>
+          <div>
+            <b className="text-[0.75rem]">Your {breakdown.title.toLowerCase().includes("delivery") ? "delivery" : "swing"} breakdown is ready</b>
+            <span className="block text-[0.7rem] text-[var(--mx-dimmer)]">
+              Processed in {breakdown.processedSeconds}s · tap to view
+            </span>
+          </div>
+        </Link>
+      )}
+
+      <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0">
+        <Sparkles className="h-4 w-4" />
+        Analyze a clip with AI
+      </Link>
 
       <header className="mx-hdr">
         <div>
@@ -70,7 +103,9 @@ export function AthleteHomeScreen() {
 
       {next ? (
         <div className="mx-card mb-3">
-          <div className="mx-t">Next session · today</div>
+          <div className="mx-t">
+            Next session · {next.date === new Date().toISOString().slice(0, 10) ? "today" : formatDateJa(next.date, dateLocale)}
+          </div>
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-[0.95rem] font-bold">{next.coachName}</div>
@@ -78,7 +113,9 @@ export function AthleteHomeScreen() {
                 {next.format === "online" ? "Online" : "In person"} ·{" "}
                 {formatDateJa(next.date, dateLocale)} · {next.startTime}–{next.endTime}
               </div>
-              <span className="mx-pill mx-pill-green mt-2">Confirmed</span>
+              <span className={`mx-pill mt-2 ${next.status === "confirmed" ? "mx-pill-green" : "mx-pill-amber"}`}>
+                {next.status === "confirmed" ? "Confirmed" : "Pending"}
+              </span>
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -103,38 +140,52 @@ export function AthleteHomeScreen() {
       )}
 
       <div className="mx-stat-grid mb-3">
-        <div className="mx-card">
-          <div className="mx-t">Exit velo</div>
-          <div className="mx-big">
-            84 <span className="text-sm font-600 text-[var(--mx-green)]">▲2</span>
-          </div>
-        </div>
-        <div className="mx-card">
-          <div className="mx-t">Sessions · Sep</div>
-          <div className="mx-big">
-            6 <span className="text-base font-600 text-[var(--mx-dimmer)]">/8</span>
-          </div>
-        </div>
+        {headline.length > 0 ? (
+          headline.map((m) => (
+            <div key={m.metric} className="mx-card">
+              <div className="mx-t">{m.label}</div>
+              <div className="mx-big">
+                {m.latest} <DeltaTag metric={m} />
+              </div>
+              {m.unit ? (
+                <div className="mt-1 text-[0.65rem] text-[var(--mx-dimmer)]">{m.unit}</div>
+              ) : null}
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="mx-card">
+              <div className="mx-t">Exit velo</div>
+              <div className="mx-big">—</div>
+            </div>
+            <div className="mx-card">
+              <div className="mx-t">Bat speed</div>
+              <div className="mx-big">—</div>
+            </div>
+          </>
+        )}
       </div>
 
-      <div className="mx-card mb-3">
-        <div className="mx-t">Coach says</div>
-        <p className="text-sm leading-relaxed text-[var(--mx-text)]">
-          “Hands are loading late — we’ll fix the trigger Thursday.”
-        </p>
-        <div className="mt-2 text-[0.7rem] text-[var(--mx-dimmer)]">Report card · Aug 31</div>
-      </div>
+      {coachNote && (
+        <div className="mx-card mb-3">
+          <div className="mx-t">Coach says</div>
+          <p className="text-sm leading-relaxed text-[var(--mx-text)]">“{coachNote.body}”</p>
+          <div className="mt-2 text-[0.7rem] text-[var(--mx-dimmer)]">
+            Report card · {coachNote.coachName} · {formatDateJa(coachNote.createdAt.slice(0, 10), dateLocale)}
+          </div>
+        </div>
+      )}
 
       <div className="mx-card">
-        <div className="mx-t">This week</div>
+        <div className="mx-t">Last 7 weeks</div>
         <div className="mx-heat" aria-hidden>
-          {HEAT.map((level, i) => (
-            <i key={i} className={level === 0 ? undefined : `l${level}`} />
+          {heat.map((cell) => (
+            <i key={cell.date} className={cell.level === 0 ? undefined : `l${Math.min(3, cell.level)}`} />
           ))}
         </div>
         <div className="mt-1 flex justify-between text-[0.65rem] text-[var(--mx-dimmer)]">
-          <span>Mon</span>
-          <span>Sun</span>
+          <span>7 weeks ago</span>
+          <span>This week</span>
         </div>
       </div>
 

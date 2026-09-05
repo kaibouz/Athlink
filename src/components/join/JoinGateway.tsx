@@ -23,6 +23,17 @@ import { Button } from "@/components/ui/Button";
 import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
+import { ROLE_ACCENT_KEY } from "@/components/layout/RoleTheme";
+
+/** Persist the chosen role accent so the app recolors immediately, even pre-signup. */
+function persistAccent(role: "coach" | "athlete") {
+  try {
+    localStorage.setItem(ROLE_ACCENT_KEY, role);
+  } catch {
+    /* ignore */
+  }
+  document.documentElement.dataset.role = role;
+}
 
 type Feature = { icon: React.ComponentType<{ className?: string }>; text: string };
 
@@ -85,7 +96,7 @@ function JoinCard({
       </ul>
 
       <div className="mt-auto pt-6">
-        <Link href={href} className="group inline-block">
+        <Link href={href} className="group inline-block" onClick={() => persistAccent(role)}>
           <Button
             variant="primary"
             className={

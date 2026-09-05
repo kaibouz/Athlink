@@ -8,11 +8,21 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import { useEffect, useState } from "react";
+import { formatPrice } from "@/lib/utils";
+import { useApi } from "@/lib/client/use-api";
 
 type CoachAnalytics = {
   profileViews: number;
   bookingClicks: number;
   bookings: number;
+};
+
+type CoachEarnings = {
+  earned: number;
+  pending: number;
+  thisMonth: number;
+  upcoming: number;
+  completedSessions: number;
 };
 
 function FunnelBar({
@@ -48,6 +58,10 @@ function AnalyticsInner() {
   const { t } = useLocale();
   const { coach, loading, hasProfile } = useMyCoach();
   const [analytics, setAnalytics] = useState<CoachAnalytics | null>(null);
+  const { data: earnData } = useApi<{ earnings: CoachEarnings | null }>(
+    hasProfile ? "/api/coach/earnings" : null,
+  );
+  const earnings = earnData?.earnings ?? null;
 
   useEffect(() => {
     if (!hasProfile) return;
@@ -83,6 +97,36 @@ function AnalyticsInner() {
   return (
     <PageContainer>
       <PageHeader title={t("analytics_title")} description={t("analytics_sub")} />
+
+      <section className="mt-8 rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
+        <h2 className="text-lg font-bold text-brand-950">Earnings at a glance</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div>
+            <p className="text-xs font-semibold text-brand-500">Earned</p>
+            <p className="mt-1 text-2xl font-black tabular-nums text-brand-950">
+              {formatPrice(earnings?.earned ?? 0)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-brand-500">Pending</p>
+            <p className="mt-1 text-2xl font-black tabular-nums text-amber-600">
+              {formatPrice(earnings?.pending ?? 0)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-brand-500">This month</p>
+            <p className="mt-1 text-2xl font-black tabular-nums text-brand-950">
+              {formatPrice(earnings?.thisMonth ?? 0)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-brand-500">Upcoming sessions</p>
+            <p className="mt-1 text-2xl font-black tabular-nums text-brand-950">
+              {earnings?.upcoming ?? 0}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <article className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm">

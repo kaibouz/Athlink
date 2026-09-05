@@ -127,6 +127,8 @@ export interface LessonLogEntry {
 
 export interface StudentAthlete {
   id: string;
+  /** Linked athlete user account (shared progress data), when present */
+  userId?: string;
   name: string;
   age: number;
   level: string;
@@ -210,6 +212,117 @@ export interface SocialPost {
   videoUrl: string;
   posterUrl: string;
   statsNote?: string;
+  coachName?: string;
+  sessionLabel?: string;
+  breakdownId?: string;
+  metricChips?: { label: string; value: string }[];
   createdAt: string;
   likes: number;
+}
+
+/** Aggregated progress (metric + goal + report-card) for one athlete. */
+export interface ProgressPoint {
+  date: string;
+  value: number;
+}
+
+export interface ProgressMetric {
+  metric: string;
+  label: string;
+  unit: string;
+  latest: number;
+  previous: number | null;
+  delta: number | null;
+  series: ProgressPoint[];
+}
+
+export interface ProgressGoal {
+  id: string;
+  metric: string;
+  label: string;
+  unit: string;
+  position: string | null;
+  baseline: number;
+  current: number;
+  target: number;
+  priorityRank: number;
+  /** 0..1 progress from baseline toward target */
+  pct: number;
+}
+
+export interface ReportCard {
+  id: string;
+  coachName: string;
+  studentName: string;
+  subject: string;
+  body: string;
+  createdAt: string;
+  aiAttached: boolean;
+}
+
+export interface HeatCell {
+  date: string;
+  level: number;
+}
+
+export interface AthleteProgress {
+  athleteId: string;
+  name: string;
+  headline: ProgressMetric[];
+  metrics: ProgressMetric[];
+  goals: ProgressGoal[];
+  reportCards: ReportCard[];
+  heatmap: HeatCell[];
+  nextSession: Booking | null;
+  latestBreakdown: AiBreakdown | null;
+}
+
+export interface AiBreakdown {
+  id: string;
+  athleteId: string;
+  athleteName?: string;
+  coachId: string | null;
+  coachName: string | null;
+  title: string;
+  videoUrl: string;
+  posterUrl: string;
+  status: string;
+  processedSeconds: number;
+  pose: { ref: number[][]; user: number[][] };
+  flags: { label: string; severity: "warn" | "ok"; note: string }[];
+  metrics: { label: string; value: string; delta?: string }[];
+  summary: string;
+  threadId: string | null;
+  sentToCoach: boolean;
+  analysisType: string;
+  sport: string;
+  provider: string | null;
+  model: string | null;
+  latencyMs: number | null;
+  notes: string | null;
+  error: string | null;
+  createdAt: string;
+}
+
+export type MessageKind = "text" | "system" | "clip";
+
+export interface ThreadMessage {
+  id: string;
+  threadId: string;
+  senderId: string;
+  senderName: string;
+  senderNameKey?: "you";
+  body: Localized | string;
+  kind: MessageKind;
+  attachmentUrl?: string;
+  bookingId?: string;
+  breakdownId?: string;
+  createdAt: string;
+}
+
+export interface NextSlot {
+  coachId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
 }

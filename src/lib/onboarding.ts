@@ -46,6 +46,10 @@ export interface OnboardingDraft {
   batsThrows: string;
   lookingForCoach: boolean;
   openToScouts: boolean;
+  // athlete goals + guardian (position-aware onboarding)
+  selectedGoals: string[];
+  guardianName: string;
+  guardianEmail: string;
   // social
   postCaption: string;
   postType: "practice" | "game" | "training" | "highlight" | "form";
@@ -73,6 +77,9 @@ export function defaultDraft(role: "coach" | "athlete" = "athlete"): OnboardingD
     batsThrows: "R/R",
     lookingForCoach: true,
     openToScouts: true,
+    selectedGoals: [],
+    guardianName: "",
+    guardianEmail: "",
     postCaption: "",
     postType: "practice",
   };
