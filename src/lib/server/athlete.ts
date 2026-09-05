@@ -15,6 +15,7 @@ import {
   timeSlots,
   users,
 } from "@/db/schema";
+import { aiBreakdownSeed } from "@/lib/athlete-data";
 import type {
   AiBreakdown,
   AthleteProgress,
@@ -28,6 +29,37 @@ import type {
   ThreadMessage,
   User,
 } from "@/types";
+
+/** In-memory demo breakdown when DB is missing / schema not pushed. */
+function demoBreakdownById(id: string): AiBreakdown | null {
+  const seed = aiBreakdownSeed.find((b) => b.id === id);
+  if (!seed) return null;
+  return {
+    id: seed.id,
+    athleteId: seed.athleteId,
+    coachId: seed.coachId,
+    coachName: seed.coachName,
+    title: seed.title,
+    videoUrl: seed.videoUrl,
+    posterUrl: seed.posterUrl,
+    status: seed.status,
+    processedSeconds: seed.processedSeconds,
+    pose: seed.pose,
+    flags: seed.flags,
+    metrics: seed.metrics,
+    summary: seed.summary,
+    threadId: seed.threadId,
+    sentToCoach: seed.sentToCoach,
+    analysisType: "swing",
+    sport: "baseball",
+    provider: null,
+    model: null,
+    latencyMs: null,
+    notes: null,
+    error: null,
+    createdAt: seed.createdAt,
+  };
+}
 
 function todayStr(): string {
   return new Date().toISOString().slice(0, 10);
@@ -234,12 +266,17 @@ export async function getBreakdownsForAthlete(athleteUserId: string): Promise<Ai
 }
 
 export async function getBreakdownById(id: string): Promise<AiBreakdown | null> {
-  if (!isDatabaseConfigured()) return null;
-  const db = getDb();
-  const [row] = await db.select().from(aiBreakdowns).where(eq(aiBreakdowns.id, id)).limit(1);
-  if (!row) return null;
-  const [athlete] = await db.select().from(users).where(eq(users.id, row.athleteId)).limit(1);
-  return mapBreakdown(row, athlete?.name);
+  if (!isDatabaseConfigured()) return demoBreakdownById(id);
+  try {
+    const db = getDb();
+    const [row] = await db.select().from(aiBreakdowns).where(eq(aiBreakdowns.id, id)).limit(1);
+    if (!row) return demoBreakdownById(id);
+    const [athlete] = await db.select().from(users).where(eq(users.id, row.athleteId)).limit(1);
+    return mapBreakdown(row, athlete?.name);
+  } catch {
+    // Stale local DB (tables not pushed yet) — degrade to demo seed instead of 500.
+    return demoBreakdownById(id);
+  }
 }
 
 async function resolveCoachId(user: User): Promise<string | null> {
