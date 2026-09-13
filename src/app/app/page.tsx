@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
+import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
@@ -18,7 +19,7 @@ export default function AppEntryPage() {
   useEffect(() => {
     if (!hydrated) return;
     if (!user) {
-      router.replace("/sign-in?redirect_url=/app");
+      router.replace(signInHref(MARKET_TO_PLATFORM.appEntry));
       return;
     }
     const target = shouldEnterOnboarding(user.id)

@@ -10,8 +10,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "app-glass-solid rounded-2xl shadow-sm",
-        hover && "transition hover:border-brand-300/50 hover:shadow-md",
+        "glass-panel glass-panel-dense rounded-2xl",
+        hover && "transition hover:border-white/40 hover:shadow-[0_22px_60px_rgba(0,0,0,0.28)]",
         className,
       )}
       {...props}
