@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, BarChart3, CalendarDays, MessageSquare, Video } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 import "./how-athlink-works.css";
 
 type HowAthlinkWorksProps = {
@@ -13,8 +14,8 @@ type HowAthlinkWorksProps = {
 };
 
 /**
- * "How AthlinkPro works" — the four-step athlete loop (book, message, share,
- * AI breakdown). Shared by /for-athletes and the standalone /how-it-works page.
+ * "How AthlinkPro works" — the four-step athlete loop from the app PDF
+ * (Find a coach → Book → Feed / Messages → AI breakdown → Progress).
  */
 export function HowAthlinkWorks({ id = "how-it-works", showCta = true }: HowAthlinkWorksProps) {
   const { t } = useLocale();
@@ -78,11 +79,11 @@ export function HowAthlinkWorks({ id = "how-it-works", showCta = true }: HowAthl
 
         {showCta && (
           <div className="how-works-foot">
-            <Link href="/join/athlete" className="how-works-cta">
-              {t("how_cta_start")}
+            <Link href={MARKET_TO_PLATFORM.getStarted} className="how-works-cta">
+              {t("hq_get_started")}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/search" className="how-works-cta-ghost">
+            <Link href={MARKET_TO_PLATFORM.browse} className="how-works-cta-ghost">
               {t("hq_browse_coaches")}
             </Link>
           </div>

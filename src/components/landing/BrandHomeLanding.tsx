@@ -129,26 +129,24 @@ export function BrandHomeLanding() {
               {t("hq_lead")}
             </p>
 
-            <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href={MARKET_TO_PLATFORM.browse} className="group">
+            {/* PDF flow: Launch → one Get Started → Choose your side */}
+            <div className="land-fade land-fade-delay-3 mt-8 flex flex-col items-center gap-4">
+              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button
                   size="lg"
                   variant="ghost"
                   className="btn-premium h-12 min-w-52 rounded-xl px-7 sm:h-14"
                 >
-                  <Search className="h-4 w-4" />
-                  {t("hq_browse_coaches")}
+                  {t("hq_get_started")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="btn-landing-secondary h-12 min-w-44 rounded-xl px-5 sm:h-14"
-                >
-                  {t("hq_get_started")}
-                </Button>
+              <Link
+                href={MARKET_TO_PLATFORM.browse}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition hover:text-white"
+              >
+                <Search className="h-3.5 w-3.5" />
+                {t("hq_browse_coaches")}
               </Link>
             </div>
             <div className="land-fade land-fade-delay-4 mx-auto mt-6 w-full max-w-md">
@@ -171,45 +169,35 @@ export function BrandHomeLanding() {
 
         <HowAthlinkWorks />
 
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
-              {t("hq_roles_title")}
-            </h2>
-            <p className="mt-2 text-brand-600">{t("hq_roles_sub")}</p>
+        {/* Role story teaser — choice itself lives on /get-started (PDF: Choose your side) */}
+        <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
+          <Users className="mx-auto h-8 w-8 text-brand-500" />
+          <h2 className="mt-4 font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
+            {t("hq_roles_title")}
+          </h2>
+          <p className="mt-3 text-brand-600">{t("hq_roles_sub")}</p>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-brand-500">
+            {t("hq_roles_bridge")}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-brand-600">
+            <span className="inline-flex items-center gap-2">
+              <Users className="h-4 w-4 text-brand-500" />
+              {t("join_athlete_eyebrow")}
+            </span>
+            <span className="text-brand-400" aria-hidden>
+              ·
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <UserRound className="h-4 w-4 text-brand-500" />
+              {t("join_coach_eyebrow")}
+            </span>
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <Link
-              href={MARKET_TO_PLATFORM.forAthletes}
-              className="glass-panel glass-panel-scrim group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
-            >
-              <Users className="h-7 w-7 text-brand-500" />
-              <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
-                {t("join_athlete_eyebrow")}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
-                {t("join_athlete_body")}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
-                {t("hq_athlete_path")}
+          <div className="mt-8">
+            <Link href={MARKET_TO_PLATFORM.getStarted} className="group inline-block">
+              <Button size="lg" variant="ghost" className="btn-premium">
+                {t("hq_choose_side")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-            <Link
-              href={MARKET_TO_PLATFORM.forCoaches}
-              className="glass-panel glass-panel-scrim group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
-            >
-              <UserRound className="h-7 w-7 text-brand-500" />
-              <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
-                {t("join_coach_eyebrow")}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
-                {t("join_coach_body")}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
-                {t("hq_coach_path")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
+              </Button>
             </Link>
           </div>
         </section>
@@ -222,17 +210,18 @@ export function BrandHomeLanding() {
             <p className="mt-3 text-sm leading-relaxed text-brand-600 sm:text-base">
               {t("hq_platform_body")}
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href={MARKET_TO_PLATFORM.browse} className="group">
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button size="lg" variant="ghost" className="btn-premium">
-                  {t("hq_open_marketplace")}
+                  {t("hq_get_started")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href={signInHref()}>
-                <Button size="lg" variant="outline" className="btn-landing-secondary">
-                  {t("nav_login")}
-                </Button>
+              <Link
+                href={signInHref()}
+                className="text-sm font-semibold text-brand-600 transition hover:text-white"
+              >
+                {t("nav_login")}
               </Link>
             </div>
           </div>

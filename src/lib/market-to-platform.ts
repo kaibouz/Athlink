@@ -1,7 +1,8 @@
 /**
  * Canonical visitor → platform flow (see docs/IA.md).
  *
- * Marketing HQ sells the product; the platform is where work happens.
+ * PDF-aligned: HQ Launch → one Get Started → /get-started (Choose your side)
+ * → role LP → join → /app → athlete Home or coach Today.
  * Never dump signed-in members back onto HQ or the role gateway.
  */
 export const MARKET_TO_PLATFORM = {

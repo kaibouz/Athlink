@@ -107,14 +107,14 @@ export function AppSidebar({
       match: (p) => p.startsWith("/coach/calendar"),
     },
     {
-      href: "/coach/students",
-      label: t("nav_athletes"),
-      icon: Users,
-      match: (p) => p.startsWith("/coach/students"),
+      href: "/sns",
+      label: t("nav_scout"),
+      icon: Radar,
+      match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
     },
     {
       href: "/messages",
-      label: t("nav_messages"),
+      label: t("nav_inbox"),
       icon: MessageSquare,
       match: (p) => p.startsWith("/messages") || p.startsWith("/coach/feedback"),
     },
@@ -127,7 +127,7 @@ export function AppSidebar({
   ];
 
   const coachTools: NavItem[] = [
-    { href: "/sns", label: t("nav_feed"), icon: Radar },
+    { href: "/coach/students", label: t("nav_athletes"), icon: Users },
     { href: "/search", label: t("nav_book"), icon: Search },
     { href: "/coach/feedback", label: t("coach_nav_feedback"), icon: Send },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },

@@ -2,13 +2,16 @@
 
 Marketplace pattern (Airbnb / ClassPass style): **show inventory first, ask for an account when needed**.
 
+Aligned with **AthlinkPro Athlete / Coach screen PDFs**:
+Launch → Choose your side → role home → primary loops (Find a coach / Calendar, Feed/Scout, Messages/Inbox, Progress/Earnings).
+
 ## Three layers
 
 | Layer | Role | Primary URLs |
 |-------|------|----------------|
-| **Marketing HQ** | Brand + routes into the product | `/` |
-| **Role LPs** | Athlete / coach story → register | `/get-started`, `/for-athletes`, `/for-coaches` |
-| **Platform** | Search, book, train, coach OS | `/search`, `/home`, `/coach/*`, `/messages`, `/sns` |
+| **Marketing HQ** | Brand + **one** Get Started | `/` |
+| **Role fork + LPs** | Choose athlete / coach → story → register | `/get-started`, `/for-athletes`, `/for-coaches` |
+| **Platform** | Same screens as the mobile concept | `/search`, `/home`, `/coach/*`, `/messages`, `/sns`, `/progress` |
 
 Canonical path helpers: [`src/lib/market-to-platform.ts`](../src/lib/market-to-platform.ts).
 
@@ -16,20 +19,26 @@ Canonical path helpers: [`src/lib/market-to-platform.ts`](../src/lib/market-to-p
 
 ```
 Guest
-  └─ /  (HQ)
-       ├─ Find coaches → /search              ← public inventory
-       ├─ Get started  → /get-started         ← role fork
-       │                    ├─ /for-athletes → /join/athlete → Clerk → /app
-       │                    └─ /for-coaches  → /join/coach   → Clerk → /app
-       └─ Log in → /sign-in?redirect_url=/app → /app → role home
+  └─ /  (HQ)  — single primary CTA: Get started
+       ├─ (secondary text) Find coaches → /search   ← public inventory
+       └─ Get started → /get-started                ← PDF: Choose your side
+                            ├─ Continue as athlete → /for-athletes → /join/athlete → Clerk → /app → /home
+                            └─ Continue as coach   → /for-coaches  → /join/coach   → Clerk → /app → /coach/dashboard
 
 Signed-in
-  ├─ Athlete → /home (platform) — marketplace still at /search
-  ├─ Coach   → /coach/dashboard
+  ├─ Athlete tabs: Home · Find coach · Feed · Messages · Progress
+  ├─ Coach tabs:   Today · Calendar · Scout · Inbox · Earnings
   └─ Never bounce back to HQ or /get-started
 ```
 
 `/app` is the post-auth router only. It must not render marketing chrome.
+
+## Simplification rules (from PDF + market)
+
+- **One Get Started** on HQ — role choice happens once on `/get-started`, not as competing hero buttons.
+- Role LP cards on HQ are **story teasers**, not a second signup funnel.
+- Nav labels match the PDF (Find coach, Scout, Inbox) so market → app feels continuous.
+- Browse `/search` stays public; booking / messaging still gate on auth.
 
 ## Glassmorphism surface (platform + marketing cards)
 
@@ -47,6 +56,7 @@ Use `.glass-panel` / `<GlassPanel>` / `.glass-scene` / `<GlassScene>`.
 ## Do not
 
 - Make `/` a role-only gateway (story never lands)
+- Put multiple peer Get Started / Sign up CTAs in the HQ hero
 - Send signed-in users back through `/get-started`
 - Hide `/search` behind login
 
