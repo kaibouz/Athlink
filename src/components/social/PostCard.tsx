@@ -2,19 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Heart,
-  MessageCircle,
-  Play,
-  Repeat2,
-  Share,
-} from "lucide-react";
+import { Heart, MessageCircle, Play, Repeat2, Share } from "lucide-react";
 import type { MessageKey } from "@/lib/i18n/messages";
 import type { SocialPost } from "@/types";
 import { useLocale } from "@/lib/i18n/provider";
 import { useSocial } from "@/lib/social-store";
 import { Badge } from "@/components/ui/Badge";
 import { AthleteOutreachButtons } from "@/components/social/AthleteOutreachButtons";
+import { ProfileHoverCard } from "@/components/profile/ProfileHoverCard";
 import { cn } from "@/lib/utils";
 
 const typeKey: Record<SocialPost["type"], MessageKey> = {
@@ -39,6 +34,21 @@ export function PostCard({
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(post.likes);
 
+  const profileHref = `/athletes/${post.athleteId}`;
+  const profilePreview = {
+    href: profileHref,
+    name: post.athleteName,
+    avatarUrl: post.avatarUrl,
+    subtitle: `${post.school} · ${post.position} · Class of ${post.classYear}`,
+    summary:
+      athlete?.bio?.trim() ||
+      `${post.athleteName} — ${post.position} at ${post.school}.`,
+    badges: [
+      ...(athlete?.lookingForCoach ? ["Looking for coach"] : []),
+      ...(athlete?.openToScouts ? ["Open to scouts"] : []),
+    ],
+  };
+
   function toggleLike() {
     setLiked((v) => {
       setLikes((n) => (v ? n - 1 : n + 1));
@@ -50,22 +60,26 @@ export function PostCard({
     return (
       <article className="px-4 py-3 transition hover:bg-brand-50/40">
         <div className="flex gap-3">
-          <Link href={`/athletes/${post.athleteId}`} className="shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={post.avatarUrl}
-              alt=""
-              className="h-10 w-10 rounded-full bg-brand-50"
-            />
-          </Link>
+          <ProfileHoverCard profile={profilePreview}>
+            <Link href={profileHref} className="shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.avatarUrl}
+                alt=""
+                className="h-10 w-10 rounded-full bg-brand-50"
+              />
+            </Link>
+          </ProfileHoverCard>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <Link
-                href={`/athletes/${post.athleteId}`}
-                className="font-bold text-brand-950 hover:underline"
-              >
-                {post.athleteName}
-              </Link>
+              <ProfileHoverCard profile={profilePreview}>
+                <Link
+                  href={profileHref}
+                  className="font-bold text-brand-950 hover:underline"
+                >
+                  {post.athleteName}
+                </Link>
+              </ProfileHoverCard>
               <span className="text-sm text-brand-400">
                 @{post.athleteId} ·{" "}
                 {new Date(post.createdAt).toLocaleDateString(dateLocale)}
@@ -77,9 +91,9 @@ export function PostCard({
             <p className="mt-2 text-[15px] leading-relaxed text-brand-900">
               {post.caption}
             </p>
-            {post.statsNote && (
+            {post.statsNote ? (
               <p className="mt-1 text-xs font-medium text-brand-600">{post.statsNote}</p>
-            )}
+            ) : null}
 
             <div className="relative mt-3 overflow-hidden rounded-2xl border border-brand-100 bg-black">
               <video
@@ -125,13 +139,15 @@ export function PostCard({
                 <Heart className={cn("h-4 w-4", liked && "fill-rose-600")} />
                 {likes}
               </button>
-              <Link
-                href={`/athletes/${post.athleteId}`}
-                className="inline-flex items-center gap-1.5 rounded-full p-1.5 text-xs hover:bg-brand-50 hover:text-brand-600"
-                aria-label={t("social_view_profile")}
-              >
-                <Share className="h-4 w-4" />
-              </Link>
+              <ProfileHoverCard profile={profilePreview}>
+                <Link
+                  href={profileHref}
+                  className="inline-flex items-center gap-1.5 rounded-full p-1.5 text-xs hover:bg-brand-50 hover:text-brand-600"
+                  aria-label={t("social_view_profile")}
+                >
+                  <Share className="h-4 w-4" />
+                </Link>
+              </ProfileHoverCard>
             </div>
 
             <div className="mt-3">
@@ -152,21 +168,25 @@ export function PostCard({
   return (
     <article className="overflow-hidden rounded-2xl border border-brand-100 bg-surface shadow-sm">
       <div className="flex items-center gap-3 p-4">
-        <Link href={`/athletes/${post.athleteId}`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={post.avatarUrl}
-            alt=""
-            className="h-11 w-11 rounded-xl bg-brand-50"
-          />
-        </Link>
-        <div className="min-w-0 flex-1">
-          <Link
-            href={`/athletes/${post.athleteId}`}
-            className="font-bold text-brand-950 hover:text-brand-600"
-          >
-            {post.athleteName}
+        <ProfileHoverCard profile={profilePreview}>
+          <Link href={profileHref}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={post.avatarUrl}
+              alt=""
+              className="h-11 w-11 rounded-xl bg-brand-50"
+            />
           </Link>
+        </ProfileHoverCard>
+        <div className="min-w-0 flex-1">
+          <ProfileHoverCard profile={profilePreview}>
+            <Link
+              href={profileHref}
+              className="font-bold text-brand-950 hover:text-brand-600"
+            >
+              {post.athleteName}
+            </Link>
+          </ProfileHoverCard>
           <p className="truncate text-xs text-brand-500">
             {post.school} · {post.position} · Class of {post.classYear}
           </p>
@@ -193,9 +213,9 @@ export function PostCard({
 
       <div className="space-y-3 p-4">
         <p className="text-sm leading-relaxed text-brand-800">{post.caption}</p>
-        {post.statsNote && (
+        {post.statsNote ? (
           <p className="text-xs font-medium text-brand-600">{post.statsNote}</p>
-        )}
+        ) : null}
 
         <AthleteOutreachButtons
           athleteId={post.athleteId}
@@ -209,13 +229,15 @@ export function PostCard({
           <span>
             {new Date(post.createdAt).toLocaleString(dateLocale)} · {likes} likes
           </span>
-          <Link
-            href={`/athletes/${post.athleteId}`}
-            className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:text-brand-800"
-          >
-            <Share className="h-3.5 w-3.5" />
-            {t("social_view_profile")}
-          </Link>
+          <ProfileHoverCard profile={profilePreview}>
+            <Link
+              href={profileHref}
+              className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:text-brand-800"
+            >
+              <Share className="h-3.5 w-3.5" />
+              {t("social_view_profile")}
+            </Link>
+          </ProfileHoverCard>
         </div>
       </div>
     </article>
