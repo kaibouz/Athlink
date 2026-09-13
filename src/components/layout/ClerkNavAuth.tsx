@@ -2,6 +2,7 @@
 
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
+import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 
 type ClerkNavAuthProps = {
   loginLabel: string;
@@ -12,6 +13,7 @@ export function ClerkNavAuth({ loginLabel, compact }: ClerkNavAuthProps) {
   return (
     <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
       <Show when="signed-out">
+        <QuickMyPageEntry compact className="mr-1" />
         <SignInButton mode="redirect">
           <Button variant="ghost" size="sm">
             {loginLabel}
@@ -19,6 +21,7 @@ export function ClerkNavAuth({ loginLabel, compact }: ClerkNavAuthProps) {
         </SignInButton>
       </Show>
       <Show when="signed-in">
+        <QuickMyPageEntry compact />
         <UserButton
           appearance={{
             elements: {

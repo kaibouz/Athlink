@@ -11,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
+import { isMarketingPath, isAuthFunnelPath, MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 
 /** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
@@ -24,14 +25,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!hydrated || !user) return;
     const exempt =
-      pathname === "/" ||
-      pathname === "/get-started" ||
-      pathname === "/for-coaches" ||
-      pathname === "/for-athletes" ||
-      pathname === "/how-it-works" ||
-      pathname === "/login" ||
-      pathname === "/app" ||
-      pathname.startsWith("/join/");
+      isMarketingPath(pathname) ||
+      isAuthFunnelPath(pathname) ||
+      pathname === "/app";
     if (exempt) return;
     if (shouldEnterOnboarding(user.id)) {
       router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
@@ -39,14 +35,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [hydrated, user, pathname, router]);
 
   const isIosPreview = pathname === "/ios";
-  const isMarketingHome =
-    pathname === "/" ||
-    pathname === "/get-started" ||
-    pathname === "/for-coaches" ||
-    pathname === "/for-athletes" ||
-    pathname === "/how-it-works";
-  const isJoinFlow = pathname.startsWith("/join/");
+  const isMarketingHome = isMarketingPath(pathname);
+  const isJoinFlow = isAuthFunnelPath(pathname) && pathname.startsWith("/join/");
   const isAdminFlow = pathname.startsWith("/admin");
+  const isAppEntry = pathname === "/app";
   const isClerkAuthRoute =
     pathname === "/sign-in" ||
     pathname.startsWith("/sign-in/") ||
@@ -62,7 +54,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
-  if (isJoinFlow || isAdminFlow) {
+  if (isJoinFlow || isAdminFlow || isAppEntry) {
     return <div className="min-h-full flex-1">{children}</div>;
   }
 
@@ -88,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-full min-w-0 flex-1 flex-col md:pl-64">
         <div className="app-canvas flex min-h-full min-w-0 flex-1 flex-col">
-          <header className="app-glass-solid sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 backdrop-blur-md md:hidden">
+          <header className="app-glass sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 md:hidden">
             <button
               type="button"
               className="rounded-lg p-2 text-brand-700 hover:bg-brand-50"
@@ -98,7 +90,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
             <AthlinkProLogo
-              href={user?.role === "coach" ? "/coach/dashboard" : "/bookings"}
+              href={user?.role === "coach" ? MARKET_TO_PLATFORM.coachHome : MARKET_TO_PLATFORM.athleteHome}
               size="header"
               variant="monogram"
               tone="onGradient"

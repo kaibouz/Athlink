@@ -1,39 +1,57 @@
-# Athlink 情報設計（整理版）
+# Athlink information architecture
 
-調査ベース: Airbnb / ClassPass 系マーケットプレイス — **先に在庫を見せ、必要になったら登録**。
+Marketplace pattern (Airbnb / ClassPass style): **show inventory first, ask for an account when needed**.
 
-## 3層に分離
+## Three layers
 
-| 層 | 役割 | 主な URL |
-|----|------|----------|
-| **本部（Marketing HQ）** | ブランド説明・導線 | `/` |
-| **役割 LP** | 選手/コーチ向け説明 → 登録 | `/for-athletes`, `/for-coaches`, `/get-started` |
-| **プラットフォーム（App）** | 検索・予約・ダッシュボード | `/search`, `/bookings`, `/coach/*`, `/messages`, `/sns` |
+| Layer | Role | Primary URLs |
+|-------|------|----------------|
+| **Marketing HQ** | Brand + routes into the product | `/` |
+| **Role LPs** | Athlete / coach story → register | `/get-started`, `/for-athletes`, `/for-coaches` |
+| **Platform** | Search, book, train, coach OS | `/search`, `/home`, `/coach/*`, `/messages`, `/sns` |
 
-## 推奨フロー
+Canonical path helpers: [`src/lib/market-to-platform.ts`](../src/lib/market-to-platform.ts).
+
+## Accurate visitor → platform flow
 
 ```
-訪客
-  └─ / （本部）
-       ├─ Find coaches → /search          ← メイン（未ログイン可）
-       ├─ Get started  → /get-started     ← 役割選択
-       │                  ├─ /for-athletes → /join/athlete
-       │                  └─ /for-coaches  → /join/coach
-       └─ Log in → /sign-in → /app → 役割ホーム
+Guest
+  └─ /  (HQ)
+       ├─ Find coaches → /search              ← public inventory
+       ├─ Get started  → /get-started         ← role fork
+       │                    ├─ /for-athletes → /join/athlete → Clerk → /app
+       │                    └─ /for-coaches  → /join/coach   → Clerk → /app
+       └─ Log in → /sign-in?redirect_url=/app → /app → role home
 
-ログイン後
-  ├─ 選手 → /search（マーケット）
-  └─ コーチ → /coach/dashboard
+Signed-in
+  ├─ Athlete → /home (platform) — marketplace still at /search
+  ├─ Coach   → /coach/dashboard
+  └─ Never bounce back to HQ or /get-started
 ```
 
-## やらないこと
+`/app` is the post-auth router only. It must not render marketing chrome.
 
-- `/` を役割ゲートだけにしない（コンセプトが伝わらない）
-- ログイン後にまたゲートウェイへ戻さない（`/app` 経由でアプリへ）
-- 登録前に検索を隠さない
+## Glassmorphism surface (platform + marketing cards)
 
-## 残課題
+Decorative glass skin for **content panels and chrome** (not Apple Liquid Glass — glass is not reserved for floating controls alone):
 
-- Clerk 登録と `/join/*` ローカル signup の一本化
-- `/coach/register` と `/join/coach` の統合
-- 本番 `.env` の `CLERK_*_FALLBACK_REDIRECT_URL=/app`
+- `backdrop-filter: blur(16px)`
+- `background: rgba(255,255,255,0.12)` (dark equivalent via tokens)
+- `border: 1px solid rgba(255,255,255,0.25)`
+- Soft wide shadow + optional contrast scrim for readable text
+- Backdrop wash/image stays flexible via `--glass-scene-*` CSS variables
+- Fallbacks: `prefers-reduced-transparency`, `prefers-reduced-motion`
+
+Use `.glass-panel` / `<GlassPanel>` / `.glass-scene` / `<GlassScene>`.
+
+## Do not
+
+- Make `/` a role-only gateway (story never lands)
+- Send signed-in users back through `/get-started`
+- Hide `/search` behind login
+
+## Open follow-ups
+
+- Unify Clerk signup with `/join/*` local signup
+- Merge `/coach/register` into `/join/coach`
+- Production `CLERK_*_FALLBACK_REDIRECT_URL=/app`

@@ -13,7 +13,9 @@ import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
+import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
+import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
@@ -85,10 +87,10 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
-                <Link href="/how-it-works" className="landing-nav-link hidden sm:inline-flex">
+                <Link href={MARKET_TO_PLATFORM.howItWorks} className="landing-nav-link hidden sm:inline-flex">
                   {t("how_nav_link")}
                 </Link>
-                <Link href="/search" className="landing-nav-link hidden sm:inline-flex">
+                <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
                 <div className="flex items-center gap-1.5">
@@ -128,7 +130,7 @@ export function BrandHomeLanding() {
             </p>
 
             <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/search" className="group">
+              <Link href={MARKET_TO_PLATFORM.browse} className="group">
                 <Button
                   size="lg"
                   variant="ghost"
@@ -139,7 +141,7 @@ export function BrandHomeLanding() {
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href="/get-started" className="group">
+              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button
                   size="lg"
                   variant="outline"
@@ -148,6 +150,9 @@ export function BrandHomeLanding() {
                   {t("hq_get_started")}
                 </Button>
               </Link>
+            </div>
+            <div className="land-fade land-fade-delay-4 mx-auto mt-6 w-full max-w-md">
+              <QuickMyPageEntry />
             </div>
             <p className="land-fade land-fade-delay-4 mt-5 text-xs font-medium tracking-[0.14em] text-brand-500 uppercase">
               {t("land_trust_compact")}
@@ -175,8 +180,8 @@ export function BrandHomeLanding() {
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-2">
             <Link
-              href="/for-athletes"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
+              href={MARKET_TO_PLATFORM.forAthletes}
+              className="glass-panel glass-panel-scrim group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
             >
               <Users className="h-7 w-7 text-brand-500" />
               <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
@@ -191,8 +196,8 @@ export function BrandHomeLanding() {
               </span>
             </Link>
             <Link
-              href="/for-coaches"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
+              href={MARKET_TO_PLATFORM.forCoaches}
+              className="glass-panel glass-panel-scrim group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
             >
               <UserRound className="h-7 w-7 text-brand-500" />
               <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
@@ -218,13 +223,13 @@ export function BrandHomeLanding() {
               {t("hq_platform_body")}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/search" className="group">
+              <Link href={MARKET_TO_PLATFORM.browse} className="group">
                 <Button size="lg" variant="ghost" className="btn-premium">
                   {t("hq_open_marketplace")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href="/sign-in">
+              <Link href={signInHref()}>
                 <Button size="lg" variant="outline" className="btn-landing-secondary">
                   {t("nav_login")}
                 </Button>
@@ -237,16 +242,16 @@ export function BrandHomeLanding() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
             <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
             <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-brand-600">
-              <Link href="/how-it-works" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.howItWorks} className="hover:text-white">
                 {t("how_nav_link")}
               </Link>
-              <Link href="/for-athletes" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.forAthletes} className="hover:text-white">
                 {t("join_athlete_eyebrow")}
               </Link>
-              <Link href="/for-coaches" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.forCoaches} className="hover:text-white">
                 {t("join_coach_eyebrow")}
               </Link>
-              <Link href="/search" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.browse} className="hover:text-white">
                 {t("hq_browse_coaches")}
               </Link>
             </nav>
