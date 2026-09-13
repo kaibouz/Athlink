@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import { PastRecordsPanel, UpcomingRecordsPanel } from "@/components/social/PastRecordsPanel";
+import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
+import { signInHref } from "@/lib/market-to-platform";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
 const linkClass =
@@ -40,7 +42,10 @@ export default function MyPage() {
       <PageContainer className="py-16 text-center">
         <h1 className="text-2xl font-bold text-brand-950">{t("me_title")}</h1>
         <p className="mt-2 text-brand-600">{t("me_login_hint")}</p>
-        <Link href="/login?next=/me" className="mt-6 inline-block">
+        <div className="mx-auto mt-6 max-w-md text-left">
+          <QuickMyPageEntry />
+        </div>
+        <Link href={signInHref("/me")} className="mt-6 inline-block">
           <Button>{t("nav_login")}</Button>
         </Link>
       </PageContainer>

@@ -13,6 +13,7 @@ import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
+import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
 import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
 import { useAuth } from "@/lib/store";
@@ -149,6 +150,9 @@ export function BrandHomeLanding() {
                   {t("hq_get_started")}
                 </Button>
               </Link>
+            </div>
+            <div className="land-fade land-fade-delay-4 mx-auto mt-6 w-full max-w-md">
+              <QuickMyPageEntry />
             </div>
             <p className="land-fade land-fade-delay-4 mt-5 text-xs font-medium tracking-[0.14em] text-brand-500 uppercase">
               {t("land_trust_compact")}

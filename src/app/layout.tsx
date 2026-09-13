@@ -13,6 +13,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
+import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -77,6 +78,7 @@ export default function RootLayout({
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <ReturningUserSync />
                 <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>
