@@ -24,12 +24,8 @@ export default function AppEntryPage() {
   useEffect(() => {
     if (!hydrated || !clerkLoaded) return;
     if (!user) {
-<<<<<<< HEAD
-      router.replace(signInHref(MARKET_TO_PLATFORM.appEntry));
-=======
       if (isSignedIn) return; // bridge still syncing
-      router.replace("/sign-in?redirect_url=/app");
->>>>>>> d106d2a (Wire Clerk as canonical public auth with session bridge.)
+      router.replace(signInHref(MARKET_TO_PLATFORM.appEntry));
       return;
     }
     const target = shouldEnterOnboarding(user.id)

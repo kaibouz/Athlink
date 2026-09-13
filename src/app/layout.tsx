@@ -13,11 +13,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
-<<<<<<< HEAD
-import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
-=======
 import { ClerkAuthBridge } from "@/components/auth/ClerkAuthBridge";
->>>>>>> d106d2a (Wire Clerk as canonical public auth with session bridge.)
+import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -82,11 +79,8 @@ export default function RootLayout({
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
-<<<<<<< HEAD
-                <ReturningUserSync />
-=======
                 <ClerkAuthBridge />
->>>>>>> d106d2a (Wire Clerk as canonical public auth with session bridge.)
+                <ReturningUserSync />
                 <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>
