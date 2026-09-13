@@ -87,9 +87,9 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
-                <Link href={MARKET_TO_PLATFORM.howItWorks} className="landing-nav-link hidden sm:inline-flex">
+                <a href="#how-it-works" className="landing-nav-link hidden sm:inline-flex">
                   {t("how_nav_link")}
-                </Link>
+                </a>
                 <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
@@ -167,7 +167,8 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        <HowAthlinkWorks />
+        {/* Market HQ only — PDF-aligned athlete loop; not repeated on app chrome */}
+        <HowAthlinkWorks id="how-it-works" showCta />
 
         {/* Role story teaser — choice itself lives on /get-started (PDF: Choose your side) */}
         <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
@@ -231,9 +232,9 @@ export function BrandHomeLanding() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
             <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
             <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-brand-600">
-              <Link href={MARKET_TO_PLATFORM.howItWorks} className="hover:text-white">
+              <a href="#how-it-works" className="hover:text-white">
                 {t("how_nav_link")}
-              </Link>
+              </a>
               <Link href={MARKET_TO_PLATFORM.forAthletes} className="hover:text-white">
                 {t("join_athlete_eyebrow")}
               </Link>

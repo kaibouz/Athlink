@@ -54,7 +54,6 @@ export function MarketingHomeLanding() {
 
   const steps = [
     { id: "journey-hero", label: t("journey_step_welcome") },
-    { id: "how-it-works", label: t("journey_step_how") },
     { id: "features", label: t("journey_step_features") },
     { id: "coaches", label: t("journey_step_coaches") },
     { id: "pricing", label: t("journey_step_pricing") },
@@ -135,7 +134,7 @@ export function MarketingHomeLanding() {
                 {t("join_athlete_body")}
               </p>
               <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-                <a href="#how-it-works" className="group">
+                <Link href="/#how-it-works" className="group">
                   <Button
                     size="lg"
                     variant="ghost"
@@ -144,7 +143,7 @@ export function MarketingHomeLanding() {
                     {t("journey_step_how")}
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
-                </a>
+                </Link>
                 <Link href="/search" className="group">
                   <Button
                     size="lg"
