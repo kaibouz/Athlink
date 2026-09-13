@@ -21,6 +21,7 @@ import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { joinPathFor, shouldEnterOnboarding, destinationFor } from "@/lib/onboarding";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { ROLE_ACCENT_KEY } from "@/components/layout/RoleTheme";
@@ -61,7 +62,7 @@ function JoinCard({
 
   return (
     <article
-      className={`land-panel flex h-full flex-col rounded-2xl p-6 sm:p-8 ${
+      className={`glass-panel glass-panel-scrim flex h-full flex-col rounded-2xl p-6 sm:p-8 ${
         isCoach ? "join-card-coach" : "join-card-athlete"
       }`}
     >
@@ -194,7 +195,7 @@ export function JoinGateway() {
               title={t("join_coach_title")}
               body={t("join_coach_body")}
               features={coachFeatures}
-              href="/for-coaches"
+              href={MARKET_TO_PLATFORM.forCoaches}
               cta={t("join_coach_cta")}
               footnote={t("join_coach_footnote")}
             />
@@ -204,7 +205,7 @@ export function JoinGateway() {
               title={t("join_athlete_title")}
               body={t("join_athlete_body")}
               features={athleteFeatures}
-              href="/for-athletes"
+              href={MARKET_TO_PLATFORM.forAthletes}
               cta={t("join_athlete_cta")}
               footnote={t("join_athlete_footnote")}
             />

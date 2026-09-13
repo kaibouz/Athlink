@@ -1,4 +1,5 @@
 import type { UserRole } from "@/types";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 const COMPLETE_PREFIX = "athlink_onboarding_complete_";
 const PENDING_KEY = "athlink_onboarding_pending";
@@ -113,14 +114,14 @@ export function shouldEnterOnboarding(userId: string | null): boolean {
 }
 
 export function destinationFor(role: UserRole): string {
-  if (role === "executive") return "/admin";
-  // Athletes land in the marketplace (browse-first); coaches in their OS.
-  return role === "coach" ? "/coach/dashboard" : "/home";
+  if (role === "executive") return MARKET_TO_PLATFORM.adminHome;
+  // Athletes land in platform home; coaches in their OS. Marketplace stays at /search.
+  return role === "coach" ? MARKET_TO_PLATFORM.coachHome : MARKET_TO_PLATFORM.athleteHome;
 }
 
 /** Role-specific signup / onboarding entry (after /join gateway). */
 export function joinPathFor(role: UserRole | "coach" | "athlete"): string {
-  return role === "coach" ? "/join/coach" : "/join/athlete";
+  return role === "coach" ? MARKET_TO_PLATFORM.joinCoach : MARKET_TO_PLATFORM.joinAthlete;
 }
 
 /** Wizard steps shown on /join/coach and /join/athlete (no gateway pick). */
