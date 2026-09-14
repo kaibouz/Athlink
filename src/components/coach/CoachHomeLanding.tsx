@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { RoleJourneyChrome } from "@/components/landing/RoleJourneyChrome";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -31,7 +32,7 @@ export function CoachHomeLanding() {
 
   const steps = [
     { id: "journey-hero", label: t("journey_step_welcome") },
-    { id: "how", label: t("journey_step_how") },
+    { id: "how-it-works", label: t("journey_step_how") },
     { id: "journey-benefits", label: t("journey_step_benefits") },
     { id: "journey-register", label: t("journey_step_register") },
   ];
@@ -104,7 +105,7 @@ export function CoachHomeLanding() {
               <li>· {t("land_split_coach_3")}</li>
             </ul>
             <div className="land-fade land-fade-delay-4 mt-8 flex justify-center">
-              <a href="#how" className="group">
+              <a href="#how-it-works" className="group">
                 <Button
                   size="lg"
                   variant="ghost"
@@ -128,6 +129,8 @@ export function CoachHomeLanding() {
         </div>
 
         <PitchingHeroVideo />
+
+        <HowAthlinkWorks audience="coach" id="how-it-works" showCta />
 
         <section
           id="journey-benefits"

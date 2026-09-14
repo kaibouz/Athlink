@@ -155,7 +155,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
         <PitchingHeroVideo />
       </div>
 
-      <HowAthlinkWorks showCta={false} />
+      <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
 
       <AthleteLandingBelow />
 

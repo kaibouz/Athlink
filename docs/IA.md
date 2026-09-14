@@ -1,39 +1,67 @@
-# Athlink 情報設計（整理版）
+# Athlink information architecture
 
-調査ベース: Airbnb / ClassPass 系マーケットプレイス — **先に在庫を見せ、必要になったら登録**。
+Marketplace pattern (Airbnb / ClassPass style): **show inventory first, ask for an account when needed**.
 
-## 3層に分離
+Aligned with **AthlinkPro Athlete / Coach screen PDFs**:
+Launch → Choose your side → role home → primary loops (Find a coach / Calendar, Feed/Scout, Messages/Inbox, Progress/Earnings).
 
-| 層 | 役割 | 主な URL |
-|----|------|----------|
-| **本部（Marketing HQ）** | ブランド説明・導線 | `/` |
-| **役割 LP** | 選手/コーチ向け説明 → 登録 | `/for-athletes`, `/for-coaches`, `/get-started` |
-| **プラットフォーム（App）** | 検索・予約・ダッシュボード | `/search`, `/bookings`, `/coach/*`, `/messages`, `/sns` |
+## Three layers
 
-## 推奨フロー
+| Layer | Role | Primary URLs |
+|-------|------|----------------|
+| **Marketing HQ** | Brand + **one** Get Started | `/` |
+| **Role fork + LPs** | Choose athlete / coach → story → register | `/get-started`, `/for-athletes`, `/for-coaches` |
+| **Platform** | Same screens as the mobile concept | `/search`, `/home`, `/coach/*`, `/messages`, `/sns`, `/progress` |
+
+Canonical path helpers: [`src/lib/market-to-platform.ts`](../src/lib/market-to-platform.ts).
+
+## Accurate visitor → platform flow
 
 ```
-訪客
-  └─ / （本部）
-       ├─ Find coaches → /search          ← メイン（未ログイン可）
-       ├─ Get started  → /get-started     ← 役割選択
-       │                  ├─ /for-athletes → /join/athlete
-       │                  └─ /for-coaches  → /join/coach
-       └─ Log in → /sign-in → /app → 役割ホーム
+Guest
+  └─ /  (HQ)  — single primary CTA: Get started
+       ├─ (secondary text) Find coaches → /search   ← public inventory
+       └─ Get started → /get-started                ← PDF: Choose your side
+                            ├─ Continue as athlete → /for-athletes → /join/athlete → Clerk → /app → /home
+                            └─ Continue as coach   → /for-coaches  → /join/coach   → Clerk → /app → /coach/dashboard
 
-ログイン後
-  ├─ 選手 → /search（マーケット）
-  └─ コーチ → /coach/dashboard
+Signed-in
+  ├─ Athlete tabs: Home · Find coach · Feed · Messages · Progress
+  ├─ Coach tabs:   Today · Calendar · Scout · Inbox · Earnings
+  └─ Never bounce back to HQ or /get-started
 ```
 
-## やらないこと
+`/app` is the post-auth router only. It must not render marketing chrome.
 
-- `/` を役割ゲートだけにしない（コンセプトが伝わらない）
-- ログイン後にまたゲートウェイへ戻さない（`/app` 経由でアプリへ）
-- 登録前に検索を隠さない
+## Simplification rules (from PDF + market)
 
-## 残課題
+- **One Get Started** on HQ — role choice happens once on `/get-started`, not as competing hero buttons.
+- Role LP cards on HQ are **story teasers**, not a second signup funnel.
+- Nav labels match the PDF (Find coach, Scout, Inbox) so market → app feels continuous.
+- Browse `/search` stays public; booking / messaging still gate on auth.
 
-- Clerk 登録と `/join/*` ローカル signup の一本化
-- `/coach/register` と `/join/coach` の統合
-- 本番 `.env` の `CLERK_*_FALLBACK_REDIRECT_URL=/app`
+## Glassmorphism surface (platform + marketing cards)
+
+Decorative glass skin for **content panels and chrome** (not Apple Liquid Glass — glass is not reserved for floating controls alone):
+
+- `backdrop-filter: blur(16px)`
+- `background: rgba(255,255,255,0.12)` (dark equivalent via tokens)
+- `border: 1px solid rgba(255,255,255,0.25)`
+- Soft wide shadow + optional contrast scrim for readable text
+- Backdrop wash/image stays flexible via `--glass-scene-*` CSS variables
+- Fallbacks: `prefers-reduced-transparency`, `prefers-reduced-motion`
+
+Use `.glass-panel` / `<GlassPanel>` / `.glass-scene` / `<GlassScene>`.
+
+## Do not
+
+- Make `/` a role-only gateway (story never lands)
+- Put multiple peer Get Started / Sign up CTAs in the HQ hero
+- Send signed-in users back through `/get-started`
+- Hide `/search` behind login
+
+## Open follow-ups
+
+- Unify Clerk signup with `/join/*` local signup
+- Merge `/coach/register` into `/join/coach`
+- Production `CLERK_*_FALLBACK_REDIRECT_URL=/app`

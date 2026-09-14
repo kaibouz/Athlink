@@ -6,14 +6,16 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Search, UserRound, Users } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
-import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
+import { HowItWorksFork } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Button } from "@/components/ui/Button";
+import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
+import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 
@@ -85,10 +87,10 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
-                <Link href="/how-it-works" className="landing-nav-link hidden sm:inline-flex">
+                <a href="#how-it-works" className="landing-nav-link hidden sm:inline-flex">
                   {t("how_nav_link")}
-                </Link>
-                <Link href="/search" className="landing-nav-link hidden sm:inline-flex">
+                </a>
+                <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
                 <div className="flex items-center gap-1.5">
@@ -127,27 +129,28 @@ export function BrandHomeLanding() {
               {t("hq_lead")}
             </p>
 
-            <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/search" className="group">
+            {/* PDF flow: Launch → one Get Started → Choose your side */}
+            <div className="land-fade land-fade-delay-3 mt-8 flex flex-col items-center gap-4">
+              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button
                   size="lg"
                   variant="ghost"
                   className="btn-premium h-12 min-w-52 rounded-xl px-7 sm:h-14"
                 >
-                  <Search className="h-4 w-4" />
-                  {t("hq_browse_coaches")}
+                  {t("hq_get_started")}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href="/get-started" className="group">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="btn-landing-secondary h-12 min-w-44 rounded-xl px-5 sm:h-14"
-                >
-                  {t("hq_get_started")}
-                </Button>
+              <Link
+                href={MARKET_TO_PLATFORM.browse}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition hover:text-white"
+              >
+                <Search className="h-3.5 w-3.5" />
+                {t("hq_browse_coaches")}
               </Link>
+            </div>
+            <div className="land-fade land-fade-delay-4 mx-auto mt-6 w-full max-w-md">
+              <QuickMyPageEntry />
             </div>
             <p className="land-fade land-fade-delay-4 mt-5 text-xs font-medium tracking-[0.14em] text-brand-500 uppercase">
               {t("land_trust_compact")}
@@ -164,47 +167,38 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        <HowAthlinkWorks />
+        {/* HQ only: fork to role LPs — detailed steps live on /for-athletes and /for-coaches */}
+        <HowItWorksFork id="how-it-works" />
 
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
-              {t("hq_roles_title")}
-            </h2>
-            <p className="mt-2 text-brand-600">{t("hq_roles_sub")}</p>
+        {/* Role story teaser — choice itself lives on /get-started (PDF: Choose your side) */}
+        <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
+          <Users className="mx-auto h-8 w-8 text-brand-500" />
+          <h2 className="mt-4 font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
+            {t("hq_roles_title")}
+          </h2>
+          <p className="mt-3 text-brand-600">{t("hq_roles_sub")}</p>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-brand-500">
+            {t("hq_roles_bridge")}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-brand-600">
+            <span className="inline-flex items-center gap-2">
+              <Users className="h-4 w-4 text-brand-500" />
+              {t("join_athlete_eyebrow")}
+            </span>
+            <span className="text-brand-400" aria-hidden>
+              ·
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <UserRound className="h-4 w-4 text-brand-500" />
+              {t("join_coach_eyebrow")}
+            </span>
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <Link
-              href="/for-athletes"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
-            >
-              <Users className="h-7 w-7 text-brand-500" />
-              <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
-                {t("join_athlete_eyebrow")}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
-                {t("join_athlete_body")}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
-                {t("hq_athlete_path")}
+          <div className="mt-8">
+            <Link href={MARKET_TO_PLATFORM.getStarted} className="group inline-block">
+              <Button size="lg" variant="ghost" className="btn-premium">
+                {t("hq_choose_side")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-            <Link
-              href="/for-coaches"
-              className="land-panel group flex flex-col rounded-2xl p-6 transition hover:border-white/25 sm:p-8"
-            >
-              <UserRound className="h-7 w-7 text-brand-500" />
-              <h3 className="mt-4 text-xl font-bold tracking-wide text-brand-950 uppercase">
-                {t("join_coach_eyebrow")}
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-600">
-                {t("join_coach_body")}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-brand-700 group-hover:text-white">
-                {t("hq_coach_path")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
+              </Button>
             </Link>
           </div>
         </section>
@@ -217,17 +211,18 @@ export function BrandHomeLanding() {
             <p className="mt-3 text-sm leading-relaxed text-brand-600 sm:text-base">
               {t("hq_platform_body")}
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/search" className="group">
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button size="lg" variant="ghost" className="btn-premium">
-                  {t("hq_open_marketplace")}
+                  {t("hq_get_started")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href="/sign-in">
-                <Button size="lg" variant="outline" className="btn-landing-secondary">
-                  {t("nav_login")}
-                </Button>
+              <Link
+                href={signInHref()}
+                className="text-sm font-semibold text-brand-600 transition hover:text-white"
+              >
+                {t("nav_login")}
               </Link>
             </div>
           </div>
@@ -237,16 +232,16 @@ export function BrandHomeLanding() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:px-6">
             <AthlinkProLogo href="/" size="lg" variant="full" tone="onGradient" />
             <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-brand-600">
-              <Link href="/how-it-works" className="hover:text-white">
+              <a href="#how-it-works" className="hover:text-white">
                 {t("how_nav_link")}
-              </Link>
-              <Link href="/for-athletes" className="hover:text-white">
+              </a>
+              <Link href={MARKET_TO_PLATFORM.forAthletes} className="hover:text-white">
                 {t("join_athlete_eyebrow")}
               </Link>
-              <Link href="/for-coaches" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.forCoaches} className="hover:text-white">
                 {t("join_coach_eyebrow")}
               </Link>
-              <Link href="/search" className="hover:text-white">
+              <Link href={MARKET_TO_PLATFORM.browse} className="hover:text-white">
                 {t("hq_browse_coaches")}
               </Link>
             </nav>
