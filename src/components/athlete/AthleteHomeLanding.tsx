@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { AthleteLandingBelow } from "@/components/athlete/AthleteLandingBelow";
@@ -154,7 +155,8 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
         <PitchingHeroVideo />
       </div>
 
-      {/* How it works lives on market HQ (/) only — see BrandHomeLanding */}
+      <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
+
       <AthleteLandingBelow />
 
     </div>

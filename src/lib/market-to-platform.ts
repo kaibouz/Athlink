@@ -2,7 +2,8 @@
  * Canonical visitor → platform flow (see docs/IA.md).
  *
  * PDF-aligned: HQ Launch → one Get Started → /get-started (Choose your side)
- * → role LP → join → /app → athlete Home or coach Today.
+ * → role LP (athlete/coach how-it-works lives here, not duplicated on HQ)
+ * → join → /app → athlete Home or coach Today.
  * Never dump signed-in members back onto HQ or the role gateway.
  */
 export const MARKET_TO_PLATFORM = {
@@ -15,7 +16,8 @@ export const MARKET_TO_PLATFORM = {
   /** Role marketing LPs */
   forAthletes: "/for-athletes",
   forCoaches: "/for-coaches",
-  howItWorks: "/how-it-works",
+  /** Legacy alias — detailed how lives on role LPs; `/how-it-works` redirects here. */
+  howItWorks: "/for-athletes",
   /** Role onboarding wizards */
   joinAthlete: "/join/athlete",
   joinCoach: "/join/coach",

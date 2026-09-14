@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Search, UserRound, Users } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
-import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
+import { HowItWorksFork } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -167,8 +167,8 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        {/* Market HQ only — PDF-aligned athlete loop; not repeated on app chrome */}
-        <HowAthlinkWorks id="how-it-works" showCta />
+        {/* HQ only: fork to role LPs — detailed steps live on /for-athletes and /for-coaches */}
+        <HowItWorksFork id="how-it-works" />
 
         {/* Role story teaser — choice itself lives on /get-started (PDF: Choose your side) */}
         <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">

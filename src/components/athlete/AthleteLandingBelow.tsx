@@ -8,9 +8,8 @@ import type { MessageKey } from "@/lib/i18n/messages";
 import "./athlete-landing.css";
 
 /**
- * Everything below the "How AthlinkPro works" section of the athlete marketing
- * flow: feature rows, progress, coaches, pricing, FAQ, final CTA and footer.
- * Shared by /for-athletes and /how-it-works so both pages tell the same story.
+ * Athlete marketing body below the role-specific How it works section on
+ * `/for-athletes` (features, coaches, pricing, FAQ, CTA). Not reused on HQ.
  */
 export function AthleteLandingBelow() {
   useAthleteLandingAnim();
