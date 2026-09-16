@@ -7,6 +7,8 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { formatDateJa } from "@/lib/utils";
 import { useApi } from "@/lib/client/use-api";
+import { PlanMembershipSection } from "@/components/plans/DemoPlanToggle";
+import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import type { AthleteProgress, ProgressMetric } from "@/types";
 
 /** Metrics where a lower value is an improvement (delta arrow flips). */
@@ -31,6 +33,7 @@ function DeltaTag({ metric }: { metric: ProgressMetric }) {
 export function AthleteHomeScreen() {
   const { user, bookings } = useAuth();
   const { t, locale } = useLocale();
+  const { isPro } = usePlatformPlan();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const { data } = useApi<{ progress: AthleteProgress | null }>(user ? "/api/me/progress" : null);
   const progress = data?.progress ?? null;
@@ -202,6 +205,9 @@ export function AthleteHomeScreen() {
               Progress
             </Link>
           </div>
+
+          {!isPro ? <ProUpgradeBanner /> : null}
+          <PlanMembershipSection />
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ import {
   Search,
   Send,
   Settings,
+  Sparkles,
   Users,
   X,
 } from "lucide-react";
@@ -29,6 +30,8 @@ import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { Button } from "@/components/ui/Button";
 import { AppSettingsDialog } from "@/components/layout/AppSettingsPanel";
 import { NavigationDrawer } from "@/components/ui/NavigationDrawer";
+import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
+import { usePlatformPlan } from "@/components/plans/PlanComparison";
 
 type NavItem = {
   href: string;
@@ -54,6 +57,7 @@ function SidebarChrome({
   const pathname = usePathname();
   const { user, bookings, updateBookingStatus } = useAuth();
   const { t, locale } = useLocale();
+  const { isPro } = usePlatformPlan();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const isCoach = user?.role === "coach";
@@ -250,6 +254,38 @@ function SidebarChrome({
             )}
           </div>
         )}
+
+        <div className="space-y-2 border-t border-white/10 p-3">
+          <Link
+            href="/pricing"
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
+              pathname.startsWith("/pricing")
+                ? "app-nav-active font-semibold"
+                : "text-brand-700 hover:bg-brand-50/80 hover:text-brand-900",
+            )}
+          >
+            <Sparkles className="h-4 w-4 shrink-0 text-[color:var(--mx-blue-2)]" />
+            <span className="truncate">{t("plan_page_title")}</span>
+            <span
+              className={cn(
+                "ml-auto rounded-full px-2 py-0.5 text-[0.65rem] font-bold",
+                isPro ? "bg-[color:var(--mx-blue-2)]/20 text-[color:var(--mx-blue-2)]" : "bg-brand-100 text-brand-600",
+              )}
+            >
+              {isPro ? t("plan_pro_name") : t("plan_free_name")}
+            </span>
+          </Link>
+          {user ? (
+            <div className="rounded-xl border border-white/10 bg-black/10 p-2">
+              <p className="mb-1.5 px-1 text-[10px] font-semibold tracking-wide text-brand-500 uppercase">
+                {t("plan_demo_toggle_label")}
+              </p>
+              <DemoPlanToggle dense />
+            </div>
+          ) : null}
+        </div>
 
         <div className="border-t border-white/10 p-2">
           {user ? (

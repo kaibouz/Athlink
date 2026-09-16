@@ -292,6 +292,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setPlan = useCallback(
     async (plan: PlatformPlanId) => {
+      // Always update local state so Free ↔ Pro preview is instant for demo accounts.
+      setUser((prev) => (prev ? { ...prev, plan } : prev));
       if (apiEnabled) {
         try {
           const res = await fetch("/api/me/plan", {
@@ -306,11 +308,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return true;
           }
         } catch {
-          /* fall through to local demo */
+          /* local plan already applied */
         }
       }
-      // Local demo / offline — persist via localStorage effect when apiEnabled is false.
-      setUser((prev) => (prev ? { ...prev, plan } : prev));
       return true;
     },
     [apiEnabled],
