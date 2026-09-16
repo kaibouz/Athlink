@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Search, UserRound, Users } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
-import { HowItWorksFork } from "@/components/landing/HowAthlinkWorks";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -167,42 +167,10 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        {/* HQ only: fork to role LPs — detailed steps live on /for-athletes and /for-coaches */}
-        <HowItWorksFork id="how-it-works" />
+        {/* Market HQ — detailed athlete steps; coach path via section link */}
+        <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
 
-        {/* Role story teaser — choice itself lives on /get-started (PDF: Choose your side) */}
-        <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
-          <Users className="mx-auto h-8 w-8 text-brand-500" />
-          <h2 className="mt-4 font-brand text-3xl tracking-[0.06em] text-brand-950 uppercase sm:text-4xl">
-            {t("hq_roles_title")}
-          </h2>
-          <p className="mt-3 text-brand-600">{t("hq_roles_sub")}</p>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-brand-500">
-            {t("hq_roles_bridge")}
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-brand-600">
-            <span className="inline-flex items-center gap-2">
-              <Users className="h-4 w-4 text-brand-500" />
-              {t("join_athlete_eyebrow")}
-            </span>
-            <span className="text-brand-400" aria-hidden>
-              ·
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <UserRound className="h-4 w-4 text-brand-500" />
-              {t("join_coach_eyebrow")}
-            </span>
-          </div>
-          <div className="mt-8">
-            <Link href={MARKET_TO_PLATFORM.getStarted} className="group inline-block">
-              <Button size="lg" variant="ghost" className="btn-premium">
-                {t("hq_choose_side")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-          </div>
-        </section>
-
+        {/* Continuity CTA — role choice lives on /get-started, not a second pick-side pitch */}
         <section className="border-t border-white/10 bg-black py-14">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="font-brand text-2xl tracking-[0.08em] text-brand-950 uppercase sm:text-3xl">
@@ -211,7 +179,7 @@ export function BrandHomeLanding() {
             <p className="mt-3 text-sm leading-relaxed text-brand-600 sm:text-base">
               {t("hq_platform_body")}
             </p>
-            <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
               <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
                 <Button size="lg" variant="ghost" className="btn-premium">
                   {t("hq_get_started")}
@@ -219,12 +187,21 @@ export function BrandHomeLanding() {
                 </Button>
               </Link>
               <Link
+                href={MARKET_TO_PLATFORM.browse}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition hover:text-white"
+              >
+                <Search className="h-3.5 w-3.5" />
+                {t("hq_browse_coaches")}
+              </Link>
+            </div>
+            <p className="mt-5">
+              <Link
                 href={signInHref()}
                 className="text-sm font-semibold text-brand-600 transition hover:text-white"
               >
                 {t("nav_login")}
               </Link>
-            </div>
+            </p>
           </div>
         </section>
 

@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 
 /**
- * Legacy URL — athlete/coach How it works details live on role LPs only.
- * Avoid a third duplicated marketing page.
+ * Legacy URL — detailed How it works lives on market HQ (`/#how-it-works`).
+ * Role LPs keep their own audience sections; avoid a third full marketing page.
  */
 export default function HowItWorksRedirectPage() {
-  redirect("/for-athletes");
+  redirect("/");
 }
