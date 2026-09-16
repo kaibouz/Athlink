@@ -44,7 +44,7 @@ Free vs Pro (canonical specs in `src/lib/platform-plans.ts`):
 ## Simplification rules (from PDF + market)
 
 - **One Get Started** on HQ — role choice happens once on `/get-started`, not as competing hero buttons.
-- HQ `#how-it-works` shows the **detailed** athlete How it works steps (with a link to the coach path). Role LPs keep their own audience sections. No thin pick-side fork stacked with a second “two sides” pitch.
+- HQ has **one** role fork (`#how-it-works` → role LP how sections). No second “two sides” pitch; product continuity is the marketplace CTA band below the fork.
 - Nav labels match the PDF (Find coach, Scout, Inbox) so market → app feels continuous.
 - Browse `/search` stays public; booking / messaging still gate on auth.
 

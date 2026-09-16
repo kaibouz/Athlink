@@ -10,6 +10,7 @@ import {
   Radar,
   Search,
   UserRound,
+  Users,
   Video,
 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
@@ -27,9 +28,9 @@ type HowAthlinkWorksProps = {
 };
 
 /**
- * Detailed How it works — step grid for athlete or coach.
- * Market HQ (`/`) shows the athlete intro with a link to the coach path.
- * Role LPs (`/for-athletes`, `/for-coaches`) keep their own audience section.
+ * Role-specific How it works — athlete and coach each own one detailed section
+ * on their LP (`/for-athletes`, `/for-coaches`). HQ uses HowItWorksFork only;
+ * do not duplicate this block on `/` or a third `/how-it-works` page.
  */
 export function HowAthlinkWorks({
   audience = "athlete",
@@ -142,6 +143,50 @@ export function HowAthlinkWorks({
             </Link>
           </div>
         )}
+      </div>
+    </section>
+  );
+}
+
+/** HQ-only teaser: pick a side, then read the detailed loop on that LP. */
+export function HowItWorksFork({ id = "how-it-works" }: { id?: string }) {
+  const { t } = useLocale();
+
+  return (
+    <section id={id} className="how-works">
+      <div className="how-works-wrap">
+        <div className="how-works-head">
+          <span className="how-works-eyebrow">{t("how_fork_eyebrow")}</span>
+          <h2>{t("how_fork_title")}</h2>
+          <p>{t("how_fork_sub")}</p>
+        </div>
+
+        <div className="how-works-fork-grid">
+          <Link
+            href={`${MARKET_TO_PLATFORM.forAthletes}#how-it-works`}
+            className="how-works-fork-card how-works-fork-athlete"
+          >
+            <Users className="h-7 w-7" />
+            <h3>{t("how_fork_athlete_title")}</h3>
+            <p>{t("how_fork_athlete_body")}</p>
+            <span className="how-works-fork-cta">
+              {t("how_fork_athlete_cta")}
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+          <Link
+            href={`${MARKET_TO_PLATFORM.forCoaches}#how-it-works`}
+            className="how-works-fork-card how-works-fork-coach"
+          >
+            <UserRound className="h-7 w-7" />
+            <h3>{t("how_fork_coach_title")}</h3>
+            <p>{t("how_fork_coach_body")}</p>
+            <span className="how-works-fork-cta">
+              {t("how_fork_coach_cta")}
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </div>
       </div>
     </section>
   );

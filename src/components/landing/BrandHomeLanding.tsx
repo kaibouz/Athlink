@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
-import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
+import { HowItWorksFork } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -167,10 +167,10 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        {/* Market HQ — detailed athlete steps; coach path via section link */}
-        <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
+        {/* HQ only: one role fork — detailed steps on /for-athletes and /for-coaches */}
+        <HowItWorksFork id="how-it-works" />
 
-        {/* Continuity CTA — role choice lives on /get-started, not a second pick-side pitch */}
+        {/* Continuity CTA — not a second athlete/coach pitch; join path is /get-started */}
         <section className="border-t border-white/10 bg-black py-14">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="font-brand text-2xl tracking-[0.08em] text-brand-950 uppercase sm:text-3xl">
