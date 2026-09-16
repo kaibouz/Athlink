@@ -13,6 +13,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
+import { ClerkAuthBridge } from "@/components/auth/ClerkAuthBridge";
+import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -73,10 +76,12 @@ export default function RootLayout({
         className="flex min-h-full flex-col app-page-bg-subtle font-sans text-foreground"
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <ClerkProvider afterSignOutUrl={MARKET_TO_PLATFORM.hq}>
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <ClerkAuthBridge />
+                <ReturningUserSync />
                 <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>

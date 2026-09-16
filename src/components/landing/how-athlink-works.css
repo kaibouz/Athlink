@@ -1,10 +1,41 @@
-/* "How AthlinkPro works" — mobile-concept dark palette */
+/* "How AthlinkPro works" — market HQ blue glass (AthlinkPro blues / cyan) */
+
 .how-works {
+  --how-accent-1: var(--mx-blue-1, #3b6ef6);
+  --how-accent-2: var(--mx-blue-2, #22c7e0);
+  --how-accent-soft: rgba(34, 199, 224, 0.14);
+  --how-accent-glow: rgba(59, 110, 246, 0.22);
+  --how-ic-bg: linear-gradient(135deg, rgba(59, 110, 246, 0.24), rgba(34, 199, 224, 0.14));
+  --how-ic-border: rgba(34, 199, 224, 0.22);
+  --how-ic-color: var(--mx-blue-2, #22c7e0);
+
   position: relative;
   overflow: hidden;
   background: var(--mx-bg, #05070c);
-  padding: 76px 0;
+  padding: 100px 0;
   scroll-margin-top: 96px;
+}
+
+/* Athlete + default stay on brand blues (no clay / amber LP styling) */
+.how-works[data-audience="athlete"] {
+  --how-accent-1: var(--mx-blue-1, #3b6ef6);
+  --how-accent-2: var(--mx-blue-2, #22c7e0);
+  --how-accent-soft: rgba(34, 199, 224, 0.14);
+  --how-accent-glow: rgba(59, 110, 246, 0.26);
+  --how-ic-bg: linear-gradient(135deg, rgba(59, 110, 246, 0.28), rgba(34, 199, 224, 0.16));
+  --how-ic-border: rgba(34, 199, 224, 0.28);
+  --how-ic-color: var(--mx-blue-2, #22c7e0);
+}
+
+/* Coach LP — slightly deeper blue, clay reserved off this section */
+.how-works[data-audience="coach"] {
+  --how-accent-1: var(--mx-blue-1, #3b6ef6);
+  --how-accent-2: #5b8cff;
+  --how-accent-soft: rgba(59, 110, 246, 0.16);
+  --how-accent-glow: rgba(59, 110, 246, 0.28);
+  --how-ic-bg: linear-gradient(135deg, rgba(59, 110, 246, 0.3), rgba(91, 140, 255, 0.14));
+  --how-ic-border: rgba(91, 140, 255, 0.28);
+  --how-ic-color: #9db7ff;
 }
 
 .how-works::before {
@@ -13,8 +44,27 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 55% at 50% -10%, rgba(59, 110, 246, 0.16), transparent 60%),
-    radial-gradient(ellipse 45% 40% at 88% 30%, rgba(34, 199, 224, 0.09), transparent 55%);
+    radial-gradient(ellipse 70% 55% at 50% -10%, var(--how-accent-glow), transparent 60%),
+    radial-gradient(ellipse 40% 35% at 92% 28%, rgba(34, 199, 224, 0.1), transparent 55%),
+    radial-gradient(ellipse 35% 30% at 8% 70%, rgba(59, 110, 246, 0.08), transparent 50%);
+}
+
+.how-works::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: min(720px, 90vw);
+  height: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  opacity: 0.7;
 }
 
 .how-works > * {
@@ -28,9 +78,10 @@
 }
 
 .how-works-head {
-  max-width: 660px;
-  margin: 0 auto 48px;
+  max-width: 640px;
+  margin: 0 auto 56px;
   text-align: center;
+  animation: how-head-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .how-works-eyebrow {
@@ -39,9 +90,9 @@
   gap: 8px;
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid var(--mx-border-strong, rgba(255, 255, 255, 0.16));
-  background: rgba(59, 110, 246, 0.12);
-  color: var(--mx-blue-2, #22c7e0);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--how-accent-soft);
+  color: var(--how-accent-2);
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -50,18 +101,20 @@
 
 .how-works-head h2 {
   margin: 18px 0 0;
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.12;
+  font-size: clamp(30px, 4.2vw, 40px);
+  line-height: 1.1;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   color: var(--mx-text, #f5f7fa);
+  text-wrap: balance;
 }
 
 .how-works-head p {
   margin: 14px 0 0;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
   color: var(--mx-dim, #9aa3b2);
+  text-wrap: pretty;
 }
 
 .how-works-grid {
@@ -78,10 +131,13 @@
 
 @media (max-width: 640px) {
   .how-works {
-    padding: 56px 0;
+    padding: 64px 0;
   }
   .how-works-wrap {
     padding: 0 22px;
+  }
+  .how-works-head {
+    margin-bottom: 40px;
   }
   .how-works-grid {
     grid-template-columns: 1fr;
@@ -89,17 +145,27 @@
 }
 
 .how-step {
+  --how-step-i: 0;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 28px 24px;
-  border-radius: 18px;
+  padding: 30px 26px;
+  border-radius: 16px;
   border: 1px solid var(--mx-border, rgba(255, 255, 255, 0.08));
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 45%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.045), transparent 42%),
     var(--mx-panel, #0b0f1a);
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  box-shadow:
+    0 18px 40px -28px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    border-color 0.28s ease,
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease;
+  animation: how-step-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.08s + var(--how-step-i) * 0.09s);
 }
 
 .how-step::before {
@@ -110,16 +176,44 @@
   background: linear-gradient(
     90deg,
     transparent,
-    var(--mx-blue-1, #3b6ef6),
-    var(--mx-blue-2, #22c7e0),
+    var(--how-accent-1),
+    var(--how-accent-2),
     transparent
   );
   opacity: 0.55;
 }
 
+.how-step-glow {
+  position: absolute;
+  inset: auto -20% -40%;
+  height: 55%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    var(--how-accent-glow),
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: -1;
+}
+
 .how-step:hover {
-  border-color: var(--mx-border-strong, rgba(255, 255, 255, 0.16));
-  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 48px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px color-mix(in srgb, var(--how-accent-2) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.how-step:hover .how-step-glow {
+  opacity: 1;
+}
+
+.how-step:hover .how-step-ic {
+  transform: scale(1.05);
+  box-shadow: 0 0 24px var(--how-accent-glow);
 }
 
 .how-step-top {
@@ -134,28 +228,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(34, 199, 224, 0.22);
-  background: linear-gradient(135deg, rgba(59, 110, 246, 0.24), rgba(34, 199, 224, 0.14));
-  color: var(--mx-blue-2, #22c7e0);
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--how-ic-border);
+  background: var(--how-ic-bg);
+  color: var(--how-ic-color);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .how-step-num {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.03em;
-  color: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.08);
+  transition: color 0.28s ease;
+}
+
+.how-step:hover .how-step-num {
+  color: color-mix(in srgb, var(--how-accent-2) 35%, transparent);
 }
 
 .how-step-label {
   margin-bottom: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--mx-dimmer, #5f6773);
 }
 
@@ -170,7 +269,7 @@
 .how-step p {
   margin: 0;
   font-size: 14.5px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--mx-dim, #9aa3b2);
 }
 
@@ -180,7 +279,8 @@
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-top: 44px;
+  margin-top: 48px;
+  animation: how-head-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 
 .how-works-cta {
@@ -188,16 +288,16 @@
   align-items: center;
   gap: 8px;
   padding: 13px 24px;
-  border-radius: 12px;
-  font-size: 14.5px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(90deg, var(--mx-blue-1, #3b6ef6), var(--mx-blue-2, #22c7e0));
+  background: linear-gradient(90deg, var(--how-accent-1), var(--how-accent-2));
   transition: filter 0.18s ease, transform 0.18s ease;
 }
 
 .how-works-cta:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
   transform: translateY(-1px);
 }
 
@@ -206,16 +306,93 @@
   align-items: center;
   gap: 8px;
   padding: 13px 22px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--mx-border-strong, rgba(255, 255, 255, 0.16));
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--mx-text, #f5f7fa);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--mx-panel, #0b0f1a);
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .how-works-cta-ghost:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(34, 199, 224, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--how-accent-2) 45%, transparent);
+}
+
+@keyframes how-head-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes how-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .how-works-head,
+  .how-step,
+  .how-works-foot {
+    animation: none;
+  }
+
+  .how-step:hover,
+  .how-works-cta:hover {
+    transform: none;
+  }
+}
+
+/* Role LP pointer — thin teaser to HQ #how-it-works (no duplicated step grid) */
+.how-works-teaser {
+  padding: 56px 0;
+}
+
+.how-works-teaser .how-works-head {
+  margin-bottom: 0;
+  max-width: 560px;
+}
+
+.how-works-teaser-cta {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(90deg, var(--how-accent-1), var(--how-accent-2));
+  text-decoration: none;
+  transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.how-works-teaser-cta:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .how-works-teaser-cta:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .how-works-wrap {
+    padding: 0 20px;
+  }
 }

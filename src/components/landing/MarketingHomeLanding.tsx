@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 /**
  * Athlete marketing homepage after gateway click:
@@ -135,7 +136,7 @@ export function MarketingHomeLanding() {
                 {t("join_athlete_body")}
               </p>
               <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-                <a href="#how-it-works" className="group">
+                <Link href={`${MARKET_TO_PLATFORM.hq}#how-it-works`} className="group">
                   <Button
                     size="lg"
                     variant="ghost"
@@ -144,7 +145,7 @@ export function MarketingHomeLanding() {
                     {t("journey_step_how")}
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
-                </a>
+                </Link>
                 <Link href="/search" className="group">
                   <Button
                     size="lg"

@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Sparkles, Upload, Video } from "lucide-react";
 import { useAuth } from "@/lib/store";
+import { useLocale } from "@/lib/i18n/provider";
+import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
+import { ATHLETE_FREE } from "@/lib/platform-plans";
 import type { AiBreakdown } from "@/types";
 
 const POSTER_SWING = "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80";
@@ -38,7 +41,9 @@ const CLIP_PRESETS: { id: string; label: string; url: string; poster: string; ty
 
 export default function NewBreakdownPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const { user, hydrated } = useAuth();
+  const { isPro } = usePlatformPlan();
 
   const [selectedId, setSelectedId] = useState(CLIP_PRESETS[0].id);
   const [customUrl, setCustomUrl] = useState("");
@@ -46,11 +51,36 @@ export default function NewBreakdownPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [planLimited, setPlanLimited] = useState(false);
+  const [remaining, setRemaining] = useState<number | null>(
+    isPro ? null : ATHLETE_FREE.limits.aiBreakdownsPerMonth,
+  );
 
   const preset = CLIP_PRESETS.find((c) => c.id === selectedId);
   const usingCustom = selectedId === "custom";
   const clipUrl = usingCustom ? customUrl.trim() : preset?.url ?? "";
   const posterUrl = usingCustom ? undefined : preset?.poster;
+
+  useEffect(() => {
+    if (!user || user.role !== "athlete") return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/breakdowns", { credentials: "same-origin" });
+        if (!res.ok || cancelled) return;
+        const json = (await res.json()) as { remainingThisMonth?: number | null };
+        if (!cancelled && json.remainingThisMonth !== undefined) {
+          setRemaining(json.remainingThisMonth);
+          setPlanLimited(json.remainingThisMonth === 0);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   function pick(id: string, type?: ClipType) {
     setSelectedId(id);
@@ -60,7 +90,11 @@ export default function NewBreakdownPage() {
   async function run() {
     setError("");
     if (!clipUrl) {
-      setError("Choose a sample clip or paste a video URL.");
+      setError(t("plan_ai_need_clip"));
+      return;
+    }
+    if (planLimited) {
+      setError(t("plan_ai_limit_error"));
       return;
     }
     setSubmitting(true);
@@ -71,18 +105,34 @@ export default function NewBreakdownPage() {
         credentials: "same-origin",
         body: JSON.stringify({ clipUrl, posterUrl, analysisType, notes: notes.trim() || undefined }),
       });
+      if (res.status === 402) {
+        const body = (await res.json().catch(() => ({}))) as {
+          error?: string;
+          remainingThisMonth?: number;
+        };
+        if (body.error === "PLAN_LIMIT") {
+          setPlanLimited(true);
+          setRemaining(body.remainingThisMonth ?? 0);
+          setError(t("plan_ai_limit_error"));
+          return;
+        }
+      }
       if (!res.ok) {
-        setError(res.status === 403 ? "Only athletes can run an analysis." : "Could not start the analysis.");
+        setError(res.status === 403 ? t("plan_ai_athlete_only") : t("plan_ai_start_fail"));
         return;
       }
-      const json = (await res.json()) as { breakdown?: AiBreakdown };
+      const json = (await res.json()) as {
+        breakdown?: AiBreakdown;
+        remainingThisMonth?: number | null;
+      };
+      if (json.remainingThisMonth !== undefined) setRemaining(json.remainingThisMonth);
       if (json.breakdown?.id) {
         router.push(`/breakdown/${json.breakdown.id}`);
       } else {
-        setError("Could not start the analysis.");
+        setError(t("plan_ai_start_fail"));
       }
     } catch {
-      setError("Could not start the analysis.");
+      setError(t("plan_ai_start_fail"));
     } finally {
       setSubmitting(false);
     }
@@ -91,10 +141,10 @@ export default function NewBreakdownPage() {
   if (hydrated && (!user || user.role !== "athlete")) {
     return (
       <div className="mx-app mx-auto max-w-lg px-4 py-16 text-center">
-        <h1 className="text-xl font-bold">AI analysis</h1>
-        <p className="mt-2 text-[color:var(--mx-dim)]">Sign in as an athlete to analyze a clip.</p>
+        <h1 className="text-xl font-bold">{t("plan_ai_page_title")}</h1>
+        <p className="mt-2 text-[color:var(--mx-dim)]">{t("plan_ai_sign_in")}</p>
         <Link href="/home" className="mx-btn mx-btn-ghost mt-6 inline-flex">
-          Back to home
+          {t("nav_home")}
         </Link>
       </div>
     );
@@ -113,11 +163,23 @@ export default function NewBreakdownPage() {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className="text-[1.15rem]">New AI analysis</h1>
-            <small>Upload or pick a clip — get a pose + mechanics breakdown</small>
+            <h1 className="text-[1.15rem]">{t("plan_ai_new_title")}</h1>
+            <small>{t("plan_ai_new_sub")}</small>
           </div>
         </div>
       </header>
+
+      {!isPro && remaining !== null ? (
+        <p className="mb-3 text-[0.75rem] font-semibold text-[var(--mx-dim)]">
+          {t("plan_ai_remaining", { n: remaining, limit: ATHLETE_FREE.limits.aiBreakdownsPerMonth ?? 2 })}
+        </p>
+      ) : null}
+
+      {planLimited ? (
+        <div className="mb-3">
+          <ProUpgradeBanner titleKey="plan_ai_limit_title" bodyKey="plan_ai_limit_body" />
+        </div>
+      ) : null}
 
       <div className="mx-card mb-3">
         <div className="mx-t">1 · Choose a clip</div>
@@ -197,14 +259,14 @@ export default function NewBreakdownPage() {
       <button
         type="button"
         onClick={run}
-        disabled={submitting}
+        disabled={submitting || planLimited}
         className="mx-btn mx-btn-accent w-full border-0"
       >
         <Sparkles className="h-4 w-4" />
-        {submitting ? "Starting analysis…" : "Run AI analysis"}
+        {submitting ? t("plan_ai_starting") : t("plan_ai_run")}
       </button>
       <p className="mt-2 text-center text-[0.68rem] text-[var(--mx-dimmer)]">
-        Runs on a configured vision model when available, otherwise the on-box AthLink Motion analyzer.
+        {t("plan_ai_footer")}
       </p>
     </div>
   );

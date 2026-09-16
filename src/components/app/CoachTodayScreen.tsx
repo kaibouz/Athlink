@@ -87,7 +87,7 @@ export function CoachTodayScreen() {
   const athleteHref = firstStudent ? `/coach/students/${firstStudent.id}` : "/coach/students";
 
   return (
-    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-route-texture w-full px-4 py-6 sm:px-6 lg:px-8">
       <header className="mx-hdr">
         <div>
           <h1>{t("dash_today_title")}</h1>

@@ -11,11 +11,13 @@ import {
 } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { RoleJourneyChrome } from "@/components/landing/RoleJourneyChrome";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
+import { PlanComparison } from "@/components/plans/PlanComparison";
 import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/provider";
 
@@ -31,8 +33,9 @@ export function CoachHomeLanding() {
 
   const steps = [
     { id: "journey-hero", label: t("journey_step_welcome") },
-    { id: "how", label: t("journey_step_how") },
+    { id: "how-it-works", label: t("journey_step_how") },
     { id: "journey-benefits", label: t("journey_step_benefits") },
+    { id: "pricing", label: t("journey_step_pricing") },
     { id: "journey-register", label: t("journey_step_register") },
   ];
 
@@ -104,7 +107,7 @@ export function CoachHomeLanding() {
               <li>· {t("land_split_coach_3")}</li>
             </ul>
             <div className="land-fade land-fade-delay-4 mt-8 flex justify-center">
-              <a href="#how" className="group">
+              <a href="#how-it-works" className="group">
                 <Button
                   size="lg"
                   variant="ghost"
@@ -128,6 +131,8 @@ export function CoachHomeLanding() {
         </div>
 
         <PitchingHeroVideo />
+
+        <HowAthlinkWorks audience="coach" id="how-it-works" showCta />
 
         <section
           id="journey-benefits"
@@ -153,6 +158,24 @@ export function CoachHomeLanding() {
                 </article>
               );
             })}
+          </div>
+        </section>
+
+        <section
+          id="pricing"
+          className="scroll-mt-24 border-t border-brand-100/60 bg-brand-50/40 py-16 sm:py-20 dark:border-white/10 dark:bg-white/[0.03]"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-brand text-3xl tracking-tight text-brand-950 sm:text-4xl dark:text-white">
+                {t("plan_coach_pricing_title")}
+              </h2>
+              <p className="mt-2 text-brand-600 dark:text-white/70">{t("plan_coach_pricing_sub")}</p>
+            </div>
+            <div className="mt-10">
+              <PlanComparison audience="coach" showUpgrade={false} />
+            </div>
+            <p className="mt-6 text-center text-xs text-brand-500">{t("plan_zero_fees")}</p>
           </div>
         </section>
 
