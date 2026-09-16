@@ -10,7 +10,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
-import { isMarketingPath, isAuthFunnelPath, MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
+import { isMarketingPath, isAuthFunnelPath, isMemberOnlyPath, MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HamburgerButton } from "@/components/ui/NavigationDrawer";
 
@@ -39,6 +39,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [hydrated, user, pathname, router]);
 
+  // After logout (or cold visit), leave member surfaces for the marketplace HQ.
+  useEffect(() => {
+    if (!hydrated || user) return;
+    if (!isMemberOnlyPath(pathname)) return;
+    router.replace(MARKET_TO_PLATFORM.hq);
+  }, [hydrated, user, pathname, router]);
+
   // Close the drawer on route change (link taps inside the panel).
   useEffect(() => {
     setOpen(false);
@@ -59,6 +66,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     pathname === "/signup" ||
     pathname === "/dns" ||
     isClerkAuthRoute;
+
+  // Don't paint empty member chrome while redirecting guests to HQ.
+  if (hydrated && !user && isMemberOnlyPath(pathname)) {
+    return <div className="min-h-full flex-1" aria-busy="true" />;
+  }
 
   if (isIosPreview || isMarketingHome || pathname === "/dns") {
     return <div className="min-h-full flex-1">{children}</div>;

@@ -16,7 +16,7 @@ import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { usePlatformPlan } from "@/components/plans/PlanComparison";
 import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
 import { isDemoPlanAccount } from "@/lib/demo-plan";
-import { signInHref } from "@/lib/market-to-platform";
+import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
 const linkClass =
@@ -197,8 +197,10 @@ export default function MyPage() {
         variant="ghost"
         className="mt-6 justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
         onClick={() => {
-          logout();
-          router.push("/");
+          void (async () => {
+            await logout();
+            router.replace(MARKET_TO_PLATFORM.hq);
+          })();
         }}
       >
         <LogOut className="h-4 w-4" />

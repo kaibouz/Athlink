@@ -52,6 +52,24 @@ export function isMarketingPath(pathname: string): boolean {
   return false;
 }
 
+/**
+ * Signed-in member surfaces. Guests (e.g. after logout) should leave these
+ * and return to the marketplace HQ instead of an empty app shell.
+ */
+export function isMemberOnlyPath(pathname: string): boolean {
+  const p = pathname.split(/[?#]/)[0] || "/";
+  if (p === "/home" || p.startsWith("/home/")) return true;
+  if (p === "/me" || p.startsWith("/me/")) return true;
+  if (p.startsWith("/bookings") || p.startsWith("/messages") || p.startsWith("/progress")) return true;
+  if (p.startsWith("/breakdown")) return true;
+  // Coach app surfaces — keep public registration/marketing out of the wall.
+  if (p.startsWith("/coach/") && p !== "/coach/register" && !p.startsWith("/coach/register/")) {
+    return true;
+  }
+  if (p.startsWith("/feed/compose") || p === "/app") return true;
+  return false;
+}
+
 /** Auth / join funnel between marketing and platform. */
 export function isAuthFunnelPath(pathname: string): boolean {
   const p = pathname.split(/[?#]/)[0] || "/";

@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { UI_LOCALES, UI_LOCALE_LABELS, type UiLocale } from "@/lib/i18n/messages";
 import { CalendarAutoPrefSelect } from "@/components/calendar/AddToCalendar";
 import { Button } from "@/components/ui/Button";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 export function AppSettingsPanel({
   showRoleSwitch = true,
@@ -78,9 +79,11 @@ export function AppSettingsPanel({
             variant="ghost"
             className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => {
-              logout();
-              onClose?.();
-              router.push("/");
+              void (async () => {
+                await logout();
+                onClose?.();
+                router.replace(MARKET_TO_PLATFORM.hq);
+              })();
             }}
           >
             <LogOut className="h-4 w-4" />
