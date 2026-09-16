@@ -107,7 +107,7 @@ export const COACH_FREE: PlanSpec = {
 export const COACH_PRO: PlanSpec = {
   id: "pro",
   audience: "coach",
-  priceUsdMonthly: 49,
+  priceUsdMonthly: 29,
   limits: { aiBreakdownsPerMonth: null },
   included: [
     "public_coach_profile",

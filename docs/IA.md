@@ -37,7 +37,7 @@ Free vs Pro (canonical specs in `src/lib/platform-plans.ts`):
 - **Athlete Free** — book, message, feed, session history / report cards, 2 AI breakdowns / month
 - **Athlete Pro ($29)** — unlimited AI, week comparisons, full progress dashboard, scout visibility, priority booking
 - **Coach Free** — public profile, calendar/QR, messaging, My Athletes basic, session history
-- **Coach Pro ($49)** — search priority, earnings analytics, athlete AI suite, scout tools, featured badge
+- **Coach Pro ($29)** — search priority, earnings analytics, athlete AI suite, scout tools, featured badge
 
 `/app` is the post-auth router only. It must not render marketing chrome.
 
