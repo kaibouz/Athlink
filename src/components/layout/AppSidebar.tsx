@@ -30,7 +30,6 @@ import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { Button } from "@/components/ui/Button";
 import { AppSettingsDialog } from "@/components/layout/AppSettingsPanel";
 import { NavigationDrawer } from "@/components/ui/NavigationDrawer";
-import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
 import { usePlatformPlan } from "@/components/plans/PlanComparison";
 
 type NavItem = {
@@ -277,14 +276,6 @@ function SidebarChrome({
               {isPro ? t("plan_pro_name") : t("plan_free_name")}
             </span>
           </Link>
-          {user ? (
-            <div className="rounded-xl border border-white/10 bg-black/10 p-2">
-              <p className="mb-1.5 px-1 text-[10px] font-semibold tracking-wide text-brand-500 uppercase">
-                {t("plan_demo_toggle_label")}
-              </p>
-              <DemoPlanToggle dense />
-            </div>
-          ) : null}
         </div>
 
         <div className="border-t border-white/10 p-2">

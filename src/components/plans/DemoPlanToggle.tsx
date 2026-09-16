@@ -1,21 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
 import { usePlatformPlan } from "@/components/plans/PlanComparison";
-import { canSwitchPlatformPlan, isDemoPlanAccount } from "@/lib/demo-plan";
-import { Button } from "@/components/ui/Button";
+import { isDemoPlanAccount } from "@/lib/demo-plan";
 import { cn } from "@/lib/utils";
 import type { PlatformPlanId } from "@/types";
 
-/** Segmented Free | Pro control — demo accounts (kaibouz) can open either surface. */
+/**
+ * Demo-only Free | Pro preview control.
+ * Production membership flips automatically after subscribe — no manual switch.
+ * Only render on My Page account-status for demo accounts (e.g. kaibouz).
+ */
 export function DemoPlanToggle({ className, dense }: { className?: string; dense?: boolean }) {
   const { t } = useLocale();
-  const { user, plan, busy, setPlan, isPro } = usePlatformPlan();
-  if (!canSwitchPlatformPlan(user)) return null;
+  const { user, plan, busy, setPlan } = usePlatformPlan();
+  if (!isDemoPlanAccount(user)) return null;
 
-  const demo = isDemoPlanAccount(user);
   const options: PlatformPlanId[] = ["free", "pro"];
 
   return (
@@ -24,7 +25,7 @@ export function DemoPlanToggle({ className, dense }: { className?: string; dense
         role="group"
         aria-label={t("plan_demo_toggle_label")}
         className={cn(
-          "inline-flex rounded-xl border border-white/15 bg-black/20 p-1",
+          "inline-flex rounded-xl border border-brand-200 bg-brand-50/80 p-1 dark:border-white/15 dark:bg-black/20",
           dense && "rounded-lg p-0.5",
         )}
       >
@@ -42,9 +43,9 @@ export function DemoPlanToggle({ className, dense }: { className?: string; dense
                 dense && "px-2.5 py-1 text-[0.7rem]",
                 active
                   ? id === "pro"
-                    ? "bg-[color:var(--mx-blue-2)] text-black"
-                    : "bg-white/15 text-white"
-                  : "text-[var(--mx-dim)] hover:text-white",
+                    ? "bg-brand-600 text-white dark:bg-[color:var(--mx-blue-2)] dark:text-black"
+                    : "bg-white text-brand-900 shadow-sm dark:bg-white/15 dark:text-white"
+                  : "text-brand-500 hover:text-brand-800 dark:text-[var(--mx-dim)] dark:hover:text-white",
               )}
             >
               {id === "pro" ? (
@@ -59,56 +60,9 @@ export function DemoPlanToggle({ className, dense }: { className?: string; dense
           );
         })}
       </div>
-      {demo ? (
-        <p className="text-[0.65rem] text-[var(--mx-dimmer)]">{t("plan_demo_toggle_hint")}</p>
-      ) : !isPro ? (
-        <p className="text-[0.65rem] text-[var(--mx-dimmer)]">{t("plan_upgrade_demo_note")}</p>
-      ) : null}
-    </div>
-  );
-}
-
-/** Platform card: current plan + upgrade / switch + compare. */
-export function PlanMembershipSection({ className }: { className?: string }) {
-  const { t } = useLocale();
-  const { isPro, busy, setPlan, user } = usePlatformPlan();
-  if (!user) return null;
-
-  return (
-    <div className={cn("mx-card mx-route-texture", className)}>
-      <div className="mx-t">{t("plan_me_title")}</div>
-      <p className="mt-1 text-sm text-[var(--mx-dim)]">
-        {isPro ? t("plan_me_pro_body") : t("plan_me_free_body")}
+      <p className="text-[0.65rem] text-brand-500 dark:text-[var(--mx-dimmer)]">
+        {t("plan_demo_toggle_hint")}
       </p>
-      <div className="mt-3">
-        <DemoPlanToggle />
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {!isPro ? (
-          <Button
-            className="mx-btn mx-btn-accent border-0 text-[0.75rem]"
-            disabled={busy}
-            onClick={() => void setPlan("pro")}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            {t("plan_upgrade_cta")}
-          </Button>
-        ) : (
-          <Button
-            className="mx-btn mx-btn-ghost text-[0.75rem]"
-            disabled={busy}
-            onClick={() => void setPlan("free")}
-          >
-            {t("plan_downgrade_cta")}
-          </Button>
-        )}
-        <Link
-          href="/pricing"
-          className="inline-flex items-center text-[0.75rem] font-semibold text-[var(--mx-blue-2)] underline-offset-2 hover:underline"
-        >
-          {t("plan_compare_link")}
-        </Link>
-      </div>
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PlanComparison, usePlatformPlan } from "@/components/plans/PlanComparison";
-import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import { useLocale } from "@/lib/i18n/provider";
 import { Badge } from "@/components/ui/Badge";
@@ -20,24 +19,20 @@ export default function PricingPage() {
       <PageHeader title={t("plan_page_title")} description={t("plan_page_sub")} />
 
       {user ? (
-        <div className="mb-6 space-y-4">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-brand-600">
-            <span>{t("plan_your_plan")}</span>
-            <Badge className={isPro ? "bg-brand-600 text-white" : ""}>
-              {isPro ? t("plan_pro_name") : t("plan_free_name")}
-            </Badge>
-            <span className="text-brand-400">·</span>
-            <span>
-              {roleAudience === "coach" ? t("role_coach") : t("role_athlete")}
-            </span>
-          </div>
-          <div className="rounded-2xl border border-brand-100 bg-brand-50/50 p-4 dark:border-white/10 dark:bg-white/5">
-            <p className="mb-2 text-xs font-semibold tracking-wide text-brand-500 uppercase">
-              {t("plan_demo_toggle_label")}
-            </p>
-            <p className="mb-3 text-sm text-brand-600">{t("plan_demo_toggle_hint")}</p>
-            <DemoPlanToggle />
-          </div>
+        <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-brand-600">
+          <span>{t("plan_your_plan")}</span>
+          <Badge className={isPro ? "bg-brand-600 text-white" : ""}>
+            {isPro ? t("plan_pro_name") : t("plan_free_name")}
+          </Badge>
+          <span className="text-brand-400">·</span>
+          <span>{roleAudience === "coach" ? t("role_coach") : t("role_athlete")}</span>
+          <span className="text-brand-400">·</span>
+          <Link
+            href="/me#account-status"
+            className="font-semibold text-brand-800 underline-offset-2 hover:underline"
+          >
+            {t("plan_account_status_title")}
+          </Link>
         </div>
       ) : (
         <p className="mb-6 text-sm text-brand-600">
@@ -69,7 +64,7 @@ export default function PricingPage() {
       <PlanComparison audience={audience} showUpgrade={!!user} />
 
       <p className="mt-8 text-center text-xs text-brand-500">
-        {t("plan_zero_fees")} · {plan === "pro" ? t("plan_cancel_anytime") : t("plan_upgrade_demo_note")}
+        {t("plan_zero_fees")} · {plan === "pro" ? t("plan_cancel_anytime") : t("plan_auto_switch_note")}
       </p>
     </PageContainer>
   );

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
 import { formatDateJa } from "@/lib/utils";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
-import { PlanMembershipSection } from "@/components/plans/DemoPlanToggle";
 import type { AthleteProgress, ProgressMetric } from "@/types";
 
 const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
@@ -168,7 +167,6 @@ export function AthleteProgressScreen() {
       </div>
 
       {!isPro ? <ProUpgradeBanner /> : null}
-      <PlanMembershipSection className="mt-3" />
     </div>
   );
 }

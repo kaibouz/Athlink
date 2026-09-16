@@ -1,6 +1,6 @@
 import type { User } from "@/types";
 
-/** Demo accounts that may freely preview Free and Pro platform surfaces. */
+/** Demo accounts that may manually preview Free vs Pro on My Page only. */
 export function isDemoPlanAccount(user: Pick<User, "id" | "name" | "email"> | null | undefined): boolean {
   if (!user) return false;
   const hay = `${user.id} ${user.name} ${user.email}`.toLowerCase();
@@ -10,9 +10,4 @@ export function isDemoPlanAccount(user: Pick<User, "id" | "name" | "email"> | nu
     hay.includes("ethan.park") ||
     hay.includes("u-athlete")
   );
-}
-
-/** Signed-in members can demo-upgrade without a card in MVP. */
-export function canSwitchPlatformPlan(user: Pick<User, "id" | "name" | "email"> | null | undefined): boolean {
-  return !!user;
 }

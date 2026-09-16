@@ -71,7 +71,7 @@ export function usePlatformPlan() {
   return { user, audience, plan, isPro: isProPlan(plan), busy, setPlan, spec: getPlanSpec(audience, plan) };
 }
 
-/** Compact upgrade CTA used on Progress / Breakdown when Free is capped. */
+/** Compact upgrade CTA — sends members to My Page account status (join → plan flips). */
 export function ProUpgradeBanner({
   titleKey = "plan_upgrade_title",
   bodyKey = "plan_upgrade_body",
@@ -80,7 +80,7 @@ export function ProUpgradeBanner({
   bodyKey?: MessageKey;
 }) {
   const { t } = useLocale();
-  const { isPro, busy, setPlan } = usePlatformPlan();
+  const { isPro } = usePlatformPlan();
   if (isPro) return null;
 
   return (
@@ -95,15 +95,14 @@ export function ProUpgradeBanner({
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
-        <Button
-          className="mx-btn mx-btn-accent border-0 text-[0.75rem]"
-          disabled={busy}
-          onClick={() => void setPlan("pro")}
-        >
+        <Link href="/me#account-status" className="mx-btn mx-btn-accent border-0 text-[0.75rem]">
           <Sparkles className="h-3.5 w-3.5" />
           {t("plan_upgrade_cta")}
-        </Button>
-        <Link href="/pricing" className="text-[0.7rem] font-semibold text-[var(--mx-blue-2)] underline-offset-2 hover:underline">
+        </Link>
+        <Link
+          href="/pricing"
+          className="text-[0.7rem] font-semibold text-[var(--mx-blue-2)] underline-offset-2 hover:underline"
+        >
           {t("plan_compare_link")}
         </Link>
       </div>
@@ -216,14 +215,16 @@ export function PlanComparison({
               <Button
                 className="mt-5 w-full"
                 variant={id === "pro" ? "primary" : "ghost"}
-                disabled={busy || active}
-                onClick={() => void setPlan(id)}
+                disabled={busy || active || id === "free"}
+                onClick={() => {
+                  if (id === "pro") void setPlan("pro");
+                }}
               >
                 {active
                   ? t("plan_current")
                   : id === "pro"
                     ? t("plan_upgrade_cta")
-                    : t("plan_downgrade_cta")}
+                    : t("plan_free_name")}
               </Button>
             ) : (
               <Link

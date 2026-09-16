@@ -15,6 +15,7 @@ import { PastRecordsPanel, UpcomingRecordsPanel } from "@/components/social/Past
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { usePlatformPlan } from "@/components/plans/PlanComparison";
 import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
+import { isDemoPlanAccount } from "@/lib/demo-plan";
 import { signInHref } from "@/lib/market-to-platform";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
@@ -39,6 +40,7 @@ export default function MyPage() {
   const { coach, hasProfile } = useMyCoach();
   const { isPro, busy, setPlan } = usePlatformPlan();
   const coachBookings = bookingsForCoach(bookings, coach?.id);
+  const isDemo = isDemoPlanAccount(user);
 
   if (!user) {
     return (
@@ -142,15 +144,17 @@ export default function MyPage() {
         </CardBody>
       </Card>
 
-      <Card className="mt-6">
+      <Card className="mt-6" id="account-status">
         <CardBody className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-sm font-bold text-brand-950">{t("plan_me_title")}</p>
+              <p className="text-sm font-bold text-brand-950">{t("plan_account_status_title")}</p>
               <p className="mt-0.5 text-sm text-brand-600">
                 {isPro ? t("plan_me_pro_body") : t("plan_me_free_body")}
               </p>
-              <p className="mt-2 text-xs text-brand-500">{t("plan_demo_toggle_hint")}</p>
+              <p className="mt-2 text-xs text-brand-500">
+                {isDemo ? t("plan_demo_toggle_hint") : t("plan_auto_switch_note")}
+              </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <Link href="/pricing">
@@ -161,19 +165,17 @@ export default function MyPage() {
                   <Sparkles className="h-4 w-4" />
                   {t("plan_upgrade_cta")}
                 </Button>
-              ) : (
-                <Button variant="outline" disabled={busy} onClick={() => void setPlan("free")}>
-                  {t("plan_downgrade_cta")}
-                </Button>
-              )}
+              ) : null}
             </div>
           </div>
-          <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-3 dark:border-white/10 dark:bg-white/5">
-            <p className="mb-2 text-xs font-semibold tracking-wide text-brand-500 uppercase">
-              {t("plan_demo_toggle_label")}
-            </p>
-            <DemoPlanToggle />
-          </div>
+          {isDemo ? (
+            <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-3 dark:border-white/10 dark:bg-white/5">
+              <p className="mb-2 text-xs font-semibold tracking-wide text-brand-500 uppercase">
+                {t("plan_demo_toggle_label")}
+              </p>
+              <DemoPlanToggle />
+            </div>
+          ) : null}
         </CardBody>
       </Card>
 

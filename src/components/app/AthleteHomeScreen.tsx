@@ -7,7 +7,6 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { formatDateJa } from "@/lib/utils";
 import { useApi } from "@/lib/client/use-api";
-import { PlanMembershipSection } from "@/components/plans/DemoPlanToggle";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import type { AthleteProgress, ProgressMetric } from "@/types";
 
@@ -207,7 +206,6 @@ export function AthleteHomeScreen() {
           </div>
 
           {!isPro ? <ProUpgradeBanner /> : null}
-          <PlanMembershipSection />
         </div>
       </div>
     </div>

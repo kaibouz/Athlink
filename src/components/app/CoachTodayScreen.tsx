@@ -9,7 +9,6 @@ import { formatDateJa, formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
-import { PlanMembershipSection } from "@/components/plans/DemoPlanToggle";
 import type { AthleteProgress, Booking, StudentAthlete } from "@/types";
 
 function initials(name: string) {
@@ -211,8 +210,6 @@ export function CoachTodayScreen() {
           {t("dash_edit")}
         </Link>
       </div>
-
-      <PlanMembershipSection className="mt-3" />
     </div>
   );
 }
