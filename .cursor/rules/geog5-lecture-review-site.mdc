@@ -1,0 +1,19 @@
+---
+description: GEOG 5 lecture videos go into the local lecture-review site
+alwaysApply: true
+---
+
+# GEOG 5 Lecture Review Site
+
+When the user watches or asks about **GEOG 5 (Fritschle)** Canvas module lectures / Studio videos:
+
+1. Prefer extracting the **Studio English transcript** (`Download Transcript`) when available.
+2. Update the living review site (do **not** create a separate one-off page per video):
+   - Canonical: `docs/geog5-study/index.html`
+   - Mirror: `/Users/kainozawa/Desktop/GEOG5-Study/index.html`
+3. Also keep companion markdown in the same folders:
+   - Lecture sheet (condensed notes)
+   - Full script (cleaned transcript)
+4. In `index.html`, add or fill the entry inside the `MODULES` array (`status: "ready"`, sheet / cards / quiz / checklist).
+5. Keep Module 1 Video 2 placeholder id `m1-grid` until that lecture is added; then replace `planned` content.
+6. Open the updated `index.html` in the browser after changes when the user is studying.

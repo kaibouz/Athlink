@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEOG 5 · Lecture Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --bg-2: #e8e2d4;
+      --ink: #1c241c;
+      --muted: #5a6458;
+      --line: #c9c2b2;
+      --panel: #fffdf8;
+      --accent: #2f5d3a;
+      --accent-2: #1e3d28;
+      --warn: #8a5a22;
+      --ok: #2f5d3a;
+      --chip: #dfe8df;
+      --shadow: 0 1px 0 rgba(28, 36, 28, 0.06);
+      --font: "IBM Plex Sans", sans-serif;
+      --display: "Fraunces", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(47, 93, 58, 0.08), transparent 42%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+    a { color: var(--accent-2); }
+    .shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      background: rgba(255, 253, 248, 0.92);
+      border-right: 1px solid var(--line);
+      padding: 28px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+    }
+    .brand {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 22px;
+    }
+    .nav-group { margin-bottom: 18px; }
+    .nav-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+    .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+    .nav-btn:hover { background: var(--chip); }
+    .nav-btn.active {
+      background: var(--accent);
+      color: #f7fff8;
+      font-weight: 600;
+    }
+    .nav-btn .meta {
+      display: block;
+      font-size: 0.75rem;
+      opacity: 0.8;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    main { padding: 32px 36px 64px; max-width: 920px; }
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      margin: 28px 0 10px;
+    }
+    h3 { margin: 18px 0 8px; font-size: 1.02rem; }
+    .lead { color: var(--muted); margin: 0 0 20px; max-width: 58ch; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--chip);
+      color: var(--accent-2);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #eef3ec; font-size: 0.8rem; }
+    tr:last-child td { border-bottom: 0; }
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+    .check:last-child { border-bottom: 0; }
+    .check input { margin-top: 4px; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+    .tab {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 999px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.88rem;
+    }
+    .tab.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    .flash {
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .flash .q {
+      font-family: var(--display);
+      font-size: 1.25rem;
+    }
+    .flash .a {
+      color: var(--accent-2);
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: none;
+    }
+    .flash.show .a { display: block; }
+    .quiz-opt {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 6px 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+    }
+    .quiz-opt:hover { border-color: var(--accent); }
+    .quiz-opt.correct { background: #e5f2e7; border-color: var(--ok); }
+    .quiz-opt.wrong { background: #f7ebe0; border-color: var(--warn); }
+    .muted { color: var(--muted); font-size: 0.88rem; }
+    .home-mod {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .home-mod:hover { border-color: var(--accent); }
+    pre.diagram {
+      background: #1c241c;
+      color: #e8f0e8;
+      padding: 14px 16px;
+      border-radius: 12px;
+      overflow: auto;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .progress {
+      height: 8px;
+      background: #d8d2c4;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 18px;
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+    .hidden { display: none !important; }
+    footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; }
+      nav {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      main { padding: 22px 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav>
+      <p class="brand">GEOG 5</p>
+      <p class="sub">Physical Geography · Lecture Review<br />Weeks 1–3 set up · SMC · Fritschle · Fall 2026</p>
+
+      <div class="nav-group">
+        <p class="nav-label">Home</p>
+        <button class="nav-btn active" data-go="home" type="button">Overview</button>
+      </div>
+
+      <div class="nav-group" id="nav-modules"></div>
+
+      <div class="nav-group">
+        <p class="nav-label">Tools</p>
+        <button class="nav-btn" data-go="progress" type="button">Progress</button>
+      </div>
+    </nav>
+
+    <main id="app"></main>
+  </div>
+
+  <script>
+    /**
+     * MODULE CATALOG
+     * Add new lectures here. Each module id becomes a page with sheet / cards / quiz / notes tabs.
+     */
+    const MODULES = [
+  {
+    "id": "m1-intro",
+    "week": "Week 1",
+    "module": "Module 1",
+    "title": "Introduction to Geography and GEOG 5",
+    "video": "Lecture Video 1 · ~27–28 min",
+    "slides": "01IntrotoGeog.pdf",
+    "due": "Lab 1 + Quiz 1 · Mon Sep 14, 12:45 PM",
+    "status": "ready",
+    "noteHint": "ノート必須: 定義〜分野の図まで。コース目的以降は任意。",
+    "sheet": {
+      "objectives": [
+        "Understand course goals, materials, and assessments",
+        "Demonstrate a basic understanding of Geography as a discipline",
+        "Identify basic components of the Geographic Grid (next lecture)",
+        "Contribute to the learning community"
+      ],
+      "definitions": [
+        {
+          "label": "Classic",
+          "en": "Geography = the study of the Earth as the home of humans",
+          "ja": "地球を「人間のすみか」として見る"
+        },
+        {
+          "label": "Detailed",
+          "en": "Science of relationships among natural systems, areas, society, culture, and their interdependence over space",
+          "ja": "空間上のつながり・相互依存を見る科学"
+        }
+      ],
+      "spheres": [
+        "Atmosphere",
+        "Hydrosphere",
+        "Biosphere",
+        "Lithosphere"
+      ],
+      "realms": [
+        {
+          "name": "Physical geography",
+          "ask": "Natural systems connected over space",
+          "example": "Banff: tree line, U-valley, glacier"
+        },
+        {
+          "name": "Human geography",
+          "ask": "Social/cultural systems connected over space",
+          "example": "NO vs Morocco cemeteries"
+        },
+        {
+          "name": "Environmental geography",
+          "ask": "Humans ↔ environment",
+          "example": "Amazon road / deforestation"
+        },
+        {
+          "name": "Geospatial methods",
+          "ask": "Maps, satellites, GIS",
+          "example": "Store siting, fire mapping"
+        }
+      ],
+      "cases": [
+        {
+          "title": "Banff (Physical)",
+          "points": [
+            "Tree line limits forest growth",
+            "U-valley = glaciation; V = river",
+            "Glacier retreat = climate change signal"
+          ]
+        },
+        {
+          "title": "Cemeteries (Human)",
+          "points": [
+            "New Orleans: wealth, Christianity, above-ground burial (water table)",
+            "Morocco: modest Muslim burial, drier climate"
+          ]
+        },
+        {
+          "title": "Brazil Amazon (Environmental)",
+          "points": [
+            "Poor road → access/poverty clue",
+            "Reddish soils = nutrient-poor after clear-cut"
+          ]
+        }
+      ],
+      "tools": [
+        "Maps",
+        "Satellite/aerial imagery",
+        "Change over time",
+        "GIS layer stacking"
+      ],
+      "coursePurpose": "Physical geography intro: 4 spheres interacting over space (weather/climate, water, landforms, soils, vegetation, wildlife).",
+      "watchRead": [
+        "Video: Intro to Geography (~27 min) + slides 01IntrotoGeog.pdf",
+        "Short film: Overview of the World (~1 min)",
+        "Read: Patrich Unit 1",
+        "Explore: ArcGIS Online login"
+      ]
+    },
+    "cards": [
+      {
+        "q": "Classic definition of geography?",
+        "a": "Study of the Earth as the home of humans."
+      },
+      {
+        "q": "Four spheres?",
+        "a": "Atmosphere, hydrosphere, biosphere, lithosphere."
+      },
+      {
+        "q": "Physical vs human geography?",
+        "a": "Physical = natural systems over space; Human = social/cultural systems over space."
+      },
+      {
+        "q": "U- vs V-shaped valley?",
+        "a": "U = glaciation; V = river erosion."
+      },
+      {
+        "q": "Why above-ground graves in New Orleans?",
+        "a": "High water table / sea level relative to city elevation."
+      },
+      {
+        "q": "What do reddish Amazon soils imply?",
+        "a": "Low organic matter; poor for lasting agriculture after deforestation."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Geography mainly focuses on…",
+        "choices": [
+          "Deep ocean & outer space",
+          "Earth as home of humans / surface spheres",
+          "Only political borders"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Environmental geography emphasizes…",
+        "choices": [
+          "Only rocks",
+          "Only languages",
+          "Human–environment interactions"
+        ],
+        "answer": 2
+      },
+      {
+        "q": "A U-shaped valley usually means…",
+        "choices": [
+          "River erosion",
+          "Glaciation",
+          "Volcano only"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Classic + detailed definitions",
+      "4 spheres 列挙",
+      "Physical / Human / Environmental / Geospatial",
+      "Banff / cemeteries / Brazil 例",
+      "GIS = layer tool"
+    ]
+  },
+  {
+    "id": "m1-grid",
+    "week": "Week 1",
+    "module": "Module 1",
+    "title": "The Geographic Grid System",
+    "video": "Lecture Video 2 · ~24 min",
+    "slides": "01GeogGrid.pdf",
+    "due": "Lab 1 + Quiz 1 · Mon Sep 14, 12:45 PM",
+    "status": "ready",
+    "noteHint": "スライドで *memorize* とある 7 parallels・23.5°・small vs large scale を優先暗記。",
+    "sheet": {
+      "objectives": [
+        "Identify basic components of the Geographic Grid",
+        "Distinguish sphere vs oblate ellipsoid references",
+        "Use latitude/longitude correctly",
+        "Relate tilt (23.5°) to key parallels and seasons setup"
+      ],
+      "definitions": [
+        {
+          "label": "Authalic sphere",
+          "en": "Reference surface for small-scale maps",
+          "ja": "小縮尺図の基準球"
+        },
+        {
+          "label": "Ellipsoid",
+          "en": "Reference for detailed large-scale maps & GPS (Earth bulges at equator)",
+          "ja": "大縮尺・GPS向け扁球"
+        },
+        {
+          "label": "Great circle",
+          "en": "Divides Earth into equal halves (e.g., Equator)",
+          "ja": "大円"
+        },
+        {
+          "label": "Small circle",
+          "en": "Divides Earth unevenly (e.g., Arctic Circle)",
+          "ja": "小円"
+        },
+        {
+          "label": "Graticule",
+          "en": "Imaginary network of parallels + meridians",
+          "ja": "経緯線網"
+        }
+      ],
+      "spheres": [],
+      "realms": [],
+      "cases": [
+        {
+          "title": "A. Earth’s shape",
+          "points": [
+            "Spherical model: Aristotle evidence; Eratosthenes ~250 BC circumference (~15% off)",
+            "Gravity → oblate ellipsoid: bulge at equator, flatten at poles (Newton)",
+            "Small-scale map (e.g. 1:1,000,000) → sphere OK; large-scale (e.g. 1:100) → ellipsoid/GPS"
+          ]
+        },
+        {
+          "title": "B. Coordinates — memorize",
+          "points": [
+            "Latitude = parallels E–W; 0° Equator → 90° N/S poles",
+            "Longitude = meridians N–S; 0° Prime Meridian → 180° Date Line",
+            "Axis tilt 23.5° off vertical → 7 key parallels (Tropics, Midlatitudes, Polar)",
+            "Typical 7: Equator 0°; Tropic Cancer 23.5°N; Tropic Capricorn 23.5°S; Arctic 66.5°N; Antarctic 66.5°S; N Pole 90°N; S Pole 90°S",
+            "Time zones: 24 zones around meridians 15° apart → 15° = 1 hour; UTC/GMT at 0°"
+          ]
+        },
+        {
+          "title": "C. Geodetic position",
+          "points": [
+            "Network of accurately measured ground points → mapping accuracy",
+            "Longitude from time: (local − UTC hours) × 15° (needs chronometer)",
+            "Example location style: 34°N, 118°W"
+          ]
+        }
+      ],
+      "tools": [
+        "Graticule",
+        "Parallels / meridians",
+        "Time–longitude relationship"
+      ],
+      "coursePurpose": "Maps need a grid because physical geography studies spatial systems.",
+      "watchRead": [
+        "Video: Geographic Grid (~24 min) + 01GeogGrid.pdf",
+        "Optional: Longitude (2000) film",
+        "Lab 1: Geographic Grid and AGOL"
+      ]
+    },
+    "cards": [
+      {
+        "q": "Small-scale vs large-scale map?",
+        "a": "Small-scale = small map/ground ratio (e.g. 1:1,000,000), big area/less detail. Large-scale = large ratio (e.g. 1:100), small area/more detail."
+      },
+      {
+        "q": "Why oblate ellipsoid?",
+        "a": "Gravity: Earth bulges at equator and flattens at poles."
+      },
+      {
+        "q": "Only parallel that is a great circle?",
+        "a": "The Equator."
+      },
+      {
+        "q": "Where does 23.5° come from?",
+        "a": "Tilt of Earth’s axis relative to vertical / ecliptic plane."
+      },
+      {
+        "q": "15° of longitude equals…",
+        "a": "1 hour of time."
+      },
+      {
+        "q": "How find longitude historically?",
+        "a": "Compare local time to UTC/GMT; hours difference × 15°."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Which is typically a large-scale inquiry?",
+        "choices": [
+          "Which continents have rainforests?",
+          "World’s largest forest type?",
+          "Human impacts on Madagascar rainforests?"
+        ],
+        "answer": 2
+      },
+      {
+        "q": "Earth’s axis tilt used for tropics is…",
+        "choices": [
+          "11.5°",
+          "23.5°",
+          "66.5°"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "15° longitude ≈",
+        "choices": [
+          "1 minute",
+          "1 hour",
+          "1 day"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Prime Meridian is…",
+        "choices": [
+          "A parallel / small circle only",
+          "0° longitude reference meridian",
+          "Always a small circle at 23.5°"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Sphere vs ellipsoid / small vs large scale",
+      "Great vs small circle",
+      "Lat/long rules & graticule example",
+      "7 key parallels + 23.5°",
+      "15° = 1 hour / longitude from time"
+    ]
+  },
+  {
+    "id": "m2-earthsun",
+    "week": "Week 2",
+    "module": "Module 2",
+    "title": "Earth–Sun Relations",
+    "video": "Lecture Video 1 of 2 · ~28 min",
+    "slides": "02EarthSunRelations.pdf",
+    "due": "Lab 2 + Quiz 2 · Mon Sep 21, 12:45 PM",
+    "status": "ready",
+    "noteHint": "Canvas Module 2 + 標準トピックで設営。視聴後に細部を追記予定。季節の理由・declination・solstice/equinox を中心に。",
+    "sheet": {
+      "objectives": [
+        "Demonstrate understanding of Earth–Sun relations and the seasons",
+        "Explain why seasons happen (tilt + orbit, not mainly distance)"
+      ],
+      "definitions": [
+        {
+          "label": "Rotation",
+          "en": "Earth spins on its axis (~24 h) → day/night",
+          "ja": "自転"
+        },
+        {
+          "label": "Revolution",
+          "en": "Earth orbits the Sun (~365.25 d)",
+          "ja": "公転"
+        },
+        {
+          "label": "Axial tilt",
+          "en": "~23.5° from perpendicular to orbital plane",
+          "ja": "地軸の傾き"
+        },
+        {
+          "label": "Declination (Sun)",
+          "en": "Latitude of the subsolar point; migrates between 23.5°N–23.5°S",
+          "ja": "太陽赤緯／直下点緯度"
+        },
+        {
+          "label": "Subsolar point",
+          "en": "Where Sun is directly overhead (90° altitude)",
+          "ja": "太陽直下点"
+        },
+        {
+          "label": "Circle of illumination",
+          "en": "Boundary between day and night hemispheres",
+          "ja": "明暗界線"
+        }
+      ],
+      "spheres": [],
+      "realms": [],
+      "cases": [
+        {
+          "title": "Reasons for the seasons",
+          "points": [
+            "Seasons ≠ mainly closer/farther from Sun",
+            "Tilt keeps orientation roughly fixed as Earth revolves → changing day length & Sun angle",
+            "June solstice: NH summer; Sun declination 23.5°N (Tropic of Cancer)",
+            "December solstice: NH winter; declination 23.5°S (Tropic of Capricorn)",
+            "Equinoxes (Mar/Sep): declination 0° (Equator); day/night ~equal globally"
+          ]
+        },
+        {
+          "title": "Latitudinal zones (link to Module 1)",
+          "points": [
+            "Tropics: between 23.5°N–23.5°S — can have overhead Sun",
+            "Midlatitudes: between tropics and polar circles",
+            "Polar: poleward of 66.5° — possible 24-h day/night seasons"
+          ]
+        }
+      ],
+      "tools": [
+        "Sun declination animation (Canvas/YouTube)",
+        "TED-Ed: Sun’s movement across the sky"
+      ],
+      "coursePurpose": "Earth–Sun geometry drives insolation patterns → later temperature & climate.",
+      "watchRead": [
+        "Lecture: Earth–Sun Relations (~28 min) + 02EarthSunRelations.pdf",
+        "Quick declination video (~1 min)",
+        "TED-Ed Sun movement (~4 min)",
+        "Read: Patrich Unit 5 (Reasons for the Seasons)",
+        "Explore: timeanddate.com"
+      ]
+    },
+    "cards": [
+      {
+        "q": "Main reason for seasons?",
+        "a": "Axial tilt + revolution changing solar angle and day length — not primarily Earth–Sun distance."
+      },
+      {
+        "q": "Sun declination range?",
+        "a": "About 23.5°N to 23.5°S through the year."
+      },
+      {
+        "q": "June solstice subsolar latitude?",
+        "a": "23.5°N (Tropic of Cancer)."
+      },
+      {
+        "q": "Equinox means…",
+        "a": "Sun declination ~0°; roughly equal day and night worldwide."
+      },
+      {
+        "q": "Arctic Circle latitude?",
+        "a": "66.5°N (90° − 23.5°)."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Seasons are caused mainly by…",
+        "choices": [
+          "Earth much closer in summer",
+          "Axial tilt + orbit changing Sun angle/day length",
+          "Moon phases"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "On Dec solstice the subsolar point is near…",
+        "choices": [
+          "Equator",
+          "Tropic of Cancer",
+          "Tropic of Capricorn"
+        ],
+        "answer": 2
+      },
+      {
+        "q": "66.5° equals…",
+        "choices": [
+          "Tilt angle",
+          "90° − tilt (polar circle)",
+          "15° × 4"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Rotation vs revolution",
+      "Tilt 23.5° → seasons logic",
+      "Solstice / equinox / declination",
+      "Tropics vs polar day-night extremes"
+    ]
+  },
+  {
+    "id": "m2-atmos-isoline",
+    "week": "Week 2",
+    "module": "Module 2",
+    "title": "Atmosphere & Isoline Maps",
+    "video": "Lecture Video 2 of 2 · ~27 min",
+    "slides": "Intro Atmosphere + Isoline Maps PDF",
+    "due": "Lab 2 + Quiz 2 · Mon Sep 21, 12:45 PM",
+    "status": "ready",
+    "noteHint": "Module 2後半。大気の基本＋isolines（等温線・等圧線）の読み方。Lab 2 と直結。",
+    "sheet": {
+      "objectives": [
+        "Identify basic components of the atmosphere",
+        "Utilize isoline maps in physical geography"
+      ],
+      "definitions": [
+        {
+          "label": "Atmosphere",
+          "en": "Envelope of gases around Earth; weather happens mainly in the troposphere",
+          "ja": "大気"
+        },
+        {
+          "label": "Troposphere",
+          "en": "Lowest layer; temperature generally decreases with height; weather layer",
+          "ja": "対流圏"
+        },
+        {
+          "label": "Isoline",
+          "en": "Line connecting equal values of a variable",
+          "ja": "等値線"
+        },
+        {
+          "label": "Isotherm",
+          "en": "Isoline of equal temperature",
+          "ja": "等温線"
+        },
+        {
+          "label": "Isobar",
+          "en": "Isoline of equal air pressure",
+          "ja": "等圧線"
+        },
+        {
+          "label": "Interpolation",
+          "en": "Estimating values between measured points to draw isolines",
+          "ja": "内挿"
+        }
+      ],
+      "spheres": [
+        "Atmosphere"
+      ],
+      "realms": [],
+      "cases": [
+        {
+          "title": "Atmosphere basics",
+          "points": [
+            "Major gases: mostly nitrogen & oxygen; trace greenhouse gases matter a lot",
+            "Layers by temperature profile (troposphere → stratosphere → …)",
+            "Patrich Unit 6 pp.1–7 assigned here; rest in Module 3"
+          ]
+        },
+        {
+          "title": "Reading isoline maps",
+          "points": [
+            "Closer isolines = steeper gradient (faster change over distance)",
+            "Values change perpendicular to isolines",
+            "Never cross (for a single continuous field)",
+            "Lab 2 practices isolines + Earth–Sun together"
+          ]
+        }
+      ],
+      "tools": [
+        "Isoline maps",
+        "Optional: Svalbard polar night film"
+      ],
+      "coursePurpose": "Atmosphere is the sphere for weather; isolines visualize spatial patterns of T, P, etc.",
+      "watchRead": [
+        "Lecture: Atmosphere & Isolines (~27 min)",
+        "Read: Patrich Unit 6 pages 1–7",
+        "Lab 2: Isoline Maps and Earth–Sun Relations"
+      ]
+    },
+    "cards": [
+      {
+        "q": "What is an isoline?",
+        "a": "A line joining places with equal values of a mapped variable."
+      },
+      {
+        "q": "Isotherm vs isobar?",
+        "a": "Isotherm = equal temperature; isobar = equal pressure."
+      },
+      {
+        "q": "Close isolines mean…",
+        "a": "Steep gradient — the variable changes quickly over short distance."
+      },
+      {
+        "q": "Weather layer of atmosphere?",
+        "a": "Troposphere."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Isolines that are packed tightly indicate…",
+        "choices": [
+          "No change",
+          "Gentle gradient",
+          "Steep gradient"
+        ],
+        "answer": 2
+      },
+      {
+        "q": "An isobar maps…",
+        "choices": [
+          "Equal elevation only",
+          "Equal air pressure",
+          "Equal rainfall only"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Atmosphere / troposphere basics",
+      "Isoline / isotherm / isobar",
+      "Gradient = spacing of isolines",
+      "Lab 2 connection"
+    ]
+  },
+  {
+    "id": "m2-lab2",
+    "week": "Week 2",
+    "module": "Module 2",
+    "title": "Lab 2: Isoline Maps & Earth–Sun Relations",
+    "video": "Lab worksheet · 3 parts · ~2–3 hrs",
+    "slides": "Lab02_IsolineMaps_Earth-SunRelations.pdf",
+    "due": "Lab 2 due Mon Sep 21, 12:45 PM (with Quiz 2)",
+    "status": "ready",
+    "noteHint": "Lab PDF 全文から要点化。提出用の答えは書かず、解き方の要点・暗記事項・用語だけ。",
+    "sheet": {
+      "objectives": [
+        "Connect Earth–Sun motions to the seasons (Part 1)",
+        "Read isolines / contour lines and map scale (Part 2)",
+        "Practice with a USGS topographic quadrangle + timeanddate.com (Part 3)"
+      ],
+      "definitions": [
+        {
+          "label": "Rotation",
+          "en": "Spin on axis ~24 h → day/night; circle of illumination separates light/dark",
+          "ja": "自転・明暗界線"
+        },
+        {
+          "label": "Revolution",
+          "en": "Orbit ~365.25 d; elliptical → perihelion ~Jan 3 (closer), aphelion ~Jul 4 (farther)",
+          "ja": "公転・近日点/遠日点"
+        },
+        {
+          "label": "Tilt",
+          "en": "Axis ~23.5° relative to plane of the ecliptic",
+          "ja": "地軸傾斜"
+        },
+        {
+          "label": "Polarity",
+          "en": "Axis points toward Polaris; N Pole sometimes toward Sun, sometimes away → daylength pattern",
+          "ja": "軸の向き（極性）"
+        },
+        {
+          "label": "Oblate sphere",
+          "en": "Curved surface → Sun angle (incidence) varies by latitude (and by season because of tilt)",
+          "ja": "扁球・入射角"
+        },
+        {
+          "label": "Vertical / oblique / tangent rays",
+          "en": "90° overhead; <90° angled; 0° grazing",
+          "ja": "垂直/斜め/接線の日射"
+        },
+        {
+          "label": "Declination of the Sun",
+          "en": "Latitude receiving vertical rays that day",
+          "ja": "太陽直下点の緯度"
+        },
+        {
+          "label": "Map scale (RF)",
+          "en": "Representative fraction e.g. 1:24,000 — 1 map unit = 24,000 ground units (any unit)",
+          "ja": "代表分数縮尺"
+        },
+        {
+          "label": "Verbal / graphic scale",
+          "en": "Words (“1 cm = 1 km”) or bar that stays true when map is resized",
+          "ja": "文言縮尺 / スケールバー"
+        },
+        {
+          "label": "Contour line",
+          "en": "Isoline of equal elevation; never cross; spacing shows slope",
+          "ja": "等高線"
+        },
+        {
+          "label": "Contour interval",
+          "en": "Elevation difference between adjacent contours",
+          "ja": "等高線間隔"
+        },
+        {
+          "label": "Relief",
+          "en": "Difference between highest and lowest elevations in an area",
+          "ja": "起伏（比高）"
+        }
+      ],
+      "spheres": [
+        "Atmosphere",
+        "Hydrosphere",
+        "Biosphere",
+        "Lithosphere"
+      ],
+      "realms": [],
+      "cases": [
+        {
+          "title": "Part 1 — Five season factors",
+          "points": [
+            "Seasons from: rotation, revolution, tilt, polarity, shape (not mainly Earth–Sun distance)",
+            "Equinoxes (≈ Mar 20 / Sep 21): vertical rays at Equator 0°; circle of illumination bisects all parallels → 12 h day everywhere",
+            "June solstice (≈ Jun 22): vertical rays at Tropic of Cancer 23.5°N → NH summer",
+            "December solstice (≈ Dec 21): vertical rays at Tropic of Capricorn 23.5°S → NH winter",
+            "Dec solstice: Arctic Circle 24 h dark; Antarctic Circle 24 h light",
+            "Memorize 7 parallels: Equator 0°; N/S Poles 90°; Cancer 23.5°N; Capricorn 23.5°S; Arctic 66.5°N; Antarctic 66.5°S",
+            "Q8 theme: distance does NOT determine seasons (NH winter near perihelion)",
+            "Santa Monica 34°N: never gets vertical rays (outside 23.5°N–23.5°S)"
+          ]
+        },
+        {
+          "title": "Part 2 — Isolines & topo basics",
+          "points": [
+            "Isoline maps used across all 4 spheres; topo maps show elevation + water + settlements",
+            "Contour lines = equal elevation; do not cross/overlap",
+            "Closer contours = steeper slope; wider = gentler",
+            "Cake model: layers = contour levels; label elevations using interval from base (sea level 0)",
+            "Total relief of cake = sum of layer heights (e.g. 3 × 10\" = 30\")",
+            "Contour interval = elevation step between lines"
+          ]
+        },
+        {
+          "title": "Part 3 — USGS TopoView workflow",
+          "points": [
+            "Pick a US location in USGS TopoView → open actual topo map (not finder window)",
+            "Identify: map name, natural features, human features",
+            "Coordinates in degrees/minutes/seconds",
+            "State RF or bar scale; find highest elevation on map",
+            "timeanddate.com → today’s sunrise/sunset for that place"
+          ]
+        }
+      ],
+      "tools": [
+        "Lab PDF: Lab02_IsolineMaps_Earth-SunRelations.pdf (in this folder)",
+        "USGS TopoView",
+        "timeanddate.com",
+        "Lecture slides: Earth–Sun + Atmosphere/Isolines"
+      ],
+      "coursePurpose": "Lab applies Module 2 lectures: seasons geometry + isoline/topo reading skills for later climate & pressure maps.",
+      "watchRead": [
+        "Complete Lab 2 Parts 1–3 on the worksheet",
+        "Use Module 2 lectures + Patrich Units 5–6 as needed",
+        "Submit before Mon Sep 21, 12:45 PM class"
+      ],
+      "labParts": [
+        {
+          "part": "1",
+          "pts": "~14+",
+          "focus": "Seasons factors, 7 parallels, solstice/equinox diagram, perihelion/aphelion, declination, Santa Monica vertical rays"
+        },
+        {
+          "part": "2",
+          "pts": "~9",
+          "focus": "Map scale types, contour lines, cake isolines, relief, gradient, contour interval"
+        },
+        {
+          "part": "3",
+          "pts": "~11",
+          "focus": "USGS topo quadrangle analysis + sunrise/sunset lookup"
+        }
+      ]
+    },
+    "cards": [
+      {
+        "q": "Five key Earth–Sun characteristics in the lab?",
+        "a": "Rotation, revolution, tilt, polarity, shape."
+      },
+      {
+        "q": "Perihelion vs aphelion?",
+        "a": "Perihelion ≈ Jan 3 (closest); aphelion ≈ Jul 4 (farthest). NH winter is near perihelion → distance ≠ seasons."
+      },
+      {
+        "q": "Declination on June solstice?",
+        "a": "23.5°N (Tropic of Cancer)."
+      },
+      {
+        "q": "Do vertical rays reach Santa Monica (34°N)?",
+        "a": "No — vertical rays only between 23.5°N and 23.5°S."
+      },
+      {
+        "q": "What is a contour line?",
+        "a": "Isoline of equal elevation; lines never cross."
+      },
+      {
+        "q": "What does close contour spacing mean?",
+        "a": "Steep gradient / steep slope."
+      },
+      {
+        "q": "Advantage of a graphic scale bar?",
+        "a": "It remains true when the map is shrunk or magnified."
+      },
+      {
+        "q": "Contour interval means…",
+        "a": "Elevation difference between adjacent contour lines."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Earth is closest to the Sun near…",
+        "choices": [
+          "July (aphelion)",
+          "January (perihelion)",
+          "Both equinoxes equally"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "On equinoxes, daylength is…",
+        "choices": [
+          "24 h everywhere",
+          "Exactly 12 h at all latitudes",
+          "Only 12 h at the poles"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Santa Monica (34°N) can have the Sun directly overhead…",
+        "choices": [
+          "Every June",
+          "Never",
+          "Every equinox"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Contour lines…",
+        "choices": [
+          "Often cross on steep cliffs",
+          "Never cross",
+          "Only show temperature"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "1:24,000 means…",
+        "choices": [
+          "1 unit on map = 24,000 of same units on ground",
+          "Map is 24,000 inches wide",
+          "Contour interval is 24,000 ft"
+        ],
+        "answer": 0
+      }
+    ],
+    "checklist": [
+      "5 season factors + perihelion/aphelion",
+      "7 special parallels with latitudes",
+      "Solstice/equinox declinations",
+      "Why SM never gets vertical rays",
+      "RF / verbal / graphic scale",
+      "Contour rules, interval, relief, steep vs gentle",
+      "TopoView map + timeanddate sunrise/sunset"
+    ]
+  },
+  {
+    "id": "m3-insolation",
+    "week": "Week 3",
+    "module": "Module 3",
+    "title": "Insolation & Temperature Patterns",
+    "video": "Lecture Video 1 of 2 · ~28 min",
+    "slides": "Insolation and Temperature Patterns PDF",
+    "due": "Lab 3 + Quiz 3 · Mon Sep 28, 12:45 PM",
+    "status": "ready",
+    "noteHint": "Module 3前半。insolation・熱の伝わり方・気温パターン。Khan Academy 電磁波クリップあり。",
+    "sheet": {
+      "objectives": [
+        "Analyze relationships among energy, temperature, and heat",
+        "Describe how heat is transferred around the planet"
+      ],
+      "definitions": [
+        {
+          "label": "Insolation",
+          "en": "Incoming solar radiation received at Earth",
+          "ja": "日射（入射太陽放射）"
+        },
+        {
+          "label": "Albedo",
+          "en": "Fraction of radiation reflected by a surface",
+          "ja": "アルベド（反射率）"
+        },
+        {
+          "label": "Absorption",
+          "en": "Energy taken in by atmosphere/surface → warms",
+          "ja": "吸収"
+        },
+        {
+          "label": "Temperature",
+          "en": "Measure of average kinetic energy of molecules",
+          "ja": "温度"
+        },
+        {
+          "label": "Heat",
+          "en": "Energy transfer due to temperature difference",
+          "ja": "熱"
+        },
+        {
+          "label": "Continentality",
+          "en": "Interiors heat/cool more than oceans (specific heat / mixing)",
+          "ja": "大陸度"
+        }
+      ],
+      "spheres": [
+        "Atmosphere"
+      ],
+      "realms": [],
+      "cases": [
+        {
+          "title": "Energy & temperature patterns",
+          "points": [
+            "Low latitudes receive more average insolation than poles → energy surplus tropics, deficit poles",
+            "Atmosphere & oceans redistribute heat poleward",
+            "Land heats/cools faster than water → coastal climates milder",
+            "Elevation: temperature usually drops with height in troposphere"
+          ]
+        },
+        {
+          "title": "Heat transfer modes",
+          "points": [
+            "Radiation: electromagnetic waves (Sun → Earth; Earth emits IR)",
+            "Conduction: molecule-to-molecule (surface ↔ air skin)",
+            "Convection: vertical mixing of air/fluid",
+            "Advection: horizontal transport of heat by wind/currents"
+          ]
+        }
+      ],
+      "tools": [
+        "Khan Academy: wavelengths of EM radiation (~2 min)",
+        "Lab 3 temperature patterns"
+      ],
+      "coursePurpose": "Uneven insolation + heat transfer create global temperature geography.",
+      "watchRead": [
+        "Lecture: Insolation & Temperature (~28 min)",
+        "Read: finish Patrich Unit 6; browse Ritter Ch.5 as needed"
+      ]
+    },
+    "cards": [
+      {
+        "q": "What is insolation?",
+        "a": "Incoming solar radiation."
+      },
+      {
+        "q": "Why are poles cold on average?",
+        "a": "Lower average insolation (Sun angle / day geometry) → energy deficit."
+      },
+      {
+        "q": "Four heat transfer modes?",
+        "a": "Radiation, conduction, convection, advection."
+      },
+      {
+        "q": "Why milder coastal climates?",
+        "a": "Water’s high heat capacity / mixing → slower temperature swings (less continentality)."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Insolation means…",
+        "choices": [
+          "Outgoing Earth heat only",
+          "Incoming solar radiation",
+          "Ocean salinity"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Horizontal heat transport by wind is…",
+        "choices": [
+          "Conduction",
+          "Advection",
+          "Albedo"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Insolation / albedo",
+      "Latitudinal energy imbalance",
+      "Radiation / conduction / convection / advection",
+      "Continentality & elevation effects"
+    ]
+  },
+  {
+    "id": "m3-pressure-wind",
+    "week": "Week 3",
+    "module": "Module 3",
+    "title": "Air Pressure & Wind",
+    "video": "Lecture Video 2 of 2 · ~34 min",
+    "slides": "Air Pressure and Wind PDF",
+    "due": "Lab 3 + Quiz 3 · Mon Sep 28, 12:45 PM",
+    "status": "ready",
+    "noteHint": "Module 3後半。気圧傾度・コリオリ・三細胞モデル。Khan Academy Global Wind Patterns 推奨。",
+    "sheet": {
+      "objectives": [
+        "Understand global patterns in air pressure",
+        "Explain circulation of winds at planetary scale"
+      ],
+      "definitions": [
+        {
+          "label": "Air pressure",
+          "en": "Force of air per area; decreases with height",
+          "ja": "気圧"
+        },
+        {
+          "label": "Pressure gradient",
+          "en": "Change of pressure over distance; drives wind from high → low",
+          "ja": "気圧傾度"
+        },
+        {
+          "label": "Coriolis effect",
+          "en": "Apparent deflection due to rotation (right in NH, left in SH)",
+          "ja": "コリオリの力"
+        },
+        {
+          "label": "ITCZ",
+          "en": "Intertropical Convergence Zone — equatorial low where trades meet",
+          "ja": "熱帯収束帯"
+        },
+        {
+          "label": "Subtropical high",
+          "en": "High-pressure belts ~30°; sinking air; many deserts",
+          "ja": "亜熱帯高圧帯"
+        },
+        {
+          "label": "Trade winds",
+          "en": "Surface winds from subtropical highs toward ITCZ",
+          "ja": "貿易風"
+        }
+      ],
+      "spheres": [
+        "Atmosphere"
+      ],
+      "realms": [],
+      "cases": [
+        {
+          "title": "Forces on wind",
+          "points": [
+            "Pressure gradient force: high → low",
+            "Coriolis deflects moving air (NH right / SH left)",
+            "Friction slows wind near surface and changes balance"
+          ]
+        },
+        {
+          "title": "Three-cell model (idealized)",
+          "points": [
+            "Hadley cell: tropics — rising near ITCZ, sinking ~30°",
+            "Ferrel cell: midlatitudes (more complex / indirect)",
+            "Polar cell: cold sinking near poles",
+            "Surface: trades, westerlies, polar easterlies"
+          ]
+        }
+      ],
+      "tools": [
+        "Khan Academy Global Wind Patterns (~6 min, strongly recommended)",
+        "Global Wind Atlas",
+        "Optional: windiest place video"
+      ],
+      "coursePurpose": "Pressure & wind circulate heat/moisture — bridge to weather systems (Module 4).",
+      "watchRead": [
+        "Lecture: Air Pressure & Wind (~34 min)",
+        "Khan Academy global winds",
+        "Read: Ritter Ch.6 as needed",
+        "Lab 3: Temperature and Air Pressure Patterns"
+      ]
+    },
+    "cards": [
+      {
+        "q": "Wind blows from…",
+        "a": "Higher pressure toward lower pressure (pressure gradient)."
+      },
+      {
+        "q": "Coriolis in Northern Hemisphere?",
+        "a": "Deflects to the right."
+      },
+      {
+        "q": "ITCZ is associated with…",
+        "a": "Equatorial low pressure and converging trade winds; rising air."
+      },
+      {
+        "q": "Subtropical highs (~30°) often mean…",
+        "a": "Sinking air, clear/dry conditions — many deserts."
+      },
+      {
+        "q": "Name the three idealized cells.",
+        "a": "Hadley, Ferrel, Polar."
+      }
+    ],
+    "quiz": [
+      {
+        "q": "Air moves from…",
+        "choices": [
+          "Low to high pressure",
+          "High to low pressure",
+          "Only east to west always"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "ITCZ is best described as…",
+        "choices": [
+          "Polar high",
+          "Equatorial convergence / low",
+          "Jet stream only at 60°"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Coriolis deflection in NH is…",
+        "choices": [
+          "Left",
+          "Right",
+          "None at all latitudes equally"
+        ],
+        "answer": 1
+      }
+    ],
+    "checklist": [
+      "Pressure gradient → wind",
+      "Coriolis NH/SH",
+      "ITCZ / subtropical high",
+      "Hadley–Ferrel–Polar + surface wind belts"
+    ]
+  }
+];
+
+    const STORAGE_KEY = "geog5-lecture-review-v1";
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    let state = loadState();
+    let route = { page: "home", modId: null, tab: "sheet" };
+    let flashIndex = 0;
+
+    function $(sel, root = document) {
+      return root.querySelector(sel);
+    }
+
+    function renderNav() {
+      const box = $("#nav-modules");
+      const byMod = {};
+      MODULES.forEach((m) => {
+        (byMod[m.module] ||= []).push(m);
+      });
+      box.innerHTML = Object.entries(byMod)
+        .map(([mod, items]) => {
+          const buttons = items
+            .map((m) => {
+              const active = route.page === "module" && route.modId === m.id ? "active" : "";
+              return `<button class="nav-btn ${active}" data-go="module" data-id="${m.id}" type="button">
+                ${m.title}
+                <span class="meta">${m.week || mod} · ${mod} · ${m.status === "ready" ? "ready" : "coming soon"}</span>
+              </button>`;
+            })
+            .join("");
+          return `<p class="nav-label">${mod}</p>${buttons}`;
+        })
+        .join("");
+
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        const go = btn.getAttribute("data-go");
+        const isActive =
+          (go === "home" && route.page === "home") ||
+          (go === "progress" && route.page === "progress") ||
+          (go === "module" && route.modId === btn.getAttribute("data-id"));
+        btn.classList.toggle("active", isActive);
+      });
+    }
+
+    function progressFor(mod) {
+      const checks = state.check?.[mod.id] || {};
+      const total = mod.checklist.length || 1;
+      const done = mod.checklist.filter((_, i) => checks[i]).length;
+      return { done, total, pct: Math.round((done / total) * 100) };
+    }
+
+    function overallProgress() {
+      let done = 0;
+      let total = 0;
+      MODULES.forEach((m) => {
+        const p = progressFor(m);
+        done += p.done;
+        total += p.total;
+      });
+      return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
+    }
+
+    function renderHome() {
+      const overall = overallProgress();
+      return `
+        <h1>Lecture Review</h1>
+        <p class="lead">GEOG 5 のモジュール講義を、レクチャーシート・フラッシュカード・確認クイズで復習するローカルサイトです。新しい動画はここに追加していきます。</p>
+        <div class="row">
+          <span class="pill">Progress ${overall.done}/${overall.total}</span>
+          <span class="pill">Modules ${MODULES.filter((m) => m.status === "ready").length} ready</span>
+        </div>
+        <div class="progress"><span style="width:${overall.pct}%"></span></div>
+        <div class="grid-2">
+          ${MODULES.map((m) => {
+            const p = progressFor(m);
+            return `
+              <button class="card home-mod" data-go="module" data-id="${m.id}" type="button">
+                <div class="row" style="margin:0 0 8px">
+                  <span class="pill">${m.module}</span>
+                  <span class="pill">${m.status}</span>
+                </div>
+                <strong>${m.title}</strong>
+                <p class="muted" style="margin:8px 0 0">${m.week || ''} · ${m.video}<br />Slides: ${m.slides}<br />${m.due ? m.due + '<br />' : ''}Checklist ${p.done}/${p.total}</p>
+              </button>`;
+          }).join("")}
+        </div>
+        <footer>Canonical folder: Desktop/GEOG5-Study · also mirrored in athlink/docs/geog5-study</footer>
+      `;
+    }
+
+    function renderProgress() {
+      return `
+        <h1>Progress</h1>
+        <p class="lead">チェックはブラウザの localStorage に保存されます。</p>
+        ${MODULES.map((m) => {
+          const p = progressFor(m);
+          return `
+            <div class="card">
+              <strong>${m.module}: ${m.title}</strong>
+              <p class="muted" style="margin:6px 0 10px">${p.done}/${p.total} · ${p.pct}%</p>
+              <div class="progress"><span style="width:${p.pct}%"></span></div>
+            </div>`;
+        }).join("")}
+        <button class="tab" id="reset-progress" type="button">Reset all checks</button>
+      `;
+    }
+
+    function renderModule(mod) {
+      if (mod.status !== "ready" || !mod.sheet) {
+        return `
+          <h1>${mod.title}</h1>
+          <p class="lead">${mod.noteHint || "準備中です。講義視聴後に追加します。"}</p>
+          <div class="card">
+            <p><strong>${mod.module}</strong> · ${mod.video}</p>
+            <p class="muted">Slides: ${mod.slides}</p>
+            <p>追加待ちのチェック:</p>
+            ${mod.checklist
+              .map((c, i) => {
+                const on = !!(state.check?.[mod.id] || {})[i];
+                return `<label class="check"><input type="checkbox" data-check="${mod.id}" data-i="${i}" ${on ? "checked" : ""} /><span>${c}</span></label>`;
+              })
+              .join("")}
+          </div>`;
+      }
+
+      const tab = route.tab || "sheet";
+      const tabs = ["sheet", "cards", "quiz", "checklist"]
+        .map(
+          (t) =>
+            `<button class="tab ${tab === t ? "on" : ""}" data-tab="${t}" type="button">${
+              { sheet: "Lecture sheet", cards: "Flashcards", quiz: "Quick quiz", checklist: "Checklist" }[t]
+            }</button>`,
+        )
+        .join("");
+
+      let body = "";
+      if (tab === "sheet") body = renderSheet(mod);
+      if (tab === "cards") body = renderCards(mod);
+      if (tab === "quiz") body = renderQuiz(mod);
+      if (tab === "checklist") body = renderChecklist(mod);
+
+      const p = progressFor(mod);
+      return `
+        <h1>${mod.title}</h1>
+        <p class="lead">${mod.noteHint}</p>
+        <div class="row">
+          <span class="pill">${mod.module}</span>
+          <span class="pill">${mod.video}</span>
+          <span class="pill">${mod.slides}</span>
+          <span class="pill">Checklist ${p.done}/${p.total}</span>
+        </div>
+        <div class="tabs">${tabs}</div>
+        <div id="mod-body">${body}</div>
+      `;
+    }
+
+    function renderSheet(mod) {
+      const s = mod.sheet;
+      return `
+        <h2>Definitions</h2>
+        <table>
+          <tr><th></th><th>English</th><th>日本語</th></tr>
+          ${s.definitions
+            .map((d) => `<tr><td><strong>${d.label}</strong></td><td>${d.en}</td><td>${d.ja}</td></tr>`)
+            .join("")}
+        </table>
+
+        <h2>Four spheres</h2>
+        <div class="row">${s.spheres.map((x) => `<span class="pill">${x}</span>`).join("")}</div>
+
+        <h2>Realms</h2>
+        <pre class="diagram">Physical geography          Human geography
+(natural sciences           (social / cultural
+ connected over space)       connected over space)
+            \\                 /
+             Environmental geography
+             (humans ↔ environment)
+                      |
+           Geospatial models & methods
+           (maps · GIS · remote sensing)</pre>
+        <table>
+          <tr><th>Realm</th><th>Asks</th><th>Lecture example</th></tr>
+          ${s.realms
+            .map((r) => `<tr><td><strong>${r.name}</strong></td><td>${r.ask}</td><td>${r.example}</td></tr>`)
+            .join("")}
+        </table>
+
+        <h2>Case studies</h2>
+        ${s.cases
+          .map(
+            (c) => `
+          <div class="card">
+            <h3 style="margin-top:0">${c.title}</h3>
+            <ul>${c.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+          </div>`,
+          )
+          .join("")}
+
+        <h2>Tools</h2>
+        <div class="card"><ul>${s.tools.map((t) => `<li>${t}</li>`).join("")}</ul></div>
+
+        <h2>Course purpose</h2>
+        <div class="card">${s.coursePurpose}</div>
+        ${s.watchRead && s.watchRead.length ? ("<h2>Watch / Read / Do</h2><div class=\"card\"><ul>" + s.watchRead.map((x) => "<li>" + x + "</li>").join("") + "</ul></div>") : ""}
+        ${s.objectives && s.objectives.length ? ("<h2>Learning objectives</h2><div class=\"card\"><ul>" + s.objectives.map((x) => "<li>" + x + "</li>").join("") + "</ul></div>") : ""}
+        ${s.labParts && s.labParts.length ? ("<h2>Lab structure</h2><div class=\"card\"><ul>" + s.labParts.map((p) => "<li><strong>Part " + p.part + "</strong> (" + p.pts + " pts): " + p.focus + "</li>").join("") + "</ul></div>") : ""}
+      `;
+    }
+
+    function renderCards(mod) {
+      if (!mod.cards.length) return `<p class="muted">No cards yet.</p>`;
+      flashIndex = Math.min(flashIndex, mod.cards.length - 1);
+      const card = mod.cards[flashIndex];
+      return `
+        <p class="muted">${flashIndex + 1} / ${mod.cards.length} · click card to flip</p>
+        <div class="card flash" id="flash-card">
+          <div class="q">${card.q}</div>
+          <div class="a"><strong>Answer:</strong> ${card.a}</div>
+        </div>
+        <div class="row">
+          <button class="tab" id="flash-prev" type="button">Prev</button>
+          <button class="tab" id="flash-next" type="button">Next</button>
+        </div>
+      `;
+    }
+
+    function renderQuiz(mod) {
+      if (!mod.quiz.length) return `<p class="muted">No quiz yet.</p>`;
+      const answers = state.quiz?.[mod.id] || {};
+      return mod.quiz
+        .map((item, qi) => {
+          const chosen = answers[qi];
+          const opts = item.choices
+            .map((c, ci) => {
+              let cls = "quiz-opt";
+              if (chosen !== undefined) {
+                if (ci === item.answer) cls += " correct";
+                else if (ci === chosen) cls += " wrong";
+              }
+              return `<button class="${cls}" data-quiz="${mod.id}" data-qi="${qi}" data-ci="${ci}" type="button">${c}</button>`;
+            })
+            .join("");
+          return `<div class="card"><strong>Q${qi + 1}. ${item.q}</strong><div style="margin-top:8px">${opts}</div></div>`;
+        })
+        .join("");
+    }
+
+    function renderChecklist(mod) {
+      const checks = state.check?.[mod.id] || {};
+      return `
+        <div class="card">
+          ${mod.checklist
+            .map((c, i) => {
+              const on = !!checks[i];
+              return `<label class="check"><input type="checkbox" data-check="${mod.id}" data-i="${i}" ${on ? "checked" : ""} /><span>${c}</span></label>`;
+            })
+            .join("")}
+        </div>`;
+    }
+
+    function render() {
+      renderNav();
+      const app = $("#app");
+      if (route.page === "home") app.innerHTML = renderHome();
+      else if (route.page === "progress") app.innerHTML = renderProgress();
+      else {
+        const mod = MODULES.find((m) => m.id === route.modId) || MODULES[0];
+        app.innerHTML = renderModule(mod);
+      }
+      bind();
+    }
+
+    function bind() {
+      document.querySelectorAll("[data-go]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const go = el.getAttribute("data-go");
+          if (go === "home") route = { page: "home", modId: null, tab: "sheet" };
+          else if (go === "progress") route = { page: "progress", modId: null, tab: "sheet" };
+          else if (go === "module") {
+            route = { page: "module", modId: el.getAttribute("data-id"), tab: "sheet" };
+            flashIndex = 0;
+          }
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((el) => {
+        el.addEventListener("click", () => {
+          route.tab = el.getAttribute("data-tab");
+          flashIndex = 0;
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-check]").forEach((el) => {
+        el.addEventListener("change", () => {
+          const id = el.getAttribute("data-check");
+          const i = el.getAttribute("data-i");
+          state.check ||= {};
+          state.check[id] ||= {};
+          state.check[id][i] = el.checked;
+          saveState(state);
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-quiz]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.getAttribute("data-quiz");
+          const qi = +el.getAttribute("data-qi");
+          const ci = +el.getAttribute("data-ci");
+          state.quiz ||= {};
+          state.quiz[id] ||= {};
+          state.quiz[id][qi] = ci;
+          saveState(state);
+          render();
+        });
+      });
+
+      const flash = $("#flash-card");
+      if (flash) {
+        flash.addEventListener("click", () => flash.classList.toggle("show"));
+      }
+      const prev = $("#flash-prev");
+      const next = $("#flash-next");
+      const mod = MODULES.find((m) => m.id === route.modId);
+      if (prev && mod) {
+        prev.addEventListener("click", () => {
+          flashIndex = (flashIndex - 1 + mod.cards.length) % mod.cards.length;
+          render();
+        });
+      }
+      if (next && mod) {
+        next.addEventListener("click", () => {
+          flashIndex = (flashIndex + 1) % mod.cards.length;
+          render();
+        });
+      }
+
+      const reset = $("#reset-progress");
+      if (reset) {
+        reset.addEventListener("click", () => {
+          state = {};
+          saveState(state);
+          render();
+        });
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
