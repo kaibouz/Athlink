@@ -200,47 +200,97 @@ export function AthleteLandingBelow() {
               <div className="ah-bio">
                 <div className="ah-fig">
                   <svg viewBox="0 0 200 210">
+                    {/* Ground + home plate cue + bat-path arc */}
                     <g stroke="rgba(255,255,255,0.25)" strokeWidth="1" fill="none">
                       <line x1="0" y1="180" x2="200" y2="180" />
                     </g>
+                    <path
+                      d="M 28 180 L 36 180 L 40 172 L 32 166 L 24 172 Z"
+                      fill="rgba(255,255,255,0.12)"
+                      stroke="rgba(255,255,255,0.28)"
+                      strokeWidth="1"
+                    />
+                    <path
+                      d="M 168 36 Q 128 42 96 68 Q 58 98 22 138"
+                      fill="none"
+                      stroke="rgba(34,199,224,0.35)"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeDasharray="4 3"
+                    />
+                    {/* Contact-point ball — sells baseball 素振り */}
+                    <circle
+                      cx="18"
+                      cy="86"
+                      r="5"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.55)"
+                      strokeWidth="1.4"
+                    />
+                    <circle cx="18" cy="86" r="1.6" fill="rgba(255,255,255,0.45)" />
+                    {/* Wide athletic stance: plant + drive leg */}
                     <g className="legs" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" fill="none">
-                      <line x1="92" y1="110" x2="70" y2="150" />
-                      <line x1="70" y1="150" x2="62" y2="180" />
-                      <line x1="92" y1="110" x2="118" y2="145" />
-                      <line x1="118" y1="145" x2="130" y2="180" />
+                      <line x1="92" y1="110" x2="58" y2="150" />
+                      <line x1="58" y1="150" x2="40" y2="180" />
+                      <line x1="92" y1="110" x2="128" y2="146" />
+                      <line x1="128" y1="146" x2="152" y2="180" />
                     </g>
                     <g fill="#22c7e0">
                       <circle cx="92" cy="110" r="3.5" />
-                      <circle cx="70" cy="150" r="3.5" />
-                      <circle cx="118" cy="145" r="3.5" />
+                      <circle cx="58" cy="150" r="3.5" />
+                      <circle cx="128" cy="146" r="3.5" />
+                      <circle cx="40" cy="180" r="2.4" />
+                      <circle cx="152" cy="180" r="2.4" />
                     </g>
+                    {/* Mid-swing torso; arms + bat animate together */}
                     <g className="body">
-                      <line x1="95" y1="60" x2="92" y2="110" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" />
-                      <circle cx="95" cy="60" r="3.5" fill="#22c7e0" />
-                      <circle cx="95" cy="42" r="10" fill="none" stroke="#22c7e0" strokeWidth="2.2" />
+                      <line x1="95" y1="58" x2="92" y2="110" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" />
+                      <circle cx="95" cy="58" r="3.5" fill="#22c7e0" />
+                      {/* Head tracking contact */}
+                      <circle cx="84" cy="38" r="10" fill="none" stroke="#22c7e0" strokeWidth="2.2" />
+                      <line x1="90" y1="48" x2="95" y2="58" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" />
                       <g className="arms" stroke="#22c7e0" strokeWidth="2.2" strokeLinecap="round" fill="none">
-                        <line x1="95" y1="60" x2="60" y2="75" />
-                        <line x1="60" y1="75" x2="45" y2="55" />
-                        <line x1="95" y1="60" x2="125" y2="80" />
-                        <line x1="125" y1="80" x2="150" y2="60" />
-                        <line x1="45" y1="55" x2="150" y2="60" stroke="rgba(255,255,255,0.55)" strokeWidth="3" />
+                        {/* Lead arm driving through the zone */}
+                        <line x1="95" y1="58" x2="68" y2="88" />
+                        <line x1="68" y1="88" x2="42" y2="104" />
+                        {/* Trail arm stacked on handle */}
+                        <line x1="95" y1="58" x2="114" y2="74" />
+                        <line x1="114" y1="74" x2="42" y2="104" />
+                        {/* Baseball bat: knob → handle → barrel toward contact */}
+                        <line x1="52" y1="110" x2="64" y2="118" stroke="rgba(255,255,255,0.5)" strokeWidth="2.6" />
+                        <line
+                          x1="52"
+                          y1="110"
+                          x2="30"
+                          y2="94"
+                          stroke="rgba(255,255,255,0.72)"
+                          strokeWidth="3"
+                        />
+                        <line
+                          x1="30"
+                          y1="94"
+                          x2="8"
+                          y2="78"
+                          stroke="rgba(255,255,255,0.88)"
+                          strokeWidth="4.4"
+                        />
                         <g fill="#22c7e0" stroke="none">
-                          <circle cx="60" cy="75" r="3.5" />
-                          <circle cx="125" cy="80" r="3.5" />
-                          <circle cx="45" cy="55" r="3.5" />
-                          <circle cx="150" cy="60" r="3.5" />
+                          <circle cx="68" cy="88" r="3.5" />
+                          <circle cx="114" cy="74" r="3.5" />
+                          <circle cx="42" cy="104" r="3.8" />
+                          <circle cx="8" cy="78" r="2.8" fill="rgba(255,255,255,0.85)" />
                         </g>
                       </g>
                     </g>
                     <g className="angle">
                       <path
-                        d="M 92 110 A 30 30 0 0 1 115 118"
+                        d="M 92 110 A 30 30 0 0 1 118 120"
                         fill="none"
                         stroke="#f5a623"
                         strokeWidth="1.5"
                         strokeDasharray="3 2"
                       />
-                      <text x="120" y="122" fontSize="9" fill="#f5a623" fontFamily="-apple-system,sans-serif">
+                      <text x="122" y="124" fontSize="9" fill="#f5a623" fontFamily="-apple-system,sans-serif">
                         38°
                       </text>
                     </g>
