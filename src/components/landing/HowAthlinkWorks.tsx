@@ -28,9 +28,9 @@ type HowAthlinkWorksProps = {
 };
 
 /**
- * Role-specific How it works — athlete and coach each own one detailed section
- * on their LP (`/for-athletes`, `/for-coaches`). HQ uses HowItWorksFork only;
- * do not duplicate this block on `/` or a third `/how-it-works` page.
+ * Detailed How it works steps.
+ * Marketplace HQ `/` shows the athlete loop; role LPs may reuse with audience="coach".
+ * Coach path is offered via the section link — avoid a second pick-side pitch on HQ.
  */
 export function HowAthlinkWorks({
   audience = "athlete",

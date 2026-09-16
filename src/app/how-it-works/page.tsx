@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
 
-/**
- * Legacy URL — athlete/coach How it works details live on role LPs only.
- * Avoid a third duplicated marketing page.
- */
+/** Legacy URL — detailed How it works lives on marketplace HQ. */
 export default function HowItWorksRedirectPage() {
-  redirect("/for-athletes");
+  redirect("/");
 }

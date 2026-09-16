@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
-import { HowItWorksFork } from "@/components/landing/HowAthlinkWorks";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
@@ -167,8 +167,8 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        {/* HQ only: one role fork — detailed steps on /for-athletes and /for-coaches */}
-        <HowItWorksFork id="how-it-works" />
+        {/* Market HQ — detailed athlete steps; coach path via section link */}
+        <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
 
         {/* Continuity CTA — not a second athlete/coach pitch; join path is /get-started */}
         <section className="border-t border-white/10 bg-black py-14">

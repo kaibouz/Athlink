@@ -16,8 +16,8 @@ export const MARKET_TO_PLATFORM = {
   /** Role marketing LPs */
   forAthletes: "/for-athletes",
   forCoaches: "/for-coaches",
-  /** Legacy alias — detailed how lives on role LPs; `/how-it-works` redirects here. */
-  howItWorks: "/for-athletes",
+  /** Legacy alias — detailed how lives on market HQ; `/how-it-works` redirects here. */
+  howItWorks: "/",
   /** Role onboarding wizards */
   joinAthlete: "/join/athlete",
   joinCoach: "/join/coach",
