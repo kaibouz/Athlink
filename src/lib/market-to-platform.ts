@@ -30,6 +30,8 @@ export const MARKET_TO_PLATFORM = {
   athleteHome: "/home",
   coachHome: "/coach/dashboard",
   adminHome: "/admin",
+  /** Free vs Pro comparison + demo plan switcher */
+  pricing: "/pricing",
 } as const;
 
 export type MarketToPlatformPath =

@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Booking, User, UserRole } from "@/types";
+import type { Booking, PlatformPlanId, User, UserRole } from "@/types";
 import { demoBookings } from "@/lib/data";
 
 /** Which backend answered for the current user. "clerk" = Clerk session. */
@@ -30,6 +30,8 @@ interface AuthState {
   signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
   switchRole: (role: UserRole) => void;
+  /** Demo / MVP plan switcher — cookie when API is up, local user.plan otherwise. */
+  setPlan: (plan: PlatformPlanId) => Promise<boolean>;
   addBooking: (booking: Omit<Booking, "id" | "createdAt" | "status">) => Promise<Booking>;
   updateBookingStatus: (id: string, status: Booking["status"]) => Promise<void>;
 }
@@ -288,6 +290,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, [authSource]);
 
+  const setPlan = useCallback(
+    async (plan: PlatformPlanId) => {
+      if (apiEnabled) {
+        try {
+          const res = await fetch("/api/me/plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ plan }),
+          });
+          if (res.ok) {
+            const data = (await res.json()) as { user: User };
+            setUser(data.user);
+            return true;
+          }
+        } catch {
+          /* fall through to local demo */
+        }
+      }
+      // Local demo / offline — persist via localStorage effect when apiEnabled is false.
+      setUser((prev) => (prev ? { ...prev, plan } : prev));
+      return true;
+    },
+    [apiEnabled],
+  );
+
   const addBooking = useCallback(
     async (input: Omit<Booking, "id" | "createdAt" | "status">) => {
       if (apiEnabled && user) {
@@ -364,6 +392,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signup,
       logout,
       switchRole,
+      setPlan,
       addBooking,
       updateBookingStatus,
     }),
@@ -379,6 +408,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signup,
       logout,
       switchRole,
+      setPlan,
       addBooking,
       updateBookingStatus,
     ],

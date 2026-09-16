@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAthleteLandingAnim } from "@/components/athlete/useAthleteLandingAnim";
 import { useLocale } from "@/lib/i18n/provider";
 import type { MessageKey } from "@/lib/i18n/messages";
+import { ATHLETE_PRO } from "@/lib/platform-plans";
 import "./athlete-landing.css";
 
 /**
@@ -480,7 +481,8 @@ export function AthleteLandingBelow() {
               <span className="ah-plan-badge">{t("ahb_plan_popular")}</span>
               <h4>{t("ahb_plan_pro_name")}</h4>
               <div className="ah-price">
-                $29<span> {t("ahb_plan_pro_period")}</span>
+                ${ATHLETE_PRO.priceUsdMonthly}
+                <span> {t("ahb_plan_pro_period")}</span>
               </div>
               <div className="ah-desc">{t("ahb_plan_pro_desc")}</div>
               <ul>

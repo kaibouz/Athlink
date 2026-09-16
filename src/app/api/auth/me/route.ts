@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-server";
 import { getClerkSessionUser } from "@/lib/clerk-auth-server";
 import { listBookingsForUser } from "@/lib/server/data";
+import { withResolvedPlan } from "@/lib/server/plan";
 import type { Booking, User } from "@/types";
 
 const EMPTY = { user: null, bookings: [] as Booking[], authSource: null };
@@ -32,6 +33,8 @@ export async function GET() {
   }
 
   if (!user) return NextResponse.json(EMPTY);
+
+  user = await withResolvedPlan(user);
 
   let bookings: Booking[] = [];
   if (process.env.DATABASE_URL) {

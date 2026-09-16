@@ -11,7 +11,7 @@ Launch → Choose your side → role home → primary loops (Find a coach / Cale
 |-------|------|----------------|
 | **Marketing HQ** | Brand + **one** Get Started | `/` |
 | **Role fork + LPs** | Choose athlete / coach → story → register | `/get-started`, `/for-athletes`, `/for-coaches` |
-| **Platform** | Same screens as the mobile concept | `/search`, `/home`, `/coach/*`, `/messages`, `/sns`, `/progress` |
+| **Platform** | Same screens as the mobile concept | `/search`, `/home`, `/coach/*`, `/messages`, `/sns`, `/progress`, `/pricing`, `/me` |
 
 Canonical path helpers: [`src/lib/market-to-platform.ts`](../src/lib/market-to-platform.ts).
 
@@ -28,8 +28,16 @@ Guest
 Signed-in
   ├─ Athlete tabs: Home · Find coach · Feed · Messages · Progress
   ├─ Coach tabs:   Today · Calendar · Scout · Inbox · Earnings
+  ├─ Plans:        `/pricing` (Free vs Pro) · plan badge on `/me`
   └─ Never bounce back to HQ or /get-started
 ```
+
+Free vs Pro (canonical specs in `src/lib/platform-plans.ts`):
+
+- **Athlete Free** — book, message, feed, session history / report cards, 2 AI breakdowns / month
+- **Athlete Pro ($29)** — unlimited AI, week comparisons, full progress dashboard, scout visibility, priority booking
+- **Coach Free** — public profile, calendar/QR, messaging, My Athletes basic, session history
+- **Coach Pro ($49)** — search priority, earnings analytics, athlete AI suite, scout tools, featured badge
 
 `/app` is the post-auth router only. It must not render marketing chrome.
 

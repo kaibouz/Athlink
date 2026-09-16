@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, LogOut, UserRound } from "lucide-react";
+import { ChevronRight, LogOut, Sparkles, UserRound } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
@@ -13,6 +13,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import { PastRecordsPanel, UpcomingRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
+import { usePlatformPlan } from "@/components/plans/PlanComparison";
 import { signInHref } from "@/lib/market-to-platform";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 
@@ -35,6 +36,7 @@ export default function MyPage() {
   const { user, logout, bookings } = useAuth();
   const { t } = useLocale();
   const { coach, hasProfile } = useMyCoach();
+  const { isPro, busy, setPlan } = usePlatformPlan();
   const coachBookings = bookingsForCoach(bookings, coach?.id);
 
   if (!user) {
@@ -82,7 +84,25 @@ export default function MyPage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xl font-bold sm:text-2xl">{user.name}</p>
                 <p className="truncate text-sm text-white/80">{user.email}</p>
-                <Badge className="mt-2 border-white/20 bg-white/15 text-white">{roleLabel}</Badge>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <Badge className="border-white/20 bg-white/15 text-white">{roleLabel}</Badge>
+                  <Badge
+                    className={
+                      isPro
+                        ? "border-amber-200/40 bg-amber-400/90 text-brand-950"
+                        : "border-white/20 bg-white/15 text-white"
+                    }
+                  >
+                    {isPro ? (
+                      <span className="inline-flex items-center gap-1">
+                        <Sparkles className="h-3 w-3" />
+                        {t("plan_pro_name")}
+                      </span>
+                    ) : (
+                      t("plan_free_name")
+                    )}
+                  </Badge>
+                </div>
               </div>
             </div>
           </div>
@@ -117,6 +137,28 @@ export default function MyPage() {
                 </Link>
               </>
             )}
+          </div>
+        </CardBody>
+      </Card>
+
+      <Card className="mt-6">
+        <CardBody className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-bold text-brand-950">{t("plan_me_title")}</p>
+            <p className="mt-0.5 text-sm text-brand-600">
+              {isPro ? t("plan_me_pro_body") : t("plan_me_free_body")}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/pricing">
+              <Button variant="ghost">{t("plan_compare_link")}</Button>
+            </Link>
+            {!isPro ? (
+              <Button disabled={busy} onClick={() => void setPlan("pro")}>
+                <Sparkles className="h-4 w-4" />
+                {t("plan_upgrade_cta")}
+              </Button>
+            ) : null}
           </div>
         </CardBody>
       </Card>
