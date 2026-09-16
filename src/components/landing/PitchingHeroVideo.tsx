@@ -4,7 +4,7 @@ import { useLocale } from "@/lib/i18n/provider";
 
 /**
  * Looping baseball pitch video — visual band for marketing pages.
- * How-it-works fork on market HQ via `<HowItWorksFork />`; detailed steps on role LPs.
+ * Detailed How it works lives on market HQ via `<HowAthlinkWorks />`.
  */
 export function PitchingHeroVideo() {
   const { t } = useLocale();

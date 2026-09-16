@@ -1,4 +1,4 @@
-/* "How AthlinkPro works" — athletes homepage HTML + dark glass brand */
+/* "How AthlinkPro works" — market HQ blue glass (AthlinkPro blues / cyan) */
 
 .how-works {
   --how-accent-1: var(--mx-blue-1, #3b6ef6);
@@ -16,15 +16,26 @@
   scroll-margin-top: 96px;
 }
 
-/* Athlete path — clay accents from athlinkpro-athletes-homepage.html */
+/* Athlete + default stay on brand blues (no clay / amber LP styling) */
 .how-works[data-audience="athlete"] {
-  --how-accent-1: var(--athlete-clay-1, #e0a458);
-  --how-accent-2: var(--athlete-clay-2, #f2c94c);
-  --how-accent-soft: rgba(242, 201, 76, 0.12);
-  --how-accent-glow: rgba(224, 164, 88, 0.2);
-  --how-ic-bg: rgba(242, 201, 76, 0.1);
-  --how-ic-border: rgba(242, 201, 76, 0.22);
-  --how-ic-color: var(--athlete-clay-2, #f2c94c);
+  --how-accent-1: var(--mx-blue-1, #3b6ef6);
+  --how-accent-2: var(--mx-blue-2, #22c7e0);
+  --how-accent-soft: rgba(34, 199, 224, 0.14);
+  --how-accent-glow: rgba(59, 110, 246, 0.26);
+  --how-ic-bg: linear-gradient(135deg, rgba(59, 110, 246, 0.28), rgba(34, 199, 224, 0.16));
+  --how-ic-border: rgba(34, 199, 224, 0.28);
+  --how-ic-color: var(--mx-blue-2, #22c7e0);
+}
+
+/* Coach LP — slightly deeper blue, clay reserved off this section */
+.how-works[data-audience="coach"] {
+  --how-accent-1: var(--mx-blue-1, #3b6ef6);
+  --how-accent-2: #5b8cff;
+  --how-accent-soft: rgba(59, 110, 246, 0.16);
+  --how-accent-glow: rgba(59, 110, 246, 0.28);
+  --how-ic-bg: linear-gradient(135deg, rgba(59, 110, 246, 0.3), rgba(91, 140, 255, 0.14));
+  --how-ic-border: rgba(91, 140, 255, 0.28);
+  --how-ic-color: #9db7ff;
 }
 
 .how-works::before {
@@ -34,8 +45,8 @@
   pointer-events: none;
   background:
     radial-gradient(ellipse 70% 55% at 50% -10%, var(--how-accent-glow), transparent 60%),
-    radial-gradient(ellipse 40% 35% at 92% 28%, rgba(34, 199, 224, 0.08), transparent 55%),
-    radial-gradient(ellipse 35% 30% at 8% 70%, rgba(242, 201, 76, 0.06), transparent 50%);
+    radial-gradient(ellipse 40% 35% at 92% 28%, rgba(34, 199, 224, 0.1), transparent 55%),
+    radial-gradient(ellipse 35% 30% at 8% 70%, rgba(59, 110, 246, 0.08), transparent 50%);
 }
 
 .how-works::after {
@@ -280,13 +291,9 @@
   border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
-  color: #1a1206;
+  color: #fff;
   background: linear-gradient(90deg, var(--how-accent-1), var(--how-accent-2));
   transition: filter 0.18s ease, transform 0.18s ease;
-}
-
-.how-works[data-audience="coach"] .how-works-cta {
-  color: #fff;
 }
 
 .how-works-cta:hover {
@@ -348,72 +355,43 @@
   }
 }
 
-/* HQ fork — athlete vs coach, no duplicated step grids */
-.how-works-fork-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  max-width: 920px;
-  margin: 0 auto;
+/* Role LP pointer — thin teaser to HQ #how-it-works (no duplicated step grid) */
+.how-works-teaser {
+  padding: 56px 0;
 }
 
-.how-works-fork-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 28px 24px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+.how-works-teaser .how-works-head {
+  margin-bottom: 0;
+  max-width: 560px;
 }
 
-.how-works-fork-card:hover {
-  border-color: rgba(34, 199, 224, 0.45);
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-2px);
-}
-
-.how-works-fork-card h3 {
-  margin: 4px 0 0;
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.how-works-fork-card p {
-  margin: 0;
-  flex: 1;
-  font-size: 0.925rem;
-  line-height: 1.55;
-  color: rgba(245, 247, 250, 0.72);
-}
-
-.how-works-fork-cta {
-  margin-top: 12px;
+.how-works-teaser-cta {
+  margin-top: 22px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #22c7e0;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(90deg, var(--how-accent-1), var(--how-accent-2));
+  text-decoration: none;
+  transition: filter 0.18s ease, transform 0.18s ease;
 }
 
-.how-works-fork-athlete {
-  box-shadow: inset 0 0 0 1px rgba(34, 199, 224, 0.08);
+.how-works-teaser-cta:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
-.how-works-fork-coach {
-  box-shadow: inset 0 0 0 1px rgba(59, 110, 246, 0.12);
+@media (prefers-reduced-motion: reduce) {
+  .how-works-teaser-cta:hover {
+    transform: none;
+  }
 }
 
 @media (max-width: 720px) {
-  .how-works-fork-grid {
-    grid-template-columns: 1fr;
-  }
-
   .how-works-wrap {
     padding: 0 20px;
   }

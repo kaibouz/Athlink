@@ -9,7 +9,6 @@ import {
   MessageSquare,
   Radar,
   UserRound,
-  Users,
   Video,
 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
@@ -27,10 +26,9 @@ type HowAthlinkWorksProps = {
 };
 
 /**
- * Detailed How it works steps.
- * Marketplace HQ `/` shows the athlete loop (athletes homepage HTML);
- * role LPs may reuse with audience="coach".
- * Coach path is offered via the section link — avoid a second pick-side pitch on HQ.
+ * Detailed How it works steps — owned by marketplace HQ `/` (blue glass).
+ * Coach LP reuses with audience="coach". Athlete LP should use
+ * {@link HowItWorksHqTeaser} instead of duplicating this grid.
  */
 export function HowAthlinkWorks({
   audience = "athlete",
@@ -68,7 +66,7 @@ export function HowAthlinkWorks({
         },
       ]
     : [
-        /* Athletes homepage HTML: Book → Message → Share → Breakdown */
+        /* Book → Message → Share → Breakdown */
         {
           icon: CalendarDays,
           label: t("how_step_1_label"),
@@ -147,7 +145,11 @@ export function HowAthlinkWorks({
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href={isCoach ? MARKET_TO_PLATFORM.forAthletes : MARKET_TO_PLATFORM.forCoaches}
+              href={
+                isCoach
+                  ? `${MARKET_TO_PLATFORM.hq}#how-it-works`
+                  : `${MARKET_TO_PLATFORM.forCoaches}#how-it-works`
+              }
               className="how-works-cta-ghost"
             >
               {isCoach ? t("how_athlete_link") : t("how_coach_link")}
@@ -159,43 +161,26 @@ export function HowAthlinkWorks({
   );
 }
 
-/** HQ-only teaser: pick a side, then read the detailed loop on that LP. */
-export function HowItWorksFork({ id = "how-it-works" }: { id?: string }) {
+/**
+ * Thin role-LP pointer to the detailed blue How it works on market HQ.
+ * Keeps journey-rail `#how-it-works` without duplicating the step grid.
+ */
+export function HowItWorksHqTeaser({ id = "how-it-works" }: { id?: string }) {
   const { t } = useLocale();
 
   return (
-    <section id={id} className="how-works">
+    <section id={id} className="how-works how-works-teaser" data-audience="athlete">
       <div className="how-works-wrap">
         <div className="how-works-head">
-          <span className="how-works-eyebrow">{t("how_fork_eyebrow")}</span>
-          <h2>{t("how_fork_title")}</h2>
-          <p>{t("how_fork_sub")}</p>
-        </div>
-
-        <div className="how-works-fork-grid">
+          <span className="how-works-eyebrow">{t("how_teaser_eyebrow")}</span>
+          <h2>{t("how_teaser_title")}</h2>
+          <p>{t("how_teaser_sub")}</p>
           <Link
-            href={`${MARKET_TO_PLATFORM.forAthletes}#how-it-works`}
-            className="how-works-fork-card how-works-fork-athlete"
+            href={`${MARKET_TO_PLATFORM.hq}#how-it-works`}
+            className="how-works-teaser-cta"
           >
-            <Users className="h-7 w-7" />
-            <h3>{t("how_fork_athlete_title")}</h3>
-            <p>{t("how_fork_athlete_body")}</p>
-            <span className="how-works-fork-cta">
-              {t("how_fork_athlete_cta")}
-              <ArrowRight className="h-4 w-4" />
-            </span>
-          </Link>
-          <Link
-            href={`${MARKET_TO_PLATFORM.forCoaches}#how-it-works`}
-            className="how-works-fork-card how-works-fork-coach"
-          >
-            <UserRound className="h-7 w-7" />
-            <h3>{t("how_fork_coach_title")}</h3>
-            <p>{t("how_fork_coach_body")}</p>
-            <span className="how-works-fork-cta">
-              {t("how_fork_coach_cta")}
-              <ArrowRight className="h-4 w-4" />
-            </span>
+            {t("how_teaser_cta")}
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

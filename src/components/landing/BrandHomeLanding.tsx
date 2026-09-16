@@ -167,7 +167,7 @@ export function BrandHomeLanding() {
 
         <PitchingHeroVideo />
 
-        {/* Market HQ — detailed athlete steps; coach path via section link */}
+        {/* Market HQ — detailed blue How it works (athlete loop); coach path via section link */}
         <HowAthlinkWorks audience="athlete" id="how-it-works" showCta />
 
         {/* Continuity CTA — not a second athlete/coach pitch; join path is /get-started */}

@@ -144,6 +144,11 @@ const en = {
   how_final_sub: "Free to start. Verified coaches across the South Bay. No credit card needed.",
   how_coach_link: "See how it works for coaches",
   how_athlete_link: "See how it works for athletes",
+  how_teaser_eyebrow: "How AthlinkPro works",
+  how_teaser_title: "Book. Message. Share. Break it down.",
+  how_teaser_sub:
+    "The full athlete loop lives on the AthlinkPro home page — open it for the step-by-step walkthrough.",
+  how_teaser_cta: "See how it works on home",
   how_fork_eyebrow: "How it works",
   how_fork_title: "Athlete or coach — pick a path",
   how_fork_sub:
@@ -1246,6 +1251,11 @@ const ja: Record<MessageKey, string> = {
   how_final_sub: "無料で開始。South Bay全域の認証コーチ。クレジットカード不要。",
   how_coach_link: "コーチ向けの使い方を見る",
   how_athlete_link: "選手向けの使い方を見る",
+  how_teaser_eyebrow: "AthlinkProの使い方",
+  how_teaser_title: "予約・メッセージ・共有・解析。",
+  how_teaser_sub:
+    "選手向けの詳しい流れはAthlinkProのホームにあります。ステップ解説はそちらで。",
+  how_teaser_cta: "ホームで使い方を見る",
   how_fork_eyebrow: "使い方",
   how_fork_title: "選手かコーチか — 道を選ぶ",
   how_fork_sub:
@@ -2339,6 +2349,11 @@ const es: Record<MessageKey, string> = {
   how_final_sub: "Gratis para empezar. Coaches verificados en South Bay. Sin tarjeta de crédito.",
   how_coach_link: "Ver cómo funciona para coaches",
   how_athlete_link: "Ver cómo funciona para atletas",
+  how_teaser_eyebrow: "Cómo funciona AthlinkPro",
+  how_teaser_title: "Reservar. Mensajear. Compartir. Analizar.",
+  how_teaser_sub:
+    "El recorrido completo para atletas está en la home de AthlinkPro — ábrela para el paso a paso.",
+  how_teaser_cta: "Ver cómo funciona en home",
   how_fork_eyebrow: "Cómo funciona",
   how_fork_title: "Atleta o coach — elige un camino",
   how_fork_sub:
