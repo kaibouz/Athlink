@@ -66,7 +66,7 @@ export function AthleteProgressScreen() {
   const reportCards = progress?.reportCards ?? [];
 
   return (
-    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-route-texture w-full px-4 py-6 sm:px-6 lg:px-8">
       <header className="mx-hdr">
         <div>
           <h1>{t("nav_progress")}</h1>

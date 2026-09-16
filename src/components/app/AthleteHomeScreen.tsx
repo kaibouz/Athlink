@@ -71,7 +71,7 @@ export function AthleteHomeScreen() {
   const heat = progress?.heatmap ?? [];
 
   return (
-    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-route-texture w-full px-4 py-6 sm:px-6 lg:px-8">
       {breakdown && (
         <Link href={`/breakdown/${breakdown.id}`} className="mx-toast mb-3 block">
           <span className="mx-toast-ic">
@@ -86,7 +86,7 @@ export function AthleteHomeScreen() {
         </Link>
       )}
 
-      <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0">
+      <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0 lg:max-w-sm">
         <Sparkles className="h-4 w-4" />
         Analyze a clip with AI
       </Link>
@@ -101,102 +101,108 @@ export function AthleteHomeScreen() {
         </div>
       </header>
 
-      {next ? (
-        <div className="mx-card mb-3">
-          <div className="mx-t">
-            Next session · {next.date === new Date().toISOString().slice(0, 10) ? "today" : formatDateJa(next.date, dateLocale)}
-          </div>
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-[0.95rem] font-bold">{next.coachName}</div>
-              <div className="mt-0.5 text-[0.75rem] text-[var(--mx-dimmer)]">
-                {next.format === "online" ? "Online" : "In person"} ·{" "}
-                {formatDateJa(next.date, dateLocale)} · {next.startTime}–{next.endTime}
-              </div>
-              <span className={`mx-pill mt-2 ${next.status === "confirmed" ? "mx-pill-green" : "mx-pill-amber"}`}>
-                {next.status === "confirmed" ? "Confirmed" : "Pending"}
-              </span>
-            </div>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link href="/messages" className="mx-btn mx-btn-ghost text-[0.75rem]">
-              <MessageSquare className="h-3.5 w-3.5" />
-              Message
-            </Link>
-            <Link href="/search" className="mx-btn mx-btn-ghost text-[0.75rem]">
-              <Navigation className="h-3.5 w-3.5" />
-              Directions
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <div className="mx-card mb-3">
-          <div className="mx-t">Next session</div>
-          <p className="text-sm text-[var(--mx-dim)]">{t("bookings_empty")}</p>
-          <Link href="/search" className="mx-btn mx-btn-accent mt-3 inline-flex">
-            {t("bookings_find")}
-          </Link>
-        </div>
-      )}
-
-      <div className="mx-stat-grid mb-3">
-        {headline.length > 0 ? (
-          headline.map((m) => (
-            <div key={m.metric} className="mx-card">
-              <div className="mx-t">{m.label}</div>
-              <div className="mx-big">
-                {m.latest} <DeltaTag metric={m} />
-              </div>
-              {m.unit ? (
-                <div className="mt-1 text-[0.65rem] text-[var(--mx-dimmer)]">{m.unit}</div>
-              ) : null}
-            </div>
-          ))
-        ) : (
-          <>
+      <div className="grid gap-3 lg:grid-cols-12 lg:items-start">
+        <div className="space-y-3 lg:col-span-7">
+          {next ? (
             <div className="mx-card">
-              <div className="mx-t">Exit velo</div>
-              <div className="mx-big">—</div>
+              <div className="mx-t">
+                Next session · {next.date === new Date().toISOString().slice(0, 10) ? "today" : formatDateJa(next.date, dateLocale)}
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-[0.95rem] font-bold">{next.coachName}</div>
+                  <div className="mt-0.5 text-[0.75rem] text-[var(--mx-dimmer)]">
+                    {next.format === "online" ? "Online" : "In person"} ·{" "}
+                    {formatDateJa(next.date, dateLocale)} · {next.startTime}–{next.endTime}
+                  </div>
+                  <span className={`mx-pill mt-2 ${next.status === "confirmed" ? "mx-pill-green" : "mx-pill-amber"}`}>
+                    {next.status === "confirmed" ? "Confirmed" : "Pending"}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link href="/messages" className="mx-btn mx-btn-ghost text-[0.75rem]">
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Message
+                </Link>
+                <Link href="/search" className="mx-btn mx-btn-ghost text-[0.75rem]">
+                  <Navigation className="h-3.5 w-3.5" />
+                  Directions
+                </Link>
+              </div>
             </div>
+          ) : (
             <div className="mx-card">
-              <div className="mx-t">Bat speed</div>
-              <div className="mx-big">—</div>
+              <div className="mx-t">Next session</div>
+              <p className="text-sm text-[var(--mx-dim)]">{t("bookings_empty")}</p>
+              <Link href="/search" className="mx-btn mx-btn-accent mt-3 inline-flex">
+                {t("bookings_find")}
+              </Link>
             </div>
-          </>
-        )}
-      </div>
+          )}
 
-      {coachNote && (
-        <div className="mx-card mb-3">
-          <div className="mx-t">Coach says</div>
-          <p className="text-sm leading-relaxed text-[var(--mx-text)]">“{coachNote.body}”</p>
-          <div className="mt-2 text-[0.7rem] text-[var(--mx-dimmer)]">
-            Report card · {coachNote.coachName} · {formatDateJa(coachNote.createdAt.slice(0, 10), dateLocale)}
+          {coachNote && (
+            <div className="mx-card">
+              <div className="mx-t">Coach says</div>
+              <p className="text-sm leading-relaxed text-[var(--mx-text)]">“{coachNote.body}”</p>
+              <div className="mt-2 text-[0.7rem] text-[var(--mx-dimmer)]">
+                Report card · {coachNote.coachName} · {formatDateJa(coachNote.createdAt.slice(0, 10), dateLocale)}
+              </div>
+            </div>
+          )}
+
+          <div className="mx-card">
+            <div className="mx-t">Last 7 weeks</div>
+            <div className="mx-heat" aria-hidden>
+              {heat.map((cell) => (
+                <i key={cell.date} className={cell.level === 0 ? undefined : `l${Math.min(3, cell.level)}`} />
+              ))}
+            </div>
+            <div className="mt-1 flex justify-between text-[0.65rem] text-[var(--mx-dimmer)]">
+              <span>7 weeks ago</span>
+              <span>This week</span>
+            </div>
           </div>
         </div>
-      )}
 
-      <div className="mx-card">
-        <div className="mx-t">Last 7 weeks</div>
-        <div className="mx-heat" aria-hidden>
-          {heat.map((cell) => (
-            <i key={cell.date} className={cell.level === 0 ? undefined : `l${Math.min(3, cell.level)}`} />
-          ))}
-        </div>
-        <div className="mt-1 flex justify-between text-[0.65rem] text-[var(--mx-dimmer)]">
-          <span>7 weeks ago</span>
-          <span>This week</span>
-        </div>
-      </div>
+        <div className="space-y-3 lg:col-span-5">
+          <div className="mx-stat-grid">
+            {headline.length > 0 ? (
+              headline.map((m) => (
+                <div key={m.metric} className="mx-card">
+                  <div className="mx-t">{m.label}</div>
+                  <div className="mx-big">
+                    {m.latest} <DeltaTag metric={m} />
+                  </div>
+                  {m.unit ? (
+                    <div className="mt-1 text-[0.65rem] text-[var(--mx-dimmer)]">{m.unit}</div>
+                  ) : null}
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="mx-card">
+                  <div className="mx-t">Exit velo</div>
+                  <div className="mx-big">—</div>
+                </div>
+                <div className="mx-card">
+                  <div className="mx-t">Bat speed</div>
+                  <div className="mx-big">—</div>
+                </div>
+              </>
+            )}
+          </div>
 
-      <div className="mt-4 flex gap-2">
-        <Link href="/bookings" className="mx-btn mx-btn-ghost flex-1 text-[0.75rem]">
-          <MapPin className="h-3.5 w-3.5" />
-          All bookings
-        </Link>
-        <Link href="/progress" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
-          Progress
-        </Link>
+          <div className="flex gap-2">
+            <Link href="/bookings" className="mx-btn mx-btn-ghost flex-1 text-[0.75rem]">
+              <MapPin className="h-3.5 w-3.5" />
+              All bookings
+            </Link>
+            <Link href="/progress" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
+              Progress
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
