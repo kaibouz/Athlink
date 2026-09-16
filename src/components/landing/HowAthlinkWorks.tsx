@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import {
+  Activity,
   ArrowRight,
-  BarChart3,
   CalendarDays,
   CircleDollarSign,
   MessageSquare,
   Radar,
-  Search,
   UserRound,
   Users,
   Video,
@@ -29,7 +28,8 @@ type HowAthlinkWorksProps = {
 
 /**
  * Detailed How it works steps.
- * Marketplace HQ `/` shows the athlete loop; role LPs may reuse with audience="coach".
+ * Marketplace HQ `/` shows the athlete loop (athletes homepage HTML);
+ * role LPs may reuse with audience="coach".
  * Coach path is offered via the section link — avoid a second pick-side pitch on HQ.
  */
 export function HowAthlinkWorks({
@@ -68,8 +68,9 @@ export function HowAthlinkWorks({
         },
       ]
     : [
+        /* Athletes homepage HTML: Book → Message → Share → Breakdown */
         {
-          icon: Search,
+          icon: CalendarDays,
           label: t("how_step_1_label"),
           title: t("how_step_1_title"),
           desc: t("how_step_1_desc"),
@@ -87,7 +88,7 @@ export function HowAthlinkWorks({
           desc: t("how_step_3_desc"),
         },
         {
-          icon: BarChart3,
+          icon: Activity,
           label: t("how_step_4_label"),
           title: t("how_step_4_title"),
           desc: t("how_step_4_desc"),
@@ -95,7 +96,11 @@ export function HowAthlinkWorks({
       ];
 
   return (
-    <section id={id} className="how-works">
+    <section
+      id={id}
+      className="how-works"
+      data-audience={audience}
+    >
       <div className="how-works-wrap">
         <div className="how-works-head">
           <span className="how-works-eyebrow">
@@ -105,22 +110,28 @@ export function HowAthlinkWorks({
           <p>{isCoach ? t("how_coach_sub") : t("how_sub")}</p>
         </div>
 
-        <div className="how-works-grid">
+        <div className="how-works-grid" role="list">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <article key={step.label} className="how-step">
+              <article
+                key={step.label}
+                className="how-step"
+                role="listitem"
+                style={{ ["--how-step-i" as string]: index }}
+              >
                 <div className="how-step-top">
-                  <span className="how-step-ic">
-                    <Icon className="h-5 w-5" />
+                  <span className="how-step-ic" aria-hidden>
+                    <Icon className="h-5 w-5" strokeWidth={1.8} />
                   </span>
                   <span className="how-step-num" aria-hidden>
-                    {index + 1}
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
                 <div className="how-step-label">{step.label}</div>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
+                <span className="how-step-glow" aria-hidden />
               </article>
             );
           })}

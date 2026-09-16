@@ -118,8 +118,9 @@ const en = {
   how_nav_link: "How it works",
   how_eyebrow: "How AthlinkPro works",
   how_title: "How AthlinkPro Works for Athletes",
-  how_sub: "Getting started takes less than 2 minutes.",
-  how_step_1_label: "Step 1 — Find a coach",
+  how_sub:
+    "Book. Message. Share. Break it down — the whole training loop, in under 2 minutes to start.",
+  how_step_1_label: "Step 1 — Book",
   how_step_1_title: "Find and book a coach",
   how_step_1_desc:
     "Browse verified private coaches near you, compare availability and pricing, and book a session in a couple of taps.",
@@ -1218,9 +1219,10 @@ const ja: Record<MessageKey, string> = {
   land_how_3_desc: "レッスン予約・フィードバック・進捗管理。コーチはダッシュボードで完結。",
   how_nav_link: "使い方",
   how_eyebrow: "AthlinkProの使い方",
-  how_title: "選手のためのAthlinkPro活用ガイド",
-  how_sub: "はじめるのに2分もかかりません。",
-  how_step_1_label: "ステップ1 — コーチを探す",
+  how_title: "選手のためのAthlinkProの使い方",
+  how_sub:
+    "予約・メッセージ・共有・AI解析 — トレーニングのループが、はじめるのに2分もかかりません。",
+  how_step_1_label: "ステップ1 — 予約",
   how_step_1_title: "コーチを探して予約",
   how_step_1_desc:
     "近くの認証済みプライベートコーチを検索し、空き枠と料金を比較して、数タップでレッスンを予約。",
@@ -2311,8 +2313,9 @@ const es: Record<MessageKey, string> = {
   how_nav_link: "Cómo funciona",
   how_eyebrow: "Cómo funciona AthlinkPro",
   how_title: "Cómo funciona AthlinkPro para atletas",
-  how_sub: "Empezar toma menos de 2 minutos.",
-  how_step_1_label: "Paso 1 — Buscar coach",
+  how_sub:
+    "Reserva. Mensaje. Comparte. Analiza — todo el ciclo de entrenamiento, en menos de 2 minutos para empezar.",
+  how_step_1_label: "Paso 1 — Reservar",
   how_step_1_title: "Encuentra y reserva un coach",
   how_step_1_desc:
     "Explora coaches privados verificados cerca de ti, compara disponibilidad y precios, y reserva una sesión en un par de toques.",
