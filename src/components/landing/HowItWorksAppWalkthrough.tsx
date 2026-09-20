@@ -277,15 +277,15 @@ export function HowItWorksAppWalkthrough({
                     key={f.src}
                     src={f.src}
                     alt={i === index ? t(f.captionKey) : ""}
-                    width={640}
-                    height={1360}
+                    width={520}
+                    height={1105}
                     className={
                       i === index
                         ? "hiw-frame is-active"
                         : "hiw-frame"
                     }
                     priority={i === 0}
-                    sizes="(max-width: 640px) 260px, 300px"
+                    sizes="(max-width: 640px) 240px, 280px"
                   />
                 ))}
               </div>
