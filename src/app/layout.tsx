@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "@/lib/store";
 import { LocaleProvider } from "@/lib/i18n/provider";
@@ -65,17 +66,13 @@ export default function RootLayout({
       className={`dark ${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`,
-          }}
-        />
-      </head>
       <body
         className="flex min-h-full flex-col app-page-bg-subtle font-sans text-foreground"
         suppressHydrationWarning
       >
+        <Script id="athlink-theme-init" strategy="beforeInteractive">
+          {`(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`}
+        </Script>
         <ClerkProvider afterSignOutUrl={MARKET_TO_PLATFORM.hq}>
           <ThemeProvider>
             <LocaleProvider>
