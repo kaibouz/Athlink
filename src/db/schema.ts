@@ -35,6 +35,10 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   role: userRoleEnum("role").notNull(),
   avatarUrl: text("avatar_url"),
+  /** active | suspended — suspended accounts cannot sign in, appear in search, or book. */
+  status: text("status").notNull().default("active"),
+  statusReason: text("status_reason"),
+  statusChangedAt: timestamp("status_changed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

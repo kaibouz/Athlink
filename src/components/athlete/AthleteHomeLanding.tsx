@@ -45,7 +45,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
       {!bodyOnly && (
         <header className="ah-site">
           <div className="ah-wrap ah-in">
-            <AthlinkProLogo href="/for-athletes" size="header" variant="monogram" tone="onGradient" priority />
+            <AthlinkProLogo href="/for-athletes" size="header" variant="lockup" tone="onGradient" priority />
             <nav className="ah-links">
               <Link className="ah-hide-m" href="#features">
                 Features

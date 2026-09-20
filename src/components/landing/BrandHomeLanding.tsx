@@ -82,7 +82,7 @@ export function BrandHomeLanding() {
               <AthlinkProLogo
                 href="/"
                 size="header"
-                variant="monogram"
+                variant="lockup"
                 tone="onGradient"
                 priority
               />
@@ -113,11 +113,11 @@ export function BrandHomeLanding() {
             <h1 className="land-fade land-fade-delay-1 land-logo-reveal mx-auto mt-6 flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/brand/athlinkpro-logo-transparent.png"
+                src="/brand/athlinkpro-lockup.png"
                 alt="AthlinkPro"
-                width={1154}
-                height={895}
-                className="h-auto w-[min(100%,22rem)] object-contain sm:w-[min(100%,28rem)]"
+                width={1203}
+                height={944}
+                className="h-auto w-[min(100%,22rem)] object-contain sm:w-[min(100%,30rem)]"
                 fetchPriority="high"
               />
             </h1>

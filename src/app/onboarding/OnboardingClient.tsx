@@ -198,8 +198,46 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
     return profile.id;
   }
 
-  async function saveAthleteOnboarding() {
+  async function saveAthleteOnboarding(): Promise<boolean> {
     const goals = goalSuggestions.filter((g) => draft.selectedGoals.includes(g.metric));
+
+    // Save the registration profile to the database so it shows up in admin.
+    // 503 DATABASE_NOT_CONFIGURED = pure demo mode, where nothing is persisted.
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/athletes/me", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          school: draft.school,
+          classYear: draft.classYear,
+          height: draft.height,
+          weight: draft.weight,
+          position: draft.position,
+          batsThrows: draft.batsThrows,
+          location: draft.athleteLocation,
+          bio: draft.athleteBio,
+          lookingForCoach: draft.lookingForCoach,
+          openToScouts: draft.openToScouts,
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        if (data.error !== "DATABASE_NOT_CONFIGURED") {
+          setError(t("onboard_error_save"));
+          return false;
+        }
+      } else {
+        trackEvent("athlete_register_complete", { role: "athlete" });
+      }
+    } catch {
+      setError(t("onboard_error_save"));
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+
     try {
       if (goals.length > 0) {
         await fetch("/api/me/goals", {
@@ -221,8 +259,9 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
         });
       }
     } catch {
-      /* best-effort: onboarding continues even if the write fails */
+      /* best-effort: goals / guardian invite must not block registration */
     }
+    return true;
   }
 
   async function goNext() {
@@ -289,7 +328,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       }
       if (draft.role === "athlete") {
         ensureAthleteProfile();
-        await saveAthleteOnboarding();
+        const ok = await saveAthleteOnboarding();
+        if (!ok) return;
       }
       setStep("social");
       return;

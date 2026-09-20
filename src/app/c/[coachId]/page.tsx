@@ -1,9 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, QrCode, Zap } from "lucide-react";
-import { coaches } from "@/lib/data";
+import type { CoachProfile } from "@/types";
 import { BookingForm } from "@/components/coaches/BookingForm";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
@@ -19,7 +19,42 @@ export default function QuickBookPage({
 }) {
   const { coachId } = use(params);
   const { t } = useLocale();
-  const coach = coaches.find((c) => c.id === coachId) ?? coaches[0];
+  // Load the real coach (registered coaches live in the database, not in sample data).
+  const [coach, setCoach] = useState<CoachProfile | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "missing">("loading");
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch(`/api/coaches/${encodeURIComponent(coachId)}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("not found");
+        return (await res.json()) as { coach: CoachProfile };
+      })
+      .then((data) => {
+        if (cancelled) return;
+        setCoach(data.coach);
+        setState("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setState("missing");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [coachId]);
+
+  if (state !== "ready" || !coach) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center text-brand-500 sm:px-6">
+        <p>{state === "loading" ? "Loading…" : "This coach page is not available."}</p>
+        {state === "missing" && (
+          <Link href="/search" className="mt-4 inline-block text-sm font-semibold text-brand-600 hover:text-brand-800">
+            {t("nav_find")}
+          </Link>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-lg px-4 py-8 sm:px-6">

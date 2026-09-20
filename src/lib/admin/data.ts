@@ -5,10 +5,11 @@ import {
   adminAuditLog,
   athleteProfiles,
   bookings,
-  coachApplications,
   coachProfiles,
   featureFlags,
   messageThreads,
+  parentLinks,
+  sessions,
   users,
 } from "@/db/schema";
 
@@ -19,7 +20,7 @@ export async function getAdminOverview() {
       sessions: { booked: 0, completed: 0, cancelled: 0, pending: 0 },
       users: { total: 0, coaches: 0, athletes: 0, executives: 0 },
       alertsOpen: 0,
-      applicationsPending: 0,
+      suspended: 0,
     };
   }
 
@@ -39,7 +40,7 @@ export async function getAdminOverview() {
     [bookingCancelled],
     [bookingPending],
     [alertsOpen],
-    [appsPending],
+    [suspendedCount],
   ] = await Promise.all([
     db.select({ n: count() }).from(users),
     db.select({ n: count() }).from(coachProfiles),
@@ -58,10 +59,7 @@ export async function getAdminOverview() {
     db.select({ n: count() }).from(bookings).where(eq(bookings.status, "cancelled")),
     db.select({ n: count() }).from(bookings).where(eq(bookings.status, "pending")),
     db.select({ n: count() }).from(adminAlerts).where(eq(adminAlerts.resolved, false)),
-    db
-      .select({ n: count() })
-      .from(coachApplications)
-      .where(eq(coachApplications.status, "pending")),
+    db.select({ n: count() }).from(users).where(eq(users.status, "suspended")),
   ]);
 
   return {
@@ -84,7 +82,7 @@ export async function getAdminOverview() {
       executives: executiveCount?.n ?? 0,
     },
     alertsOpen: alertsOpen?.n ?? 0,
-    applicationsPending: appsPending?.n ?? 0,
+    suspended: suspendedCount?.n ?? 0,
   };
 }
 
@@ -94,15 +92,6 @@ export async function listAdminAlerts(limit = 10) {
     .select()
     .from(adminAlerts)
     .orderBy(desc(adminAlerts.createdAt))
-    .limit(limit);
-}
-
-export async function listCoachApplications(limit = 50) {
-  if (!isDatabaseConfigured()) return [];
-  return getDb()
-    .select()
-    .from(coachApplications)
-    .orderBy(desc(coachApplications.submittedAt))
     .limit(limit);
 }
 
@@ -120,9 +109,12 @@ export async function listCoachesForAdmin(limit = 100) {
       pricePerHour: coachProfiles.pricePerHour,
       rating: coachProfiles.rating,
       reviewCount: coachProfiles.reviewCount,
+      sport: coachProfiles.sport,
       createdAt: coachProfiles.createdAt,
+      status: users.status,
     })
     .from(coachProfiles)
+    .innerJoin(users, eq(coachProfiles.userId, users.id))
     .orderBy(desc(coachProfiles.createdAt))
     .limit(limit);
 }
@@ -138,10 +130,15 @@ export async function listAthletesForAdmin(limit = 100) {
       position: athleteProfiles.position,
       location: athleteProfiles.location,
       classYear: athleteProfiles.classYear,
+      school: athleteProfiles.school,
       lookingForCoach: athleteProfiles.lookingForCoach,
+      openToScouts: athleteProfiles.openToScouts,
+      createdAt: users.createdAt,
+      status: users.status,
     })
     .from(athleteProfiles)
-    .orderBy(desc(athleteProfiles.id))
+    .innerJoin(users, eq(athleteProfiles.userId, users.id))
+    .orderBy(desc(users.createdAt))
     .limit(limit);
 }
 
@@ -224,4 +221,90 @@ export async function adminGlobalSearch(query: string) {
     .limit(8);
 
   return { users: userRows, bookings: bookingRows };
+}
+
+/** Everything an executive needs to review one registered member. */
+export async function getAdminUserDetail(userId: string) {
+  if (!isDatabaseConfigured()) return null;
+  const db = getDb();
+
+  const [user] = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      role: users.role,
+      status: users.status,
+      statusReason: users.statusReason,
+      statusChangedAt: users.statusChangedAt,
+      createdAt: users.createdAt,
+      signInMethod: sql<string>`case when ${users.clerkId} is null then 'password' else 'clerk' end`,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  if (!user) return null;
+
+  const [coach] = await db.select().from(coachProfiles).where(eq(coachProfiles.userId, userId)).limit(1);
+  const [athlete] = await db.select().from(athleteProfiles).where(eq(athleteProfiles.userId, userId)).limit(1);
+  const guardians = await db.select().from(parentLinks).where(eq(parentLinks.athleteId, userId));
+
+  const bookingFilter = coach ? eq(bookings.coachId, coach.id) : eq(bookings.athleteId, userId);
+  const [bookingCount] = await db.select({ n: count() }).from(bookings).where(bookingFilter);
+  const recentBookings = await db
+    .select({
+      id: bookings.id,
+      date: bookings.date,
+      startTime: bookings.startTime,
+      coachName: bookings.coachName,
+      athleteName: bookings.athleteName,
+      price: bookings.price,
+      status: bookings.status,
+    })
+    .from(bookings)
+    .where(bookingFilter)
+    .orderBy(desc(bookings.createdAt))
+    .limit(5);
+
+  return {
+    user,
+    coach: coach ?? null,
+    athlete: athlete ?? null,
+    guardians,
+    bookings: { total: bookingCount?.n ?? 0, recent: recentBookings },
+  };
+}
+
+/**
+ * Suspend / resume a member. Suspended accounts cannot sign in, disappear from
+ * search, and cannot be booked. Executives can never be suspended here.
+ */
+export async function setUserStatus(input: {
+  userId: string;
+  adminId: string;
+  status: "active" | "suspended";
+  reason?: string;
+}): Promise<"ok" | "not_found" | "forbidden"> {
+  if (input.userId === input.adminId) return "forbidden";
+  const db = getDb();
+  const [target] = await db.select({ id: users.id, role: users.role }).from(users).where(eq(users.id, input.userId)).limit(1);
+  if (!target) return "not_found";
+  if (target.role === "executive") return "forbidden";
+
+  const now = new Date();
+  await db
+    .update(users)
+    .set({
+      status: input.status,
+      statusReason: input.status === "suspended" ? input.reason?.trim() || null : null,
+      statusChangedAt: now,
+      updatedAt: now,
+    })
+    .where(eq(users.id, input.userId));
+
+  if (input.status === "suspended") {
+    // End every existing cookie session immediately.
+    await db.delete(sessions).where(eq(sessions.userId, input.userId));
+  }
+  return "ok";
 }

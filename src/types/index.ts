@@ -14,6 +14,8 @@ export interface User {
   email: string;
   role: UserRole;
   avatarUrl?: string;
+  /** Account state. Suspended accounts are treated as signed out. */
+  status?: "active" | "suspended";
   /** Resolved Free/Pro tier. Defaults to free when omitted. */
   plan?: PlatformPlanId;
 }

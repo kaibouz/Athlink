@@ -84,7 +84,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="app-page-bg flex min-h-full flex-1 flex-col">
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
-          <AthlinkProLogo href="/" size="header" variant="monogram" tone="onGradient" priority />
+          <AthlinkProLogo href="/" size="header" variant="lockup" tone="onGradient" priority />
           <div className="flex items-center gap-1.5">
             <ClerkNavAuth loginLabel={t("nav_login")} compact />
             <MarketingThemeToggle />
@@ -118,7 +118,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <AthlinkProLogo
               href={user?.role === "coach" ? MARKET_TO_PLATFORM.coachHome : MARKET_TO_PLATFORM.athleteHome}
               size="header"
-              variant="monogram"
+              variant="lockup"
               tone="onGradient"
             />
             <div className="flex items-center gap-1">

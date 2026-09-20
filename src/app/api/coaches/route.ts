@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { createCoachProfile, listCoaches } from "@/lib/server/data";
 import { getNextSlots } from "@/lib/server/athlete";
 import type { RegisterCoachInput } from "@/lib/server/data";
 
 export async function GET() {
-  const coaches = await listCoaches();
-  const nextSlots = await getNextSlots(coaches.map((c) => c.id));
-  return NextResponse.json({ coaches, nextSlots });
+  try {
+    const coaches = await listCoaches();
+    const nextSlots = await getNextSlots(coaches.map((c) => c.id));
+    return NextResponse.json({ coaches, nextSlots });
+  } catch {
+    return NextResponse.json({ coaches: [], nextSlots: {}, error: "DATABASE_UNAVAILABLE" }, { status: 503 });
+  }
 }
 
 export async function POST(req: Request) {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

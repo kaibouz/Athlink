@@ -21,8 +21,6 @@ import {
   getCoachById as getStaticCoachById,
   getReviewsByCoach as getStaticReviewsByCoach,
   getSlotsByCoach as getStaticSlotsByCoach,
-  reviews as staticReviews,
-  timeSlots as staticTimeSlots,
 } from "@/lib/data";
 import type {
   AthletePublicProfile,
@@ -105,44 +103,44 @@ function mapTimeSlot(row: typeof timeSlots.$inferSelect): TimeSlot {
   };
 }
 
+/**
+ * Sample data is used ONLY when no database is configured (pure demo mode).
+ * When DATABASE_URL is set the database is the source of truth: an empty table
+ * means an empty marketplace, and a connection error surfaces as an error
+ * instead of silently showing sample coaches.
+ */
 export async function listCoaches(): Promise<CoachProfile[]> {
   if (!isDatabaseConfigured()) return staticCoaches;
-  try {
-    const rows = await getDb().select().from(coachProfiles);
-    return rows.length > 0 ? rows.map(mapCoach) : staticCoaches;
-  } catch {
-    return staticCoaches;
-  }
+  const rows = await getDb()
+    .select({ coach: coachProfiles })
+    .from(coachProfiles)
+    .innerJoin(users, eq(coachProfiles.userId, users.id))
+    .where(eq(users.status, "active"))
+    .orderBy(desc(coachProfiles.createdAt));
+  return rows.map((r) => mapCoach(r.coach));
 }
 
 export async function getCoachById(id: string): Promise<CoachProfile | undefined> {
   if (!isDatabaseConfigured()) return getStaticCoachById(id);
-  try {
-    const [row] = await getDb().select().from(coachProfiles).where(eq(coachProfiles.id, id)).limit(1);
-    return row ? mapCoach(row) : getStaticCoachById(id);
-  } catch {
-    return getStaticCoachById(id);
-  }
+  const [row] = await getDb()
+    .select({ coach: coachProfiles })
+    .from(coachProfiles)
+    .innerJoin(users, eq(coachProfiles.userId, users.id))
+    .where(and(eq(coachProfiles.id, id), eq(users.status, "active")))
+    .limit(1);
+  return row ? mapCoach(row.coach) : undefined;
 }
 
 export async function getReviewsByCoach(coachId: string): Promise<Review[]> {
   if (!isDatabaseConfigured()) return getStaticReviewsByCoach(coachId);
-  try {
-    const rows = await getDb().select().from(reviews).where(eq(reviews.coachId, coachId));
-    return rows.length > 0 ? rows.map(mapReview) : getStaticReviewsByCoach(coachId);
-  } catch {
-    return getStaticReviewsByCoach(coachId);
-  }
+  const rows = await getDb().select().from(reviews).where(eq(reviews.coachId, coachId));
+  return rows.map(mapReview);
 }
 
 export async function getSlotsByCoach(coachId: string): Promise<TimeSlot[]> {
   if (!isDatabaseConfigured()) return getStaticSlotsByCoach(coachId);
-  try {
-    const rows = await getDb().select().from(timeSlots).where(eq(timeSlots.coachId, coachId));
-    return rows.length > 0 ? rows.map(mapTimeSlot) : getStaticSlotsByCoach(coachId);
-  } catch {
-    return getStaticSlotsByCoach(coachId);
-  }
+  const rows = await getDb().select().from(timeSlots).where(eq(timeSlots.coachId, coachId));
+  return rows.map(mapTimeSlot);
 }
 
 export async function listBookingsForUser(userId: string, role: string): Promise<Booking[]> {
@@ -153,25 +151,19 @@ export async function listBookingsForUser(userId: string, role: string): Promise
     return demoBookings.filter((b) => b.athleteId === userId || b.athleteId === "u-athlete-1");
   }
 
-  try {
-    const db = getDb();
-    const rows =
-      role === "coach"
-        ? await db
-            .select({ booking: bookings })
-            .from(bookings)
-            .innerJoin(coachProfiles, eq(bookings.coachId, coachProfiles.id))
-            .where(eq(coachProfiles.userId, userId))
-        : await db.select().from(bookings).where(eq(bookings.athleteId, userId));
+  const db = getDb();
+  const rows =
+    role === "coach"
+      ? await db
+          .select({ booking: bookings })
+          .from(bookings)
+          .innerJoin(coachProfiles, eq(bookings.coachId, coachProfiles.id))
+          .where(eq(coachProfiles.userId, userId))
+      : await db.select().from(bookings).where(eq(bookings.athleteId, userId));
 
-    const mapped =
-      role === "coach"
-        ? rows.map((r) => mapBooking((r as { booking: typeof bookings.$inferSelect }).booking))
-        : (rows as (typeof bookings.$inferSelect)[]).map(mapBooking);
-    return mapped;
-  } catch {
-    return demoBookings;
-  }
+  return role === "coach"
+    ? rows.map((r) => mapBooking((r as { booking: typeof bookings.$inferSelect }).booking))
+    : (rows as (typeof bookings.$inferSelect)[]).map(mapBooking);
 }
 
 export async function createBooking(
@@ -191,26 +183,26 @@ export async function createBooking(
   };
 
   if (isDatabaseConfigured()) {
-    try {
-      await getDb().insert(bookings).values({
-        id,
-        coachId: input.coachId,
-        coachName: input.coachName,
-        athleteId,
-        athleteName,
-        date: input.date,
-        startTime: input.startTime,
-        endTime: input.endTime,
-        format: input.format,
-        packageType: input.packageType,
-        price: input.price,
-        status: "confirmed",
-        note: input.note,
-        createdAt,
-      });
-    } catch {
-      /* fall through — return in-memory booking */
-    }
+    const coach = await getCoachById(input.coachId);
+    if (!coach) throw new Error("COACH_UNAVAILABLE");
+    // A failed insert must surface: returning an unsaved "confirmed" booking would
+    // tell the athlete they are booked when nothing reached the database.
+    await getDb().insert(bookings).values({
+      id,
+      coachId: input.coachId,
+      coachName: input.coachName,
+      athleteId,
+      athleteName,
+      date: input.date,
+      startTime: input.startTime,
+      endTime: input.endTime,
+      format: input.format,
+      packageType: input.packageType,
+      price: input.price,
+      status: "confirmed",
+      note: input.note,
+      createdAt,
+    });
   }
 
   return booking;
@@ -419,6 +411,8 @@ export async function listUsersForAdmin(limit = 100) {
       email: users.email,
       name: users.name,
       role: users.role,
+      status: users.status,
+      statusReason: users.statusReason,
       createdAt: users.createdAt,
     })
     .from(users)

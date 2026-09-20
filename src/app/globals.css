@@ -697,7 +697,7 @@ body {
   animation: site-entry-mark-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .site-entry-logo {
-  width: min(72vw, 17rem);
+  width: min(78vw, 22rem);
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 12px 40px rgba(34, 199, 224, 0.25));
@@ -1314,11 +1314,12 @@ body {
 }
 .landing-hero-black {
   background-color: #000 !important;
-  background-image:
-    var(--app-gradient-glow-top),
-    var(--app-gradient-glow-right),
-    var(--app-gradient-glow-left),
-    linear-gradient(180deg, #000 0%, #01060f 45%, #061533 100%) !important;
+  /* Pure black hero: no blue glows / navy gradient behind the logo */
+  background-image: none !important;
+}
+/* Hide the blue wind-wash sheets so the hero stays true black */
+.landing-hero-black .landing-hero-wash {
+  display: none;
 }
 .land-logo-reveal {
   animation: land-logo-reveal 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
