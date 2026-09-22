@@ -340,7 +340,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
         const profileId = ensureAthleteProfile();
         if (profileId && draft.postCaption.trim()) {
           const name = user.name || draft.name;
-          addPost({
+          void addPost({
             athleteId: profileId,
             athleteName: name,
             school: draft.school.trim(),
@@ -354,6 +354,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             videoUrl: DEMO_VIDEOS[0]!,
             posterUrl:
               "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
+          }).catch(() => {
+            /* onboarding continues even if feed publish fails */
           });
         }
       }

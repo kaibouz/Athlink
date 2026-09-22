@@ -42,3 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .clerk/
+
+# Member-uploaded SNS media (local MVP)
+/public/uploads/
