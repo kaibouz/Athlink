@@ -102,10 +102,10 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
           <div className="site-entry-mark">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/athlinkpro-logo-transparent.png"
-              alt=""
-              width={1154}
-              height={895}
+              src="/brand/athlinkpro-lockup.png"
+              alt="AthlinkPro"
+              width={1203}
+              height={944}
               className="site-entry-logo"
             />
             <p className="site-entry-tag">{t("hero_tagline")}</p>

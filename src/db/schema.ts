@@ -29,10 +29,16 @@ export const socialPostTypeEnum = pgEnum("social_post_type", [
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
+  /** Clerk user id for public members. NULL for admin/executive rows, which stay password-only. */
+  clerkId: text("clerk_id").unique(),
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   role: userRoleEnum("role").notNull(),
   avatarUrl: text("avatar_url"),
+  /** active | suspended | deleted — only active accounts can sign in, appear in search, or book. */
+  status: text("status").notNull().default("active"),
+  statusReason: text("status_reason"),
+  statusChangedAt: timestamp("status_changed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "@/lib/store";
 import { LocaleProvider } from "@/lib/i18n/provider";
@@ -13,6 +14,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
+import { ClerkAuthBridge } from "@/components/auth/ClerkAuthBridge";
+import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -62,21 +66,19 @@ export default function RootLayout({
       className={`dark ${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`,
-          }}
-        />
-      </head>
       <body
         className="flex min-h-full flex-col app-page-bg-subtle font-sans text-foreground"
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <Script id="athlink-theme-init" strategy="beforeInteractive">
+          {`(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`}
+        </Script>
+        <ClerkProvider afterSignOutUrl={MARKET_TO_PLATFORM.hq}>
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <ClerkAuthBridge />
+                <ReturningUserSync />
                 <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>

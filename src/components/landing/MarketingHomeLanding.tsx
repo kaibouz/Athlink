@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 /**
  * Athlete marketing homepage after gateway click:
@@ -94,7 +95,7 @@ export function MarketingHomeLanding() {
                 <AthlinkProLogo
                   href="/for-athletes"
                   size="header"
-                  variant="monogram"
+                  variant="lockup"
                   tone="onGradient"
                   priority
                 />
@@ -120,11 +121,11 @@ export function MarketingHomeLanding() {
             <h1 className="land-fade land-fade-delay-1 land-logo-reveal mx-auto mt-5 flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/brand/athlinkpro-logo-transparent.png"
+                src="/brand/athlinkpro-lockup.png"
                 alt="AthlinkPro"
-                width={1154}
-                height={895}
-                className="h-auto w-[min(100%,20rem)] object-contain sm:w-[min(100%,26rem)]"
+                width={1203}
+                height={944}
+                className="h-auto w-[min(100%,22rem)] object-contain sm:w-[min(100%,30rem)]"
                 fetchPriority="high"
               />
             </h1>
@@ -135,7 +136,7 @@ export function MarketingHomeLanding() {
                 {t("join_athlete_body")}
               </p>
               <div className="land-fade land-fade-delay-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-                <a href="#how-it-works" className="group">
+                <Link href={`${MARKET_TO_PLATFORM.hq}#how-it-works`} className="group">
                   <Button
                     size="lg"
                     variant="ghost"
@@ -144,7 +145,7 @@ export function MarketingHomeLanding() {
                     {t("journey_step_how")}
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
-                </a>
+                </Link>
                 <Link href="/search" className="group">
                   <Button
                     size="lg"

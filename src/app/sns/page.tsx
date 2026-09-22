@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Plus, Radar, Search } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useSocial } from "@/lib/social-store";
@@ -18,18 +19,39 @@ import { cn } from "@/lib/utils";
 type SnsTab = "timeline" | "scout";
 
 /** X-style SNS + scout discovery */
-export default function SnsPage() {
+function SnsContent() {
   const { t } = useLocale();
   const { user } = useAuth();
-  const { posts, profiles } = useSocial();
+  const { posts, profiles, apiEnabled, refresh } = useSocial();
+  const searchParams = useSearchParams();
+  const postedId = searchParams.get("posted");
   const [tab, setTab] = useState<SnsTab>("timeline");
   const [q, setQ] = useState("");
   const [type, setType] = useState<"" | SocialPostType>("");
   const [scoutOpenOnly, setScoutOpenOnly] = useState(true);
   const [position, setPosition] = useState("");
-  const [feedMode, setFeedMode] = useState<"reel" | "list">("reel");
+  const [feedMode, setFeedMode] = useState<"reel" | "list">("list");
+  const [showPostedBanner, setShowPostedBanner] = useState(Boolean(postedId));
 
   const isCoach = user?.role === "coach";
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!postedId) return;
+    setShowPostedBanner(true);
+    setFeedMode("list");
+    setTab("timeline");
+    const tmr = window.setTimeout(() => {
+      document.getElementById(`post-${postedId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 250);
+    return () => window.clearTimeout(tmr);
+  }, [postedId]);
 
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
@@ -79,14 +101,21 @@ export default function SnsPage() {
               {isCoach ? t("sns_sub_coach") : t("sns_sub")}
             </p>
           </div>
-          {user?.role !== "coach" && (
-            <Link href="/feed/compose">
-              <Button size="sm">
-                <Plus className="h-4 w-4" />
-                {t("sns_post")}
-              </Button>
-            </Link>
-          )}
+          <div className="flex items-center gap-2">
+            {apiEnabled ? (
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[0.65rem] font-bold tracking-wide text-emerald-700 uppercase">
+                Live
+              </span>
+            ) : null}
+            {user?.role !== "coach" && (
+              <Link href="/feed/compose">
+                <Button size="sm">
+                  <Plus className="h-4 w-4" />
+                  {t("sns_post")}
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-2">
@@ -199,6 +228,18 @@ export default function SnsPage() {
 
       {tab === "timeline" ? (
         <div>
+          {showPostedBanner && postedId ? (
+            <div className="flex items-center justify-between gap-3 border-b border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+              <span>{t("social_posted_ok")}</span>
+              <button
+                type="button"
+                className="text-xs font-bold uppercase tracking-wide text-emerald-700 hover:underline"
+                onClick={() => setShowPostedBanner(false)}
+              >
+                OK
+              </button>
+            </div>
+          ) : null}
           <div className="flex items-center gap-2 border-b border-[color:var(--mx-border)] px-4 py-2">
             <div className="inline-flex overflow-hidden rounded-full border border-[color:var(--mx-border-strong)] text-xs font-semibold">
               {(
@@ -230,7 +271,7 @@ export default function SnsPage() {
           </div>
 
           {feedMode === "reel" ? (
-            <FeedViewer posts={filteredPosts} />
+            <FeedViewer posts={filteredPosts} highlightId={postedId} />
           ) : (
             <div className="divide-y divide-brand-100">
               {filteredPosts.length === 0 ? (
@@ -239,7 +280,16 @@ export default function SnsPage() {
                 </div>
               ) : (
                 filteredPosts.map((post) => (
-                  <PostCard key={post.id} post={post} variant="timeline" />
+                  <div
+                    key={post.id}
+                    id={`post-${post.id}`}
+                    className={cn(
+                      postedId === post.id &&
+                        "bg-emerald-50/80 ring-2 ring-inset ring-emerald-400",
+                    )}
+                  >
+                    <PostCard post={post} variant="timeline" />
+                  </div>
                 ))
               )}
             </div>
@@ -313,5 +363,18 @@ export default function SnsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SnsPage() {
+  const { t } = useLocale();
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-app p-8 text-center text-[color:var(--mx-dim)]">{t("loading")}</div>
+      }
+    >
+      <SnsContent />
+    </Suspense>
   );
 }

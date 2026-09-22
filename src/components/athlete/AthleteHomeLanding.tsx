@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
-import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
+import { HowItWorksHqTeaser } from "@/components/landing/HowAthlinkWorks";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { AthleteLandingBelow } from "@/components/athlete/AthleteLandingBelow";
@@ -45,7 +45,7 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
       {!bodyOnly && (
         <header className="ah-site">
           <div className="ah-wrap ah-in">
-            <AthlinkProLogo href="/for-athletes" size="header" variant="monogram" tone="onGradient" priority />
+            <AthlinkProLogo href="/for-athletes" size="header" variant="lockup" tone="onGradient" priority />
             <nav className="ah-links">
               <Link className="ah-hide-m" href="#features">
                 Features
@@ -155,7 +155,8 @@ export function AthleteHomeLanding({ variant = "full" }: AthleteHomeLandingProps
         <PitchingHeroVideo />
       </div>
 
-      <HowAthlinkWorks showCta={false} />
+      {/* Detailed How it works lives on market HQ `/#how-it-works` */}
+      <HowItWorksHqTeaser id="how-it-works" />
 
       <AthleteLandingBelow />
 

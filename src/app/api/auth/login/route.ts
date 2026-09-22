@@ -18,6 +18,9 @@ export async function POST(req: Request) {
     if (err instanceof Error && err.message === "INVALID_CREDENTIALS") {
       return NextResponse.json({ error: "INVALID_CREDENTIALS" }, { status: 401 });
     }
+    if (err instanceof Error && err.message === "ACCOUNT_SUSPENDED") {
+      return NextResponse.json({ error: "ACCOUNT_SUSPENDED" }, { status: 403 });
+    }
     return NextResponse.json({ error: "LOGIN_FAILED" }, { status: 500 });
   }
 }

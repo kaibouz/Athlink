@@ -16,6 +16,9 @@ export async function hashPassword(password: string) {
 }
 
 export async function verifyPassword(password: string, hash: string) {
+  // Clerk-provisioned rows carry a placeholder instead of a digest; reject
+  // anything that is not a bcrypt hash before it reaches bcrypt.compare.
+  if (!/^\$2[aby]?\$/.test(hash)) return false;
   return bcrypt.compare(password, hash);
 }
 
@@ -32,6 +35,7 @@ export function toPublicUser(row: typeof users.$inferSelect): User {
     name: row.name,
     role: row.role,
     avatarUrl: row.avatarUrl ?? undefined,
+    status: row.status === "suspended" || row.status === "deleted" ? row.status : "active",
   };
 }
 
@@ -81,6 +85,13 @@ export async function getCurrentUser(): Promise<User | null> {
     .innerJoin(users, eq(sessions.userId, users.id))
     .where(eq(sessions.token, token))
     .limit(1);
+
+  if (result && result.user.status !== "active") {
+    // Suspended by an admin or self-deleted: drop the session and treat the visitor as signed out.
+    await db.delete(sessions).where(eq(sessions.token, token));
+    cookieStore.delete(SESSION_COOKIE);
+    return null;
+  }
 
   if (!result || result.expiresAt <= now) {
     if (token) {
@@ -136,6 +147,8 @@ export async function loginUser(email: string, password: string) {
 
   const valid = await verifyPassword(password, row.passwordHash);
   if (!valid) throw new Error("INVALID_CREDENTIALS");
+  if (row.status === "deleted") throw new Error("INVALID_CREDENTIALS");
+  if (row.status === "suspended") throw new Error("ACCOUNT_SUSPENDED");
 
   await createSession(row.id);
   return toPublicUser(row);

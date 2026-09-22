@@ -5,6 +5,7 @@ import {
   aiBreakdowns,
   athleteGoals,
   athleteMetrics,
+  athleteProfiles,
   bookings,
   coachFeedback,
   coachProfiles,
@@ -561,6 +562,68 @@ export async function saveOnboardingGoals(
   }));
   if (rows.length > 0) await db.insert(athleteGoals).values(rows);
   return rows.length;
+}
+
+export interface AthleteProfileInput {
+  school: string;
+  classYear: string;
+  height?: string;
+  weight?: string;
+  position: string;
+  batsThrows?: string;
+  location: string;
+  bio?: string;
+  lookingForCoach?: boolean;
+  openToScouts?: boolean;
+}
+
+/**
+ * Persist the athlete's registration profile (athlete_profiles), one row per user.
+ * Before this existed only the seed script created rows, so real athletes never
+ * appeared in the admin console.
+ */
+export async function upsertAthleteProfile(
+  user: User,
+  input: AthleteProfileInput,
+): Promise<{ id: string; created: boolean }> {
+  if (!isDatabaseConfigured()) throw new Error("DATABASE_NOT_CONFIGURED");
+  const db = getDb();
+  const fields = {
+    name: user.name,
+    email: user.email,
+    school: input.school.trim(),
+    classYear: input.classYear.trim(),
+    height: input.height?.trim() || "—",
+    weight: input.weight?.trim() || "—",
+    position: input.position.trim(),
+    batsThrows: input.batsThrows?.trim() || "R/R",
+    location: input.location.trim(),
+    bio: input.bio?.trim() ?? "",
+    lookingForCoach: Boolean(input.lookingForCoach),
+    openToScouts: Boolean(input.openToScouts),
+  };
+
+  const [existing] = await db
+    .select({ id: athleteProfiles.id })
+    .from(athleteProfiles)
+    .where(eq(athleteProfiles.userId, user.id))
+    .limit(1);
+  if (existing) {
+    await db.update(athleteProfiles).set(fields).where(eq(athleteProfiles.id, existing.id));
+    return { id: existing.id, created: false };
+  }
+
+  const id = `a-${randomBytes(6).toString("hex")}`;
+  await db.insert(athleteProfiles).values({
+    id,
+    userId: user.id,
+    ...fields,
+    avatarUrl:
+      user.avatarUrl ??
+      `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(user.name || user.email)}`,
+    seasonStats: { seasonLabel: `${input.classYear.trim()} season` },
+  });
+  return { id, created: true };
 }
 
 /** Invite a parent/guardian for a newly onboarded athlete (writes parent_links). */
