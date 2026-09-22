@@ -287,9 +287,13 @@ export async function setUserStatus(input: {
 }): Promise<"ok" | "not_found" | "forbidden"> {
   if (input.userId === input.adminId) return "forbidden";
   const db = getDb();
-  const [target] = await db.select({ id: users.id, role: users.role }).from(users).where(eq(users.id, input.userId)).limit(1);
+  const [target] = await db
+    .select({ id: users.id, role: users.role, status: users.status })
+    .from(users)
+    .where(eq(users.id, input.userId))
+    .limit(1);
   if (!target) return "not_found";
-  if (target.role === "executive") return "forbidden";
+  if (target.role === "executive" || target.status === "deleted") return "forbidden";
 
   const now = new Date();
   await db

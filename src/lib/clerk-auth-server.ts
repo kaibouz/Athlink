@@ -183,7 +183,7 @@ export async function getClerkSessionUser(): Promise<User | null> {
 
   try {
     const user = await reconcile(identity);
-    return user.status === "suspended" ? null : user;
+    return user.status === "suspended" || user.status === "deleted" ? null : user;
   } catch {
     return ephemeralUser(identity);
   }

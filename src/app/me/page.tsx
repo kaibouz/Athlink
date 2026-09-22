@@ -13,6 +13,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { PageContainer, PageHeader } from "@/components/layout/PageShell";
 import { PastRecordsPanel, UpcomingRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
+import { DeleteAccountSection } from "@/components/auth/DeleteAccountSection";
 import { usePlatformPlan } from "@/components/plans/PlanComparison";
 import { DemoPlanToggle } from "@/components/plans/DemoPlanToggle";
 import { isDemoPlanAccount } from "@/lib/demo-plan";
@@ -206,6 +207,7 @@ export default function MyPage() {
         <LogOut className="h-4 w-4" />
         {t("nav_logout")}
       </Button>
+      {user?.role !== "executive" ? <DeleteAccountSection /> : null}
     </PageContainer>
   );
 }

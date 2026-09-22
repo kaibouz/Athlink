@@ -10,7 +10,7 @@ type Detail = {
     email: string;
     name: string;
     role: string;
-    status: "active" | "suspended";
+    status: "active" | "suspended" | "deleted";
     statusReason: string | null;
     statusChangedAt: string | null;
     createdAt: string;
@@ -20,7 +20,7 @@ type Detail = {
     id: string;
     sport: string;
     city: string;
-    bio: string;
+    bio: { en?: string; ja?: string; es?: string } | string | null;
     specialties: string[] | null;
     pricePerHour: number;
     verified: boolean;
@@ -52,6 +52,13 @@ type Detail = {
 };
 
 export function StatusBadge({ status }: { status?: string | null }) {
+  if (status === "deleted") {
+    return (
+      <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs font-medium text-[var(--admin-text-dim)]">
+        Deleted
+      </span>
+    );
+  }
   const suspended = status === "suspended";
   return (
     <span
@@ -64,6 +71,12 @@ export function StatusBadge({ status }: { status?: string | null }) {
       {suspended ? "Suspended" : "Active"}
     </span>
   );
+}
+
+function bioText(bio: { en?: string; ja?: string; es?: string } | string | null | undefined): string {
+  if (!bio) return "";
+  if (typeof bio === "string") return bio;
+  return bio.en || bio.ja || bio.es || "";
 }
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
@@ -175,9 +188,9 @@ export function AdminMemberPanel({
                   <Row label="Rating" value={`${detail.coach.rating} (${detail.coach.reviewCount})`} />
                   <Row label="Verified badge" value={detail.coach.verified ? "Yes" : "No"} />
                 </dl>
-                {detail.coach.bio ? (
+                {bioText(detail.coach.bio) ? (
                   <p className="mt-3 whitespace-pre-wrap rounded-lg bg-white/[0.03] p-3 text-sm text-[var(--admin-text-dim)]">
-                    {detail.coach.bio}
+                    {bioText(detail.coach.bio)}
                   </p>
                 ) : null}
               </section>
@@ -214,7 +227,7 @@ export function AdminMemberPanel({
               </section>
             ) : null}
 
-            {u.role !== "executive" ? (
+            {u.role !== "executive" && u.status !== "deleted" ? (
               <section className="border-t border-[var(--admin-border)] pt-5">
                 {u.status === "suspended" ? (
                   <button type="button" disabled={busy} onClick={() => void act("resume")} className="admin-btn-primary w-full">
