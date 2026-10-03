@@ -67,7 +67,7 @@ export default function QuickBookPage({
       </Link>
 
       <div className="mt-4 overflow-hidden rounded-3xl border border-brand-100 bg-surface shadow-sm">
-        <div className="bg-gradient-to-r from-ink to-brand-600 px-5 py-5 text-white">
+        <div className="bg-gradient-to-r from-ink to-accent px-5 py-5 text-white">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-sky-200 uppercase">
             <QrCode className="h-3.5 w-3.5" />
             {t("qr_landing_badge")}

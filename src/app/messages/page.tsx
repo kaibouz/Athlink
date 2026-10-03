@@ -94,7 +94,7 @@ export default function MessagesPage() {
       <header className="mx-hdr">
         <div>
           <h1>{t("messages_title")}</h1>
-          <small>Threads · booking chips · clips</small>
+          <small>{t("px_threads_sub")}</small>
         </div>
       </header>
 
@@ -141,7 +141,7 @@ export default function MessagesPage() {
                   {user.role === "coach" ? activeThread.athleteName : activeThread.coachName}
                 </Link>
               </div>
-              <div className="flex flex-1 flex-col space-y-3 overflow-y-auto p-4">
+              <div className="mx-thread flex-1 overflow-y-auto p-4">
                 {threadMessages.map((m) => {
                   if (m.kind === "system") {
                     return (
@@ -152,14 +152,8 @@ export default function MessagesPage() {
                   }
                   const mine = m.senderId === user.id || m.senderNameKey === "you";
                   return (
-                    <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                      <div
-                        className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm ${
-                          mine
-                            ? "bg-[linear-gradient(90deg,var(--mx-blue-1),var(--mx-blue-2))] text-white"
-                            : "bg-[color:var(--mx-panel-2)] text-[color:var(--mx-text)]"
-                        }`}
-                      >
+                    <div key={m.id} className={mine ? "mx-msg mx-msg-me" : "mx-msg"}>
+                      <div>
                         {m.kind === "clip" && m.attachmentUrl && (
                           <div className="mb-1.5 overflow-hidden rounded-lg border border-white/15">
                             <video

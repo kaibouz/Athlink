@@ -2,8 +2,7 @@ import { randomBytes } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
-import { getClerkSessionUser } from "@/lib/clerk-auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 
 const MAX_BYTES = 40 * 1024 * 1024; // 40MB
 const ALLOWED = new Set([
@@ -15,25 +14,12 @@ const ALLOWED = new Set([
   "image/webp",
 ]);
 
-async function resolveAuthedUser() {
-  let user = null;
-  if (process.env.DATABASE_URL) {
-    try {
-      user = await getCurrentUser();
-    } catch {
-      user = null;
-    }
-  }
-  if (!user) user = await getClerkSessionUser();
-  return user;
-}
-
 /**
  * Store a member-uploaded clip/poster under public/uploads/sns/.
  * Returns a public URL usable in social_posts.video_url / poster_url.
  */
 export async function POST(req: Request) {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

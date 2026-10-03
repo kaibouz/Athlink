@@ -1,11 +1,12 @@
 "use client";
 
+import { addDaysToKey, todayKey } from "@/lib/dates";
 import Link from "next/link";
 import { CalendarDays, MessageSquare, QrCode, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
-import { formatDateJa, formatPrice } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
@@ -31,12 +32,16 @@ export function CoachTodayScreen() {
   const { t, locale } = useLocale();
   const { coach, loading: coachLoading, hasProfile } = useMyCoach();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayKey();
 
   const { data: rosterData } = useApi<{ students: StudentAthlete[] }>(
     user?.role === "coach" ? "/api/coach/students" : null,
   );
   const roster = rosterData?.students ?? [];
+
+  const { data: threadData } = useApi<{ threads: { unread?: number }[] }>(
+    user?.role === "coach" ? "/api/messages" : null,
+  );
 
   const coachBookings = coach ? bookingsForCoach(bookings, coach.id) : [];
   const todaysActive = coachBookings.filter(
@@ -48,6 +53,19 @@ export function CoachTodayScreen() {
     .reduce((s, b) => s + b.price, 0);
   const todayPending = runSheet.filter((b) => b.status === "pending");
   const todayPendingTotal = todayPending.reduce((s, b) => s + b.price, 0);
+
+  // Deck header reads "Wed, Sep 2 · 4 sessions · $310" and pairs a week-to-date
+  // earnings tile with unread messages.
+  const weekStart = (() => {
+    const dow = new Date(`${today}T00:00:00Z`).getUTCDay();
+    return addDaysToKey(today, -((dow + 6) % 7)); // Monday
+  })();
+  const weekEarnings = coachBookings
+    .filter(
+      (b) => b.date >= weekStart && (b.status === "confirmed" || b.status === "completed"),
+    )
+    .reduce((s, b) => s + b.price, 0);
+  const unreadCount = threadData?.threads?.reduce((s, th) => s + (th.unread ?? 0), 0) ?? 0;
 
   const firstBooking = runSheet[0];
   const firstStudent = firstBooking
@@ -83,7 +101,6 @@ export function CoachTodayScreen() {
     month: "short",
     day: "numeric",
   });
-  const first = (user?.name ?? coach.name).split(" ")[0];
   const athleteHref = firstStudent ? `/coach/students/${firstStudent.id}` : "/coach/students";
 
   return (
@@ -92,7 +109,8 @@ export function CoachTodayScreen() {
         <div>
           <h1>{t("dash_today_title")}</h1>
           <small>
-            {first} · {weekday}
+            {weekday} · {t("mx_sessions_count", { n: runSheet.length })} ·{" "}
+            {formatPrice(todayConfirmed + todayPendingTotal)}
           </small>
         </div>
         <div className="mx-avatar mx-avatar-coach" aria-hidden>
@@ -101,24 +119,30 @@ export function CoachTodayScreen() {
       </header>
 
       <div className="mx-stat-grid mb-3">
-        <div className="mx-card">
-          <div className="mx-t">Today · confirmed</div>
-          <div className="mx-big">{formatPrice(todayConfirmed)}</div>
+        <Link href="/coach/analytics" className="mx-card block">
+          <div className="mx-t">{t("mx_this_week")}</div>
+          <div className="mx-big">{formatPrice(weekEarnings)}</div>
           <div className="mt-1 text-[0.7rem] text-[color:var(--mx-dimmer)]">
-            {runSheet.filter((b) => b.status === "confirmed").length} sessions
+            {t("mx_today_pending")} · {formatPrice(todayPendingTotal)}
           </div>
-        </div>
-        <div className="mx-card">
-          <div className="mx-t">Today · pending</div>
-          <div className="mx-big text-[color:var(--mx-amber)]">{formatPrice(todayPendingTotal)}</div>
+        </Link>
+        <Link href="/messages" className="mx-card block">
+          <div className="mx-t">{t("mx_unread")}</div>
+          <div
+            className={
+              unreadCount > 0 ? "mx-big text-[color:var(--mx-blue-2)]" : "mx-big"
+            }
+          >
+            {unreadCount}
+          </div>
           <div className="mt-1 text-[0.7rem] text-[color:var(--mx-dimmer)]">
-            {todayPending.length} requests
+            {t("mx_requests_count", { n: todayPending.length })}
           </div>
-        </div>
+        </Link>
       </div>
 
       <div className="mx-card mb-3">
-        <div className="mx-t">{t("dash_today_runsheet")} · today</div>
+        <div className="mx-t">{t("dash_today_runsheet")} · {t("mx_today")}</div>
         {runSheet.length === 0 ? (
           <p className="text-sm text-[color:var(--mx-dim)]">{t("dash_today_no_sessions")}</p>
         ) : (
@@ -163,7 +187,7 @@ export function CoachTodayScreen() {
 
       {firstBooking ? (
         <div className="mx-card mb-3">
-          <div className="mx-t">Pre-session · {firstBooking.athleteName}</div>
+          <div className="mx-t">{t("mx_pre_session")} · {firstBooking.athleteName}</div>
           <p className="text-sm leading-relaxed text-[color:var(--mx-text)]">
             “{noteFor(firstBooking)}”
           </p>
@@ -179,7 +203,7 @@ export function CoachTodayScreen() {
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href="/messages" className="mx-btn mx-btn-ghost text-[0.75rem]">
               <MessageSquare className="h-3.5 w-3.5" />
-              Message
+              {t("mx_message")}
             </Link>
             {preBreakdown && (
               <Link
@@ -187,11 +211,11 @@ export function CoachTodayScreen() {
                 className="mx-btn mx-btn-ghost text-[0.75rem]"
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                Breakdown
+                {t("mx_breakdown")}
               </Link>
             )}
             <Link href={athleteHref} className="mx-btn mx-btn-accent text-[0.75rem]">
-              Open athlete
+              {t("mx_open_athlete")}
             </Link>
           </div>
         </div>

@@ -25,7 +25,7 @@ export function MetricBar({
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-brand-100">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700 transition-all"
+          className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>

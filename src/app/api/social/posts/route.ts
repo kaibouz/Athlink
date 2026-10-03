@@ -1,25 +1,11 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
-import { getClerkSessionUser } from "@/lib/clerk-auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import {
   createSocialPostForUser,
   isSocialPostType,
   listAthleteProfiles,
   listSocialPosts,
 } from "@/lib/server/social";
-
-async function resolveAuthedUser() {
-  let user = null;
-  if (process.env.DATABASE_URL) {
-    try {
-      user = await getCurrentUser();
-    } catch {
-      user = null;
-    }
-  }
-  if (!user) user = await getClerkSessionUser();
-  return user;
-}
 
 /** Public feed — demo seed + live member posts when DB is configured. */
 export async function GET() {
@@ -33,7 +19,7 @@ export async function GET() {
 
 /** Signed-in athlete publishes a clip to the training feed. */
 export async function POST(req: Request) {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

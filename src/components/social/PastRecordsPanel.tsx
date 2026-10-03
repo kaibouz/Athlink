@@ -1,5 +1,6 @@
 "use client";
 
+import { addDaysToKey, todayKey } from "@/lib/dates";
 import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, History, type LucideIcon } from "lucide-react";
 import { regionForAthlete, regionLessonCounts, type CaRegionId } from "@/lib/dashboard-analytics";
@@ -19,7 +20,7 @@ type RecordsMode = "past" | "upcoming";
 function filterBookings(bookings: Booking[], mode: RecordsMode) {
   if (mode === "upcoming") {
     return bookings
-      .filter((b) => b.status === "pending" || b.status === "confirmed")
+      .filter((b) => (b.status === "pending" || b.status === "confirmed") && b.date >= todayKey())
       .sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`));
   }
   return bookings
@@ -56,17 +57,19 @@ function LessonRecordsPanel({
 
   const demoRecords: LessonRecord[] = useMemo(() => {
     if (records) return records;
+    // Sample rows are placed relative to today so "upcoming" is never in the past.
+    const today = todayKey();
     if (mode === "upcoming") {
       return [
-        { date: "2026-07-31", title: "Sofia Reyes", note: "16:00 · pending", region: "oc" },
-        { date: "2026-08-02", title: "Ethan Park", note: "10:00 · confirmed", region: "la" },
-        { date: "2026-08-03", title: "Kenji Nakamura", note: "14:00 · pending", region: "sd" },
+        { date: addDaysToKey(today, 2), title: "Sofia Reyes", note: "16:00 · pending", region: "oc" },
+        { date: addDaysToKey(today, 4), title: "Ethan Park", note: "10:00 · confirmed", region: "la" },
+        { date: addDaysToKey(today, 5), title: "Kenji Nakamura", note: "14:00 · pending", region: "sd" },
       ];
     }
     return [
-      { date: "2026-07-20", title: t("records_sample_1"), region: "la" },
-      { date: "2026-07-10", title: t("records_sample_2"), region: "oc" },
-      { date: "2026-06-28", title: t("records_sample_3"), note: t("records_map_online") },
+      { date: addDaysToKey(today, -9), title: t("records_sample_1"), region: "la" },
+      { date: addDaysToKey(today, -19), title: t("records_sample_2"), region: "oc" },
+      { date: addDaysToKey(today, -31), title: t("records_sample_3"), note: t("records_map_online") },
     ];
   }, [records, mode, t]);
 
@@ -94,17 +97,17 @@ function LessonRecordsPanel({
     [allRecords, selectedKey],
   );
 
-  useEffect(() => {
+  // Reset the selection when the list changes mode (adjust state during render,
+  // not in an effect, so there's no extra paint with a stale selection).
+  const [resetFor, setResetFor] = useState(`${mode}|${regionHint ?? ""}`);
+  if (resetFor !== `${mode}|${regionHint ?? ""}`) {
+    setResetFor(`${mode}|${regionHint ?? ""}`);
     setSelectedKey(null);
     setSelectedRegion(regionHint ?? null);
-  }, [mode, regionHint]);
+  }
 
-  useEffect(() => {
-    if (!selectedKey && allRecords[0]) {
-      setSelectedKey(recordKey(allRecords[0]));
-      if (allRecords[0].region) setSelectedRegion(allRecords[0].region);
-    }
-  }, [allRecords, selectedKey]);
+  // With nothing picked, the first record's region is the one highlighted.
+  const activeRegion = selectedRegion ?? (selectedKey ? null : allRecords[0]?.region ?? null);
 
   function selectRecord(r: LessonRecord) {
     setSelectedKey(recordKey(r));
@@ -190,7 +193,7 @@ function LessonRecordsPanel({
               max={max}
               regionHint={regionHint}
               records={allRecords}
-              selectedRegion={selectedRegion}
+              selectedRegion={activeRegion}
               onRegionChange={setSelectedRegion}
               bookings={bookings}
             />

@@ -111,10 +111,12 @@ function SidebarChrome({
       match: (p) => p.startsWith("/coach/calendar"),
     },
     {
-      href: "/sns",
-      label: t("nav_scout"),
-      icon: Radar,
-      match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
+      // Deck coach tab bar is Today / Calendar / Athletes / Messages / Earnings —
+      // the roster belongs in the primary rail, not under Tools.
+      href: "/coach/students",
+      label: t("nav_athletes"),
+      icon: Users,
+      match: (p) => p.startsWith("/coach/students"),
     },
     {
       href: "/messages",
@@ -131,7 +133,7 @@ function SidebarChrome({
   ];
 
   const coachTools: NavItem[] = [
-    { href: "/coach/students", label: t("nav_athletes"), icon: Users },
+    { href: "/sns", label: t("nav_scout"), icon: Radar },
     { href: "/search", label: t("nav_book"), icon: Search },
     { href: "/coach/feedback", label: t("coach_nav_feedback"), icon: Send },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode },
@@ -298,7 +300,7 @@ function SidebarChrome({
                   alt=""
                   className={cn(
                     "h-7 w-7 shrink-0 rounded-full bg-brand-200 object-cover",
-                    onMyPage && "ring-2 ring-brand-400 ring-offset-1",
+                    onMyPage && "ring-2 ring-accent ring-offset-1",
                   )}
                 />
                 <div className="min-w-0 flex-1">

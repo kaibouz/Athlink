@@ -71,7 +71,7 @@ export default function MyPage() {
 
       <Card className="overflow-hidden">
         <CardBody className="p-0">
-          <div className="bg-gradient-to-br from-brand-600 to-brand-800 px-5 py-6 text-white sm:px-6">
+          <div className="bg-gradient-to-br from-accent to-brand-800 px-5 py-6 text-white sm:px-6">
             <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -83,7 +83,7 @@ export default function MyPage() {
                   "https://api.dicebear.com/9.x/avataaars/svg?seed=Athlete"
                 }
                 alt=""
-                className="h-16 w-16 shrink-0 rounded-2xl border-2 border-white/30 bg-brand-500 object-cover sm:h-20 sm:w-20"
+                className="h-16 w-16 shrink-0 rounded-2xl border-2 border-white/30 bg-accent object-cover sm:h-20 sm:w-20"
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xl font-bold sm:text-2xl">{user.name}</p>

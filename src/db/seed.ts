@@ -2,6 +2,7 @@
  * Seed the database with demo data from static lib files.
  * Run: npm run db:push && npm run db:seed
  */
+import { addDaysToKey, todayKey } from "@/lib/dates";
 import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { getDb } from "./index";
@@ -45,10 +46,7 @@ const DEMO_PASSWORD = "Athlink2026!";
 
 /** Date string N days from today (local midnight). Keeps demo slots/bookings always current. */
 function dayOffset(offset: number): string {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + offset);
-  return d.toISOString().slice(0, 10);
+  return addDaysToKey(todayKey(), offset);
 }
 
 const SLOT_TIMES: [string, string][] = [

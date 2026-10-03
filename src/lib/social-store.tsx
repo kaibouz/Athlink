@@ -12,6 +12,15 @@ import {
 import type { AthletePublicProfile, SocialPost } from "@/types";
 import { athleteProfiles, seedSocialPosts } from "@/lib/social-data";
 
+/**
+ * What a caller may hand to addPost. Only the clip itself is required: the API
+ * derives athlete identity from the session and owns the athlete_profiles row,
+ * so the identity fields are optional and used solely to render the offline
+ * demo post when the API is unreachable.
+ */
+export type NewSocialPost = Pick<SocialPost, "type" | "caption" | "videoUrl"> &
+  Partial<Omit<SocialPost, "id" | "createdAt" | "likes" | "type" | "caption" | "videoUrl">>;
+
 interface SocialState {
   posts: SocialPost[];
   profiles: AthletePublicProfile[];
@@ -19,9 +28,7 @@ interface SocialState {
   apiEnabled: boolean;
   hydrated: boolean;
   refresh: () => Promise<void>;
-  addPost: (
-    post: Omit<SocialPost, "id" | "createdAt" | "likes">,
-  ) => Promise<SocialPost>;
+  addPost: (post: NewSocialPost) => Promise<SocialPost>;
   updateProfile: (id: string, patch: Partial<AthletePublicProfile>) => void;
   createProfile: (
     input: Omit<AthletePublicProfile, "id" | "avatarUrl" | "seasonStats"> & {
@@ -110,7 +117,7 @@ export function SocialProvider({ children }: { children: ReactNode }) {
   }, [profiles, hydrated, apiEnabled]);
 
   const addPost = useCallback(
-    async (input: Omit<SocialPost, "id" | "createdAt" | "likes">) => {
+    async (input: NewSocialPost) => {
       try {
         const res = await fetch("/api/social/posts", {
           method: "POST",
@@ -146,6 +153,13 @@ export function SocialProvider({ children }: { children: ReactNode }) {
       }
 
       const post: SocialPost = {
+        athleteId: "",
+        athleteName: "",
+        school: "",
+        position: "",
+        classYear: "",
+        avatarUrl: "",
+        posterUrl: "",
         ...input,
         id: `p-${Date.now()}`,
         createdAt: new Date().toISOString(),

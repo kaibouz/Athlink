@@ -26,14 +26,12 @@ interface AuthState {
   refreshUser: () => Promise<User | null>;
   /** Lets the Clerk bridge hand the provider a signOut() without importing Clerk here. */
   registerClerkSignOut: (signOut: (() => Promise<void>) | null) => void;
-  login: (email: string, password: string, role: UserRole) => Promise<{ ok: boolean; error?: string }>;
-  signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
   switchRole: (role: UserRole) => void;
   /** Demo / MVP plan switcher — cookie when API is up, local user.plan otherwise. */
   setPlan: (plan: PlatformPlanId) => Promise<boolean>;
   addBooking: (booking: Omit<Booking, "id" | "createdAt" | "status">) => Promise<Booking>;
-  updateBookingStatus: (id: string, status: Booking["status"]) => Promise<void>;
+  updateBookingStatus: (id: string, status: Booking["status"]) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -42,14 +40,6 @@ const BOOKINGS_KEY = "athlink_bookings";
 
 function freshDemoBookings(): Booking[] {
   return demoBookings.map((b) => ({ ...b }));
-}
-
-function nameFromEmail(email: string) {
-  const local = email.split("@")[0]?.trim() || "Athlete";
-  return local
-    .replace(/[._-]+/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -139,99 +129,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     else localStorage.removeItem(BOOKINGS_KEY);
   }, [bookings, user, hydrated, apiEnabled]);
 
-  const login = useCallback(
-    async (email: string, password: string, role: UserRole) => {
-      try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ email, password }),
-        });
-        if (res.ok) {
-          const data = (await res.json()) as { user: User };
-          setUser(data.user);
-          setApiEnabled(true);
-          setAuthSource("session");
-          const meRes = await fetch("/api/auth/me", { credentials: "include" });
-          if (meRes.ok) {
-            const me = (await meRes.json()) as { bookings: Booking[] };
-            setBookings(me.bookings);
-          }
-          return { ok: true };
-        }
-        if (res.status === 503) {
-          setBookings(freshDemoBookings());
-          setUser({
-            id: role === "coach" ? "u-coach-1" : "u-athlete-1",
-            email,
-            name: nameFromEmail(email),
-            role,
-            avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-          });
-          return { ok: true };
-        }
-        return { ok: false, error: "INVALID_CREDENTIALS" };
-      } catch {
-        setBookings(freshDemoBookings());
-        setUser({
-          id: role === "coach" ? "u-coach-1" : "u-athlete-1",
-          email,
-          name: nameFromEmail(email),
-          role,
-          avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-        });
-        return { ok: true };
-      }
-    },
-    [],
-  );
-
-  const signup = useCallback(
-    async (email: string, password: string, name: string, role: UserRole) => {
-      try {
-        const res = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ email, password, name, role }),
-        });
-        if (res.ok) {
-          const data = (await res.json()) as { user: User };
-          setUser(data.user);
-          setBookings([]);
-          setApiEnabled(true);
-          setAuthSource("session");
-          return { ok: true };
-        }
-        if (res.status === 503) {
-          setBookings(freshDemoBookings());
-          setUser({
-            id: role === "coach" ? "u-coach-1" : "u-athlete-1",
-            email,
-            name,
-            role,
-            avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
-          });
-          return { ok: true };
-        }
-        const body = (await res.json()) as { error?: string };
-        return { ok: false, error: body.error ?? "SIGNUP_FAILED" };
-      } catch {
-        setBookings(freshDemoBookings());
-        setUser({
-          id: role === "coach" ? "u-coach-1" : "u-athlete-1",
-          email,
-          name,
-          role,
-          avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
-        });
-        return { ok: true };
-      }
-    },
-    [],
-  );
-
   const logout = useCallback(async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
@@ -282,11 +179,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           avatarUrl: `https://api.dicebear.com/9.x/avataaars/svg?seed=${role}`,
         };
       }
-      return {
-        ...prev,
-        id: role === "coach" ? "u-coach-1" : "u-athlete-1",
-        role,
-      };
+      // Never repoint a real account at a seeded demo id — that silently handed
+      // the member someone else's bookings, threads and students.
+      return { ...prev, role };
     });
   }, [authSource]);
 
@@ -319,21 +214,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const addBooking = useCallback(
     async (input: Omit<Booking, "id" | "createdAt" | "status">) => {
       if (apiEnabled && user) {
+        // With a live backend the server is the only source of truth: if it
+        // refuses (slot just taken, date passed) the athlete must see that,
+        // not a locally invented "confirmed" booking.
+        let res: Response;
         try {
-          const res = await fetch("/api/bookings", {
+          res = await fetch("/api/bookings", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify(input),
+            body: JSON.stringify({
+              coachId: input.coachId,
+              date: input.date,
+              startTime: input.startTime,
+              format: input.format,
+              packageType: input.packageType,
+              note: input.note,
+            }),
           });
-          if (res.ok) {
-            const data = (await res.json()) as { booking: Booking };
-            setBookings((prev) => [data.booking, ...prev]);
-            return data.booking;
-          }
         } catch {
-          /* fall through */
+          throw new Error("NETWORK");
         }
+        const data = (await res.json().catch(() => ({}))) as { booking?: Booking; error?: string };
+        if (!res.ok || !data.booking) throw new Error(data.error ?? "BOOKING_FAILED");
+        const created = data.booking;
+        setBookings((prev) => [created, ...prev]);
+        return created;
       }
 
       const booking: Booking = {
@@ -352,14 +258,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (id: string, status: Booking["status"]) => {
       if (apiEnabled) {
         try {
-          await fetch(`/api/bookings/${id}`, {
+          const res = await fetch(`/api/bookings/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({ status }),
           });
+          // Refused (not your booking, invalid step): leave the list as it is.
+          if (!res.ok) return false;
         } catch {
-          /* ignore */
+          return false;
         }
       }
 
@@ -375,6 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         return next;
       });
+      return true;
     },
     [apiEnabled],
   );
@@ -388,8 +297,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authSource,
       refreshUser,
       registerClerkSignOut,
-      login,
-      signup,
       logout,
       switchRole,
       setPlan,
@@ -404,8 +311,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authSource,
       refreshUser,
       registerClerkSignOut,
-      login,
-      signup,
       logout,
       switchRole,
       setPlan,

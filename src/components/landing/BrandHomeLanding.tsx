@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { HeroCoastline } from "@/components/landing/HeroCoastline";
+import { HowAthlinkWorks } from "@/components/landing/HowAthlinkWorks";
 import { HowItWorksAppWalkthrough } from "@/components/landing/HowItWorksAppWalkthrough";
 import { LandingSplash } from "@/components/landing/LandingSplash";
 import { PitchingHeroVideo } from "@/components/landing/PitchingHeroVideo";
+import { GetTheAppCta } from "@/components/landing/GetTheAppCta";
+import { RoleStartCta } from "@/components/landing/RoleStartCta";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
-import { Button } from "@/components/ui/Button";
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
 import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
@@ -90,6 +92,9 @@ export function BrandHomeLanding() {
                 <a href="#how-it-works" className="landing-nav-link hidden sm:inline-flex">
                   {t("how_nav_link")}
                 </a>
+                <a href="#how-it-works-coaches" className="landing-nav-link hidden lg:inline-flex">
+                  {t("how_nav_coaches")}
+                </a>
                 <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden sm:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
@@ -129,18 +134,9 @@ export function BrandHomeLanding() {
               {t("hq_lead")}
             </p>
 
-            {/* PDF flow: Launch → one Get Started → Choose your side */}
+            {/* Pick a side here — the next screen is Clerk, then the profile wizard */}
             <div className="land-fade land-fade-delay-3 mt-8 flex flex-col items-center gap-4">
-              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
-                <Button
-                  size="lg"
-                  variant="ghost"
-                  className="btn-premium h-12 min-w-52 rounded-xl px-7 sm:h-14"
-                >
-                  {t("hq_get_started")}
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </Link>
+              <RoleStartCta />
               <Link
                 href={MARKET_TO_PLATFORM.browse}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition hover:text-white"
@@ -165,12 +161,16 @@ export function BrandHomeLanding() {
           </div>
         </div>
 
+        {/* How AthlinkPro Works — athlete steps, then the coach cut below */}
+        <HowAthlinkWorks id="how-it-works" showCta={false} />
+        <HowAthlinkWorks audience="coach" id="how-it-works-coaches" showCta={false} />
+
         <PitchingHeroVideo />
 
-        {/* Market HQ — animated Athlete | Coach app walkthrough (concept screens) */}
-        <HowItWorksAppWalkthrough id="how-it-works" />
+        {/* Lower section — animated Athlete | Coach app walkthrough (concept screens) */}
+        <HowItWorksAppWalkthrough id="app-tour" />
 
-        {/* Continuity CTA — not a second athlete/coach pitch; join path is /get-started */}
+        {/* Continuity CTA — repeats the role choice at the end of the page */}
         <section className="border-t border-white/10 bg-black py-14">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="font-brand text-2xl tracking-[0.08em] text-brand-950 uppercase sm:text-3xl">
@@ -179,29 +179,9 @@ export function BrandHomeLanding() {
             <p className="mt-3 text-sm leading-relaxed text-brand-600 sm:text-base">
               {t("hq_platform_body")}
             </p>
-            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
-              <Link href={MARKET_TO_PLATFORM.getStarted} className="group">
-                <Button size="lg" variant="ghost" className="btn-premium">
-                  {t("hq_get_started")}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-              <Link
-                href={MARKET_TO_PLATFORM.browse}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition hover:text-white"
-              >
-                <Search className="h-3.5 w-3.5" />
-                {t("hq_browse_coaches")}
-              </Link>
-            </div>
-            <p className="mt-5">
-              <Link
-                href={signInHref()}
-                className="text-sm font-semibold text-brand-600 transition hover:text-white"
-              >
-                {t("nav_login")}
-              </Link>
-            </p>
+            {/* The page already offered the web funnel above; this closer sends
+                visitors to the native app instead of repeating it. */}
+            <GetTheAppCta className="mt-8" />
           </div>
         </section>
 
@@ -212,14 +192,14 @@ export function BrandHomeLanding() {
               <a href="#how-it-works" className="hover:text-white">
                 {t("how_nav_link")}
               </a>
-              <Link href={MARKET_TO_PLATFORM.forAthletes} className="hover:text-white">
-                {t("join_athlete_eyebrow")}
-              </Link>
-              <Link href={MARKET_TO_PLATFORM.forCoaches} className="hover:text-white">
-                {t("join_coach_eyebrow")}
-              </Link>
+              <a href="#how-it-works-coaches" className="hover:text-white">
+                {t("how_nav_coaches")}
+              </a>
               <Link href={MARKET_TO_PLATFORM.browse} className="hover:text-white">
                 {t("hq_browse_coaches")}
+              </Link>
+              <Link href={signInHref()} className="hover:text-white">
+                {t("nav_login")}
               </Link>
             </nav>
             <p className="text-xs tracking-[0.16em] text-brand-500 uppercase">

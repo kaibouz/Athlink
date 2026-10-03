@@ -39,6 +39,22 @@ export function useForceLightTheme() {
   }, [theme]);
 }
 
+/**
+ * Platform surfaces are dark-only, like the mobile app: the --mx-* design
+ * tokens have no light values, so a light page chrome around dark cards just
+ * reads as broken. The stored preference is untouched and restored on exit.
+ */
+export function useForceDarkTheme() {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    applyTheme("dark");
+    return () => {
+      applyTheme(theme);
+    };
+  }, [theme]);
+}
+
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used within ThemeProvider");

@@ -181,6 +181,8 @@ export const athleteProfiles = pgTable("athlete_profiles", {
   seasonStats: jsonb("season_stats").notNull(),
   lookingForCoach: boolean("looking_for_coach").notNull().default(false),
   openToScouts: boolean("open_to_scouts").notNull().default(false),
+  /** Skills the athlete is working on — drives coach matching (SPECIALTIES ids). */
+  focusAreas: jsonb("focus_areas").$type<string[]>(),
 });
 
 export const socialPosts = pgTable("social_posts", {
@@ -365,6 +367,50 @@ export const adminAlerts = pgTable("admin_alerts", {
   resolved: boolean("resolved").notNull().default(false),
   metadata: jsonb("metadata").$type<Record<string, unknown>>(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/**
+ * Evidence behind a coach's "Verified" badge.
+ *
+ * The badge is a promise to parents of minors, so it is derived from these
+ * rows rather than stored as a flag someone can toggle: a coach counts as
+ * verified only while every required check is `passed` and unexpired.
+ * Annual re-checks are the norm in this market, hence expiresAt.
+ */
+export const verificationTypeEnum = pgEnum("verification_type", [
+  "identity",
+  "criminal_record",
+  "sex_offender_registry",
+  "liability_insurance",
+  "safesport_training",
+  "credential",
+]);
+
+export const verificationStatusEnum = pgEnum("verification_status", [
+  "pending",
+  "passed",
+  "failed",
+  "expired",
+]);
+
+export const coachVerifications = pgTable("coach_verifications", {
+  id: text("id").primaryKey(),
+  coachId: text("coach_id")
+    .notNull()
+    .references(() => coachProfiles.id, { onDelete: "cascade" }),
+  type: verificationTypeEnum("type").notNull(),
+  status: verificationStatusEnum("status").notNull().default("pending"),
+  /** Who performed it — e.g. "Checkr", "U.S. Center for SafeSport", "manual". */
+  provider: text("provider"),
+  /** The provider's own record id, so a result can be re-opened in an audit. */
+  reference: text("reference"),
+  checkedAt: timestamp("checked_at", { withTimezone: true }),
+  /** Null = does not expire. Most checks are renewed every 12 months. */
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  notes: text("notes"),
+  recordedBy: text("recorded_by").references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 /** Coach applications — Jotform / manual intake queue */

@@ -9,7 +9,6 @@ import { isExecutiveEmail } from "@/lib/admin-auth";
 
 export const SESSION_COOKIE = "athlink_session";
 const SESSION_DAYS = 30;
-export const PUBLIC_SIGNUP_ROLES: UserRole[] = ["athlete", "coach", "parent"];
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 12);
@@ -102,41 +101,6 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   return toPublicUser(result.user);
-}
-
-export async function registerUser(input: {
-  email: string;
-  password: string;
-  name: string;
-  role: UserRole;
-}) {
-  if (!PUBLIC_SIGNUP_ROLES.includes(input.role)) {
-    throw new Error("ROLE_FORBIDDEN");
-  }
-
-  const db = getDb();
-  const email = input.email.trim().toLowerCase();
-  const [existing] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  if (existing) {
-    throw new Error("EMAIL_TAKEN");
-  }
-
-  const id = `u-${randomBytes(6).toString("hex")}`;
-  const passwordHash = await hashPassword(input.password);
-  const avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(input.name || email)}`;
-
-  await db.insert(users).values({
-    id,
-    email,
-    passwordHash,
-    name: input.name.trim(),
-    role: input.role,
-    avatarUrl,
-  });
-
-  await createSession(id);
-  const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
-  return toPublicUser(user);
 }
 
 export async function loginUser(email: string, password: string) {

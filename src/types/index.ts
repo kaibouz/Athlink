@@ -36,6 +36,21 @@ export interface CoachProfile {
   rating: number;
   reviewCount: number;
   verified: boolean;
+  /** Evidence behind the badge — derived, never stored as a flag. */
+  verification?: {
+    active: string[];
+    missing: string[];
+    expired: string[];
+    nextExpiry: string | null;
+    details: {
+      type: string;
+      required: boolean;
+      state: "active" | "expired" | "missing" | "pending" | "failed";
+      provider: string | null;
+      checkedAt: string | null;
+      expiresAt: string | null;
+    }[];
+  };
   formats: LessonFormat[];
   avatarUrl: string;
   coverGradient: string;

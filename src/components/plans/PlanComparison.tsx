@@ -149,7 +149,7 @@ export function PlanComparison({
             key={id}
             className={`rounded-2xl border p-5 ${
               id === "pro"
-                ? "border-brand-400/50 bg-brand-50/40 shadow-sm dark:bg-white/5"
+                ? "border-accent/50 bg-brand-50/40 shadow-sm dark:bg-white/5"
                 : "border-brand-100 bg-white/60 dark:border-white/10 dark:bg-white/5"
             }`}
           >
@@ -158,7 +158,7 @@ export function PlanComparison({
                 {t(id === "free" ? "plan_free_name" : "plan_pro_name")}
               </h3>
               {id === "pro" ? (
-                <span className="rounded-full bg-brand-600 px-2 py-0.5 text-[0.65rem] font-bold tracking-wide text-white uppercase">
+                <span className="rounded-full bg-accent px-2 py-0.5 text-[0.65rem] font-bold tracking-wide text-white uppercase">
                   {t("plan_popular")}
                 </span>
               ) : null}

@@ -121,13 +121,15 @@ export default function BookingsPage() {
                 <div className="mt-4 space-y-3">
                   <AddToCalendarButtons booking={b} compact />
                   <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => updateBookingStatus(b.id, "completed")}
-                    >
-                      {t("bookings_complete")}
-                    </Button>
+                    {user?.role === "coach" || user?.role === "executive" ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateBookingStatus(b.id, "completed")}
+                      >
+                        {t("bookings_complete")}
+                      </Button>
+                    ) : null}
                     <Button
                       variant="ghost"
                       size="sm"

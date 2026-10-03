@@ -9,10 +9,13 @@ const EMPTY = { user: null, bookings: [] as Booking[], authSource: null };
 
 /**
  * Two independent session systems answer here:
- *  1. athlink_session cookie + bcrypt (admin/executive, and legacy members)
- *  2. Clerk (canonical for public members)
- * The cookie wins when both are present so an executive browsing the platform
- * keeps their admin identity.
+ *  1. athlink_session cookie + bcrypt — executives only
+ *  2. Clerk — canonical for every public member
+ *
+ * The cookie only wins for executives, so an admin browsing the platform keeps
+ * their identity. A member holding a stale cookie from the retired password
+ * sign-up would otherwise keep resolving to that dead identity for the cookie's
+ * full 30 days, shadowing the Clerk account they just signed in with.
  */
 export async function GET() {
   let user: User | null = null;
@@ -20,8 +23,11 @@ export async function GET() {
 
   if (process.env.DATABASE_URL) {
     try {
-      user = await getCurrentUser();
-      if (user) authSource = "session";
+      const sessionUser = await getCurrentUser();
+      if (sessionUser?.role === "executive") {
+        user = sessionUser;
+        authSource = "session";
+      }
     } catch {
       user = null;
     }

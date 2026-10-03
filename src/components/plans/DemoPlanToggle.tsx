@@ -43,7 +43,7 @@ export function DemoPlanToggle({ className, dense }: { className?: string; dense
                 dense && "px-2.5 py-1 text-[0.7rem]",
                 active
                   ? id === "pro"
-                    ? "bg-brand-600 text-white dark:bg-[color:var(--mx-blue-2)] dark:text-black"
+                    ? "bg-accent text-white dark:bg-[color:var(--mx-blue-2)] dark:text-black"
                     : "bg-white text-brand-900 shadow-sm dark:bg-white/15 dark:text-white"
                   : "text-brand-500 hover:text-brand-800 dark:text-[var(--mx-dim)] dark:hover:text-white",
               )}

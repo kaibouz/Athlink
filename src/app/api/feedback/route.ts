@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { createFeedback, getFeedbackForCoach } from "@/lib/server/athlete";
 import { getCoachByUserId } from "@/lib/server/data";
 
 export async function GET() {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (!user || user.role !== "coach") {
     return NextResponse.json({ error: "COACH_ONLY" }, { status: 403 });
   }
@@ -17,7 +17,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (!user || user.role !== "coach") {
     return NextResponse.json({ error: "COACH_ONLY" }, { status: 403 });
   }

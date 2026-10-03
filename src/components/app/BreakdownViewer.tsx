@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, Cpu, Ghost, RefreshCw, Send, Sparkles, SquareActivity } from "lucide-react";
 import type { AiBreakdown } from "@/types";
 import { useAuth } from "@/lib/store";
+import { useLocale } from "@/lib/i18n/provider";
 
 /** Skeleton bones as pairs of joint indices (see athlete-data pose order). */
 const BONES: [number, number][] = [
@@ -58,6 +59,7 @@ function Skeleton({ joints, color, dashed }: { joints: number[][]; color: string
 export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useLocale();
   const [bd, setBd] = useState<AiBreakdown>(breakdown);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [showReference, setShowReference] = useState(true);
@@ -210,7 +212,7 @@ export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
         <div className="mx-card mb-3 flex items-center gap-3">
           <Sparkles className="h-4 w-4 text-[var(--mx-accent)]" />
           <div>
-            <b className="text-[0.85rem]">AI analysis in progress</b>
+            <b className="text-[0.85rem]">{t("px_ai_in_progress")}</b>
             <p className="text-[0.72rem] text-[var(--mx-dimmer)]">
               Your breakdown will appear here automatically once processing completes.
             </p>
@@ -219,19 +221,26 @@ export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
       ) : (
         <>
           <div className="mx-card mb-3">
-            <div className="mx-t">Key metrics</div>
-            <div className="flex flex-wrap gap-2">
+            <div className="mx-t">{t("mx_key_metrics")}</div>
+            {/* Deck lists these as rows (label left, value right), not pills —
+                the value is the point, and rows keep it scannable. */}
+            <div>
               {bd.metrics.map((m) => (
-                <span key={m.label} className="mx-pill mx-pill-accent inline-flex items-center gap-1">
-                  {m.label} {m.value}
-                  {m.delta ? <span className="text-[var(--mx-green)]">{m.delta}</span> : null}
-                </span>
+                <div key={m.label} className="mx-metric">
+                  <span>{m.label}</span>
+                  <span className="flex items-center gap-2">
+                    <b>{m.value}</b>
+                    {m.delta ? (
+                      <span className="text-[0.75rem] text-[var(--mx-green)]">{m.delta}</span>
+                    ) : null}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
 
           <div className="mx-card mb-3">
-            <div className="mx-t">Flags</div>
+            <div className="mx-t">{t("mx_flags")}</div>
             {bd.flags.map((f) => (
               <div key={f.label} className="mx-rank">
                 <span
@@ -247,7 +256,7 @@ export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
           </div>
 
           <div className="mx-card mb-3">
-            <div className="mx-t">Summary</div>
+            <div className="mx-t">{t("mx_summary")}</div>
             <p className="text-sm leading-relaxed text-[var(--mx-text)]">{bd.summary}</p>
             {isOwner && (
               <button
@@ -284,7 +293,7 @@ export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
       )}
       {sent && (
         <Link href="/messages" className="mx-btn mx-btn-ghost mt-2 w-full">
-          Open thread
+          {t("mx_open_thread")}
         </Link>
       )}
     </div>

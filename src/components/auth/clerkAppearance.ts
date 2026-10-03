@@ -1,34 +1,34 @@
-/** Dark-theme Clerk card styling — Pantone Ocean / Nighttime palette */
+/** Dark-only Clerk card styling — mobile-concept deck tokens (app parity). */
 export const clerkAuthAppearance = {
   variables: {
-    colorBackground: "#0c1833",
-    colorInputBackground: "#061533",
-    colorInputText: "#f4f8fc",
-    colorText: "#f4f8fc",
-    colorTextSecondary: "#9cc2e5",
+    colorBackground: "#0b0f1a",
+    colorInputBackground: "#10162a",
+    colorInputText: "#f5f7fa",
+    colorText: "#f5f7fa",
+    colorTextSecondary: "#9aa3b2",
     // Ocean Blue 300 — primary accent for dark glass CTAs
-    colorPrimary: "#005EB8",
+    colorPrimary: "#3b6ef6",
     colorDanger: "#ff5f6d",
     borderRadius: "0.75rem",
   },
   elements: {
     rootBox: "mx-auto w-full max-w-[420px]",
-    card: "border border-white/[0.08] bg-[var(--surface-bg,rgba(8,22,52,0.78))] shadow-2xl shadow-black/40 backdrop-blur-md",
+    card: "border border-white/[0.08] bg-[var(--surface-bg,rgba(11,15,26,0.92))] shadow-2xl shadow-black/40 backdrop-blur-md",
     headerTitle: "text-foreground",
     headerSubtitle: "text-brand-400",
     socialButtonsBlockButton:
-      "border border-white/10 bg-[var(--app-bg-mid,#061533)] text-foreground hover:bg-[var(--app-bg-accent,#0a1a3a)]",
+      "border border-white/10 bg-[var(--app-bg-mid,#10162a)] text-foreground hover:bg-[var(--app-bg-accent,#1a2440)]",
     formFieldInput:
-      "border-white/10 bg-[var(--app-bg-mid,#061533)] text-foreground focus:border-brand-500",
+      "border-white/10 bg-[var(--app-bg-mid,#10162a)] text-foreground focus:border-accent",
     footerActionLink: "text-brand-400 hover:text-brand-300",
     // Frosted glass Continue — Ocean/Marlin; mirrors `.btn-premium`
     formButtonPrimary: {
       background:
-        "linear-gradient(165deg, rgba(0,114,206,0.36) 0%, rgba(0,94,184,0.2) 45%, rgba(2,11,28,0.5) 100%)",
-      border: "1px solid rgba(156,194,229,0.3)",
+        "linear-gradient(165deg, rgba(59,110,246,0.38) 0%, rgba(34,199,224,0.20) 45%, rgba(5,7,12,0.55) 100%)",
+      border: "1px solid rgba(34,199,224,0.30)",
       backdropFilter: "blur(14px)",
       WebkitBackdropFilter: "blur(14px)",
-      color: "#f4f8fc",
+      color: "#f5f7fa",
       fontFamily:
         'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       fontWeight: "500",
@@ -37,7 +37,7 @@ export const clerkAuthAppearance = {
       height: "3.125rem",
       paddingInline: "1.5rem",
       boxShadow:
-        "inset 0 1px 0 rgba(156,194,229,0.3), 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,94,184,0.14)",
+        "inset 0 1px 0 rgba(34,199,224,0.30), 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(59,110,246,0.16)",
       transition:
         "background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease",
       "&:hover": {

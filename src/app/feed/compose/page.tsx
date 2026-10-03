@@ -246,7 +246,7 @@ export default function ComposePostPage() {
                 onClick={() => setSource(id)}
                 className={`rounded-full border px-3 py-1 ${
                   source === id
-                    ? "border-brand-600 bg-brand-600 text-white"
+                    ? "border-accent bg-accent text-white"
                     : "border-brand-200 text-brand-700"
                 }`}
               >
@@ -257,7 +257,7 @@ export default function ComposePostPage() {
 
           {source === "file" ? (
             <div className="mt-3 space-y-2">
-              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50/50 px-4 py-8 text-center hover:border-brand-500">
+              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50/50 px-4 py-8 text-center hover:border-accent">
                 <Upload className="h-6 w-6 text-brand-600" />
                 <span className="text-sm font-semibold text-brand-800">
                   {uploading ? t("social_uploading") : t("social_pick_video")}

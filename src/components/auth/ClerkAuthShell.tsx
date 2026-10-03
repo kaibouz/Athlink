@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
+import { SaveLoginCheckbox } from "@/components/auth/SaveLoginCheckbox";
 
 /** Centered AthlinkPro branding above Clerk sign-in / sign-up cards */
 export function ClerkAuthShell({ children }: { children: ReactNode }) {
@@ -13,6 +14,7 @@ export function ClerkAuthShell({ children }: { children: ReactNode }) {
         <QuickMyPageEntry />
       </div>
       {children}
+      <SaveLoginCheckbox />
     </div>
   );
 }

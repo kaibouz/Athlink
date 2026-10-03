@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getRequestUser } from "@/lib/server/current-user";
-import { createCoachProfile, listCoaches } from "@/lib/server/data";
+import { createCoachProfile, ensureRollingSlots, listCoaches } from "@/lib/server/data";
 import { getNextSlots } from "@/lib/server/athlete";
 import type { RegisterCoachInput } from "@/lib/server/data";
 
 export async function GET() {
   try {
     const coaches = await listCoaches();
+    await Promise.all(coaches.map((c) => ensureRollingSlots(c.id)));
     const nextSlots = await getNextSlots(coaches.map((c) => c.id));
     return NextResponse.json({ coaches, nextSlots });
   } catch {

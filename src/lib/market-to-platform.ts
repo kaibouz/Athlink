@@ -1,22 +1,19 @@
 /**
  * Canonical visitor → platform flow (see docs/IA.md).
  *
- * PDF-aligned: HQ Launch → one Get Started → /get-started (Choose your side)
- * → role LP (athlete LP links to HQ how; coach LP keeps coach how)
- * → join → /app → athlete Home or coach Today.
- * Never dump signed-in members back onto HQ or the role gateway.
+ * One main site at `/`: hero role choice → Clerk sign-up → role profile wizard
+ * → /app → athlete Home or coach Today. The app walkthrough lives lower on that
+ * same page, so there is no marketing detour between choosing a side and the
+ * account. `/get-started`, `/join`, `/for-athletes` and `/for-coaches` are kept
+ * only as redirects to `/`.
+ * Never dump signed-in members back onto the main site.
  */
 export const MARKET_TO_PLATFORM = {
-  /** Brand HQ */
+  /** The single main site — role choice + app walkthrough */
   hq: "/",
   /** Public inventory — no login wall */
   browse: "/search",
-  /** Role fork after HQ */
-  getStarted: "/get-started",
-  /** Role marketing LPs */
-  forAthletes: "/for-athletes",
-  forCoaches: "/for-coaches",
-  /** Detailed how lives on market HQ (`/#how-it-works`); `/how-it-works` redirects here. */
+  /** Detailed how lives on the main site (`/#how-it-works`). */
   howItWorks: "/",
   /** Role onboarding wizards */
   joinAthlete: "/join/athlete",
@@ -43,13 +40,30 @@ export function signInHref(redirectPath: string = MARKET_TO_PLATFORM.appEntry): 
   return `${MARKET_TO_PLATFORM.signIn}?${q.toString()}`;
 }
 
+/** Clerk sign-up that returns into a specific in-app path (role onboarding). */
+export function signUpHref(redirectPath: string = MARKET_TO_PLATFORM.appEntry): string {
+  const q = new URLSearchParams({ redirect_url: redirectPath });
+  return `${MARKET_TO_PLATFORM.signUp}?${q.toString()}`;
+}
+
+/**
+ * Only same-origin paths may come back from `?redirect_url=`. Anything else —
+ * absolute URLs, protocol-relative `//evil.com` — falls back to the app entry
+ * router so the auth pages can never be used as an open redirect.
+ */
+export function safeRedirectPath(
+  value: string | string[] | undefined,
+  fallback: string = MARKET_TO_PLATFORM.appEntry,
+): string {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return fallback;
+  return raw;
+}
+
 /** Paths that belong to the marketing layer (no app chrome). */
 export function isMarketingPath(pathname: string): boolean {
   const p = pathname.split(/[?#]/)[0] || "/";
-  if (p === "/" || p === MARKET_TO_PLATFORM.getStarted) return true;
-  if (p === MARKET_TO_PLATFORM.forAthletes || p === MARKET_TO_PLATFORM.forCoaches) return true;
-  if (p === MARKET_TO_PLATFORM.howItWorks) return true;
-  return false;
+  return p === MARKET_TO_PLATFORM.hq;
 }
 
 /**

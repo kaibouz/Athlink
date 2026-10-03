@@ -108,11 +108,11 @@ export default function EditAthleteProfilePage() {
             <Input id="wt" value={weight} onChange={(e) => setWeight(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="bt">Bats / Throws</Label>
+            <Label htmlFor="bt">{t("fld_bats_throws")}</Label>
             <Input id="bt" value={batsThrows} onChange={(e) => setBatsThrows(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("fld_email")}</Label>
             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>

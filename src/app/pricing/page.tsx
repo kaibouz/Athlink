@@ -21,7 +21,7 @@ export default function PricingPage() {
       {user ? (
         <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-brand-600">
           <span>{t("plan_your_plan")}</span>
-          <Badge className={isPro ? "bg-brand-600 text-white" : ""}>
+          <Badge className={isPro ? "bg-accent text-white" : ""}>
             {isPro ? t("plan_pro_name") : t("plan_free_name")}
           </Badge>
           <span className="text-brand-400">·</span>
@@ -53,7 +53,7 @@ export default function PricingPage() {
             onClick={() => setAudience(id)}
             className={cn(
               "rounded-full px-3 py-1 transition",
-              audience === id ? "bg-brand-600 text-white" : "bg-brand-50 text-brand-700 hover:bg-brand-100",
+              audience === id ? "bg-accent text-white" : "bg-brand-50 text-brand-700 hover:bg-brand-100",
             )}
           >
             {id === "athlete" ? t("role_athlete") : t("role_coach")}

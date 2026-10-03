@@ -1,3 +1,4 @@
+import { addDaysToKey, todayKey } from "@/lib/dates";
 import type {
   Booking,
   CoachProfile,
@@ -430,12 +431,11 @@ function buildSlots(): TimeSlot[] {
     ["17:00", "18:00"],
     ["19:00", "20:00"],
   ];
-  const start = new Date("2026-07-28T00:00:00");
+  // Rolling from today: a fixed start date left every static slot in the past.
+  const start = todayKey();
   coaches.forEach((coach, ci) => {
     for (let d = 0; d < 14; d++) {
-      const date = new Date(start);
-      date.setDate(start.getDate() + d);
-      const dateStr = date.toISOString().slice(0, 10);
+      const dateStr = addDaysToKey(start, d);
       times.forEach(([startTime, endTime], ti) => {
         slots.push({
           id: `${coach.id}-${dateStr}-${startTime}`,

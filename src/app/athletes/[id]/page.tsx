@@ -14,6 +14,7 @@ import { PastRecordsPanel } from "@/components/social/PastRecordsPanel";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
+import { Avatar } from "@/components/ui/Avatar";
 
 function regionFromLocation(loc: string): CaRegionId {
   const l = loc.toLowerCase();
@@ -79,13 +80,13 @@ function AthleteProfileContent() {
       )}
 
       <section className="overflow-hidden rounded-3xl border border-brand-100 bg-surface shadow-sm">
-        <div className="bg-gradient-to-r from-ink to-brand-600 px-6 py-8 text-white">
+        <div className="bg-gradient-to-r from-ink to-accent px-6 py-8 text-white">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Avatar
               src={athlete.avatarUrl}
-              alt=""
-              className="h-24 w-24 rounded-2xl border-4 border-white/30 bg-surface"
+              name={athlete.name}
+              size={96}
+              className="rounded-2xl border-4 border-white/30"
             />
             <div className="flex-1">
               <h1 className="text-3xl font-black">{athlete.name}</h1>

@@ -10,6 +10,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { signInHref } from "@/lib/market-to-platform";
 import {
+  clerkPasskeysEnabled,
   markPasskeyPreferred,
   myPageHrefForRole,
   readReturningUser,
@@ -42,7 +43,11 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
 
   useEffect(() => {
     setRemembered(readReturningUser());
-    void supportsPlatformAuthenticator().then(setPasskeyOk);
+    // Both the device and the Clerk instance must support passkeys; offering
+    // Touch ID / Face ID when either can't deliver it only shows an error.
+    void supportsPlatformAuthenticator().then((ok) =>
+      setPasskeyOk(ok && clerkPasskeysEnabled() !== false),
+    );
   }, [isSignedIn, user?.id]);
 
   const myHref =
@@ -52,17 +57,24 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
     router.push(myHref);
   }, [router, myHref]);
 
+  // A passkey prompt is only worth attempting when this device actually has one
+  // enrolled. Otherwise the button goes straight to sign-in — calling
+  // signIn.passkey() without an enrolled credential can only fail, and it used
+  // to leave a red "biometric didn't complete" notice on a perfectly normal
+  // first sign-in.
+  const canTryPasskey = passkeyOk && Boolean(remembered?.preferPasskey);
+
   const tryPasskeyThenMyPage = useCallback(async () => {
     setError(null);
-    if (!signIn) {
+    if (!signIn || !canTryPasskey) {
       router.push(signInHref(myHref));
       return;
     }
     setBusy(true);
     try {
-      const { error: passkeyError } = await signIn.passkey({
-        flow: remembered?.preferPasskey ? "discoverable" : "autofill",
-      });
+      // "discoverable" opens the platform prompt. "autofill" is conditional UI
+      // bound to an input field and never resolves from a click.
+      const { error: passkeyError } = await signIn.passkey({ flow: "discoverable" });
       if (passkeyError) {
         throw passkeyError;
       }
@@ -85,12 +97,12 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
       }
       router.push(signInHref(myHref));
     } catch {
-      setError(t("auth_passkey_failed"));
+      // Fall back quietly: the sign-in page is a normal outcome, not an error.
       router.push(signInHref(myHref));
     } finally {
       setBusy(false);
     }
-  }, [signIn, remembered?.preferPasskey, router, myHref, t]);
+  }, [signIn, canTryPasskey, router, myHref]);
 
   const enrollPasskey = useCallback(async () => {
     if (!clerkUser) return;
@@ -154,7 +166,7 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
             type="button"
             disabled={busy}
             onClick={() => void enrollPasskey()}
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-brand-800 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-brand-800 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           >
             <Fingerprint className="h-3.5 w-3.5" />
             {t("auth_enable_biometric")}
@@ -185,12 +197,14 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
         disabled={busy}
         onClick={() => void tryPasskeyThenMyPage()}
         className={cn(
-          "glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/50",
+          "glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50",
           className,
         )}
       >
-        {passkeyOk ? <Fingerprint className="h-3.5 w-3.5" /> : null}
-        {t("auth_continue_as", { name: firstName })}
+        {canTryPasskey ? <Fingerprint className="h-3.5 w-3.5" /> : null}
+        {canTryPasskey
+          ? t("auth_continue_as", { name: firstName })
+          : t("auth_sign_in_as", { name: firstName })}
         <ArrowRight className="h-3.5 w-3.5" />
       </button>
     );
@@ -203,16 +217,29 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
         <img src={avatar} alt="" className="h-11 w-11 rounded-full bg-brand-50 object-cover" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-brand-950">{remembered.name}</p>
-          <p className="truncate text-xs text-brand-500">{t("auth_tap_to_return")}</p>
+          <p className="truncate text-xs text-brand-500">
+            {/* Only promise a one-tap return when a passkey can actually deliver
+                one. Without it the session is over and Clerk must re-auth, so
+                saying "tap once to return" sets up a broken expectation. */}
+            {canTryPasskey ? t("auth_tap_to_return") : t("auth_session_expired")}
+          </p>
         </div>
-        <Button size="sm" disabled={busy} onClick={() => void tryPasskeyThenMyPage()}>
-          {passkeyOk ? <Fingerprint className="h-3.5 w-3.5" /> : null}
-          {t("auth_go_my_page")}
+        <Button
+          size="sm"
+          variant={canTryPasskey ? "primary" : "outline"}
+          disabled={busy}
+          onClick={() => void tryPasskeyThenMyPage()}
+          className="shrink-0"
+        >
+          {canTryPasskey ? <Fingerprint className="h-3.5 w-3.5" /> : null}
+          {canTryPasskey
+            ? t("auth_go_my_page")
+            : t("auth_sign_in_as", { name: firstName })}
         </Button>
       </div>
       {error ? <p className="mt-2 text-xs text-rose-400">{error}</p> : null}
       <p className="mt-2 text-[11px] text-brand-500">
-        {passkeyOk ? t("auth_passkey_hint") : t("auth_saved_device_hint")}
+        {canTryPasskey ? t("auth_passkey_hint") : t("auth_saved_device_hint")}
       </p>
     </div>
   );

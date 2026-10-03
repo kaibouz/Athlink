@@ -9,6 +9,7 @@ import {
   Home,
   MessageSquare,
   Radar,
+  Users,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -31,9 +32,6 @@ export function MobileNav() {
   if (
     !user ||
     pathname === "/" ||
-    pathname === "/get-started" ||
-    pathname === "/for-athletes" ||
-    pathname === "/for-coaches" ||
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/sign-in" ||
@@ -57,8 +55,7 @@ export function MobileNav() {
         p.startsWith("/coach/dashboard") ||
         p.startsWith("/coach/register") ||
         p.startsWith("/coach/qr") ||
-        p.startsWith("/coach/invite") ||
-        p.startsWith("/coach/students"),
+        p.startsWith("/coach/invite"),
     },
     {
       href: "/coach/calendar",
@@ -67,10 +64,10 @@ export function MobileNav() {
       match: (p) => p.startsWith("/coach/calendar"),
     },
     {
-      href: "/sns",
-      label: t("nav_scout"),
-      icon: Radar,
-      match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
+      href: "/coach/students",
+      label: t("nav_athletes"),
+      icon: Users,
+      match: (p) => p.startsWith("/coach/students"),
     },
     {
       href: "/messages",

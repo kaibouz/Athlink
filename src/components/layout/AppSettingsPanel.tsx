@@ -30,7 +30,7 @@ export function AppSettingsPanel({
         <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as UiLocale)}
-          className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
         >
           {UI_LOCALES.map((code) => (
             <option key={code} value={code}>

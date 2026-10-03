@@ -1,28 +1,14 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
-import { getClerkSessionUser } from "@/lib/clerk-auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { isPlatformPlanId, type PlatformPlanId } from "@/lib/platform-plans";
 import { setPlanCookie, withResolvedPlan } from "@/lib/server/plan";
-
-async function resolveAuthedUser() {
-  let user = null;
-  if (process.env.DATABASE_URL) {
-    try {
-      user = await getCurrentUser();
-    } catch {
-      user = null;
-    }
-  }
-  if (!user) user = await getClerkSessionUser();
-  return user;
-}
 
 /**
  * Demo / MVP plan switcher. Sets athlink_plan cookie until Stripe is wired.
  * Body: { plan: "free" | "pro" }
  */
 export async function POST(req: Request) {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
@@ -39,7 +25,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

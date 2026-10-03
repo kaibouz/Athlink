@@ -11,9 +11,7 @@ import { cn } from "@/lib/utils";
 
 const STEP_LABEL_KEYS: Record<Exclude<OnboardingStep, "welcome">, MessageKey> = {
   account: "onboard_step_account",
-  intro: "onboard_step_intro",
   profile: "onboard_step_profile",
-  details: "onboard_step_details",
   social: "onboard_step_social",
   finish: "onboard_step_finish",
 };
@@ -38,11 +36,11 @@ export function OnboardingShell({
   return (
     <div className={cn("onboarding-scene flex min-h-screen flex-col", role === "athlete" && "onboarding-scene-athlete")}>
       <header className="onboarding-scene-header app-glass-solid flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 backdrop-blur-md sm:px-6">
-        <Link href="/join" className="inline-flex items-center gap-2">
+        <Link href="/" className="inline-flex items-center gap-2">
           <span
             className={cn(
               "flex h-8 w-8 items-center justify-center rounded-lg text-xs font-black text-white shadow-sm",
-              role === "coach" ? "bg-brand-600 shadow-brand-600/30" : "bg-amber-500 shadow-amber-500/30",
+              role === "coach" ? "bg-accent shadow-accent/30" : "bg-accent-2 shadow-accent-2/30",
             )}
           >
             A
@@ -58,7 +56,7 @@ export function OnboardingShell({
                 "hidden rounded-full px-2.5 py-1 text-[11px] font-bold sm:inline",
                 role === "coach"
                   ? "bg-brand-100 text-brand-700"
-                  : "bg-amber-100 text-amber-900",
+                  : "bg-accent-2/15 text-accent-2",
               )}
             >
               {role === "coach" ? t("join_coach_badge") : t("join_athlete_badge")}
@@ -82,8 +80,8 @@ export function OnboardingShell({
                 className={cn(
                   "h-full rounded-full transition-all duration-500",
                   role === "coach"
-                    ? "bg-gradient-to-r from-cyan-500 to-brand-600"
-                    : "bg-gradient-to-r from-amber-400 to-orange-500",
+                    ? "bg-gradient-to-r from-cyan-500 to-accent"
+                    : "bg-gradient-to-r from-accent to-accent-2",
                 )}
                 style={{
                   width: `${Math.max(8, (current / Math.max(total - 1, 1)) * 100)}%`,
@@ -102,8 +100,8 @@ export function OnboardingShell({
                       "rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors",
                       active &&
                         (role === "coach"
-                          ? "bg-brand-600 text-white shadow-sm"
-                          : "bg-amber-500 text-white shadow-sm"),
+                          ? "bg-accent text-white shadow-sm"
+                          : "bg-accent-2 text-white shadow-sm"),
                       done && !active && "bg-brand-100 text-brand-700",
                       !done && !active && "text-brand-400",
                     )}

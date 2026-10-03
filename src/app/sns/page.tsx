@@ -136,7 +136,7 @@ function SnsContent() {
             >
               {label}
               {tab === id && (
-                <span className="absolute inset-x-10 bottom-0 h-1 rounded-full bg-brand-600" />
+                <span className="absolute inset-x-10 bottom-0 h-1 rounded-full bg-accent" />
               )}
             </button>
           ))}
@@ -174,8 +174,8 @@ function SnsContent() {
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs font-semibold transition",
                   type === value
-                    ? "border-brand-600 bg-brand-600 text-white"
-                    : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400",
+                    ? "border-accent bg-accent text-white"
+                    : "border-brand-200 bg-surface text-brand-700 hover:border-accent",
                 )}
               >
                 {label}
@@ -200,7 +200,7 @@ function SnsContent() {
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs font-semibold",
                   !position
-                    ? "border-brand-600 bg-brand-600 text-white"
+                    ? "border-accent bg-accent text-white"
                     : "border-brand-200 text-brand-700",
                 )}
               >
@@ -214,7 +214,7 @@ function SnsContent() {
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs font-semibold",
                     position === pos
-                      ? "border-brand-600 bg-brand-600 text-white"
+                      ? "border-accent bg-accent text-white"
                       : "border-brand-200 text-brand-700",
                   )}
                 >

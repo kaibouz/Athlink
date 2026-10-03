@@ -71,7 +71,7 @@ export function BookingQuickBar() {
             </Button>
           </Link>
           <Link href="/coach/qr">
-            <Button size="sm" className="bg-brand-500 hover:bg-brand-400">
+            <Button size="sm" className="bg-accent hover:bg-accent">
               <QrCode className="h-4 w-4" />
               {t("coach_nav_qr")}
             </Button>

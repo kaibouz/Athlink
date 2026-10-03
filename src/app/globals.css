@@ -70,17 +70,29 @@
   --surface: #ffffff;
   --surface-elevated: #ffffff;
 
+  /* App parity (concept deck tokens). Accents stay accents; body copy is neutral. */
+  --accent: #3b6ef6;
+  --accent-strong: #2b56d8;
+  --accent-2: #22c7e0;
+  --accent-soft: rgba(59, 110, 246, 0.12);
+  --amber: #f5a623;
+  --positive: #3ddc97;
+  --negative: #ff5f6d;
+  --text-dim: #4b5566;
+  --text-dimmer: #5f6773;
+
   --brand-50: #eff6ff;
   --brand-100: #dbeafe;
   --brand-200: #bfdbfe;
   --brand-300: #93c5fd;
-  --brand-400: #60a5fa;
-  --brand-500: #3b82f6;
-  --brand-600: #1d4ed8;
-  --brand-700: #1e40af;
-  --brand-800: #1e3a8a;
-  --brand-900: #172554;
-  --brand-950: #0b1226;
+  /* Text ramp only — accents live on --accent*. 950 = app --text, 500/600 = --dim. */
+  --brand-400: #767f8f;
+  --brand-500: #5f6773;
+  --brand-600: #4b5566;
+  --brand-700: #3a4354;
+  --brand-800: #27303f;
+  --brand-900: #171f2c;
+  --brand-950: #0b0f1a;
 
   --ink: #0b1226;
   --ink-mid: #1e3a8a;
@@ -111,9 +123,10 @@
     radial-gradient(ellipse 52% 40% at 92% 18%, rgba(56, 189, 248, 0.1), transparent 54%),
     radial-gradient(ellipse 68% 44% at 50% 105%, rgba(14, 165, 233, 0.14), transparent 56%);
 
-  --athlete-clay-1: #e0a458;
-  --athlete-clay-2: #f2c94c;
-  --athlete-clay-text: #1a1206;
+  /* App parity: the concept deck's --clay-1 / --clay-2 are blue -> cyan, not gold. */
+  --athlete-clay-1: #3b6ef6;
+  --athlete-clay-2: #22c7e0;
+  --athlete-clay-text: #05070c;
 
   --land-video-wash: linear-gradient(
     to bottom,
@@ -211,20 +224,31 @@
   );
 
   --background: var(--app-bg-mid);
-  --foreground: #e8eef9;
-  --surface: #0c1833;
-  --surface-elevated: #122447;
+  --foreground: #f5f7fa;
+  --surface: #0b0f1a;
+  --surface-elevated: #10162a;
+
+  --accent: #3b6ef6;
+  --accent-strong: #5b86f8;
+  --accent-2: #22c7e0;
+  --accent-soft: rgba(59, 110, 246, 0.16);
+  --amber: #f5a623;
+  --positive: #3ddc97;
+  --negative: #ff5f6d;
+  --text-dim: #9aa3b2;
+  --text-dimmer: #7b8494;
 
   --brand-50: #061533;
   --brand-100: #0a1a3a;
   --brand-200: #122447;
   --brand-300: #1a3a6e;
-  --brand-400: #8db0ff;
-  --brand-500: #3b6ef6;
-  --brand-600: #22c7e0;
-  --brand-700: #22c7e0;
-  --brand-800: #9aa3b2;
-  --brand-900: #c5d0e0;
+  /* Text ramp only — accents live on --accent*. 950 = app --text, 500/600 = --dim. */
+  --brand-400: #6b7382;
+  --brand-500: #7b8494;
+  --brand-600: #9aa3b2;
+  --brand-700: #b3bbc7;
+  --brand-800: #cbd2dc;
+  --brand-900: #e2e7ee;
   --brand-950: #f5f7fa;
 
   --ink: #05070c;
@@ -258,9 +282,10 @@
     radial-gradient(ellipse 52% 40% at 92% 18%, rgba(65, 143, 222, 0.14), transparent 54%),
     radial-gradient(ellipse 68% 44% at 50% 105%, rgba(0, 94, 184, 0.22), transparent 56%);
 
-  --athlete-clay-1: #e0a458;
-  --athlete-clay-2: #f2c94c;
-  --athlete-clay-text: #1a1206;
+  /* App parity: the concept deck's --clay-1 / --clay-2 are blue -> cyan, not gold. */
+  --athlete-clay-1: #3b6ef6;
+  --athlete-clay-2: #22c7e0;
+  --athlete-clay-text: #05070c;
 
   --land-video-wash: var(--land-video-wash-deep);
   --land-title-plate: var(--land-title-plate-deep);
@@ -283,6 +308,15 @@
   --font-brand: var(--font-manrope), var(--font-noto-sans-jp);
   --font-mono: var(--font-manrope), var(--font-noto-sans-jp);
 
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-amber: var(--amber);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-dim: var(--text-dim);
+  --color-dimmer: var(--text-dimmer);
   --color-brand-50: var(--brand-50);
   --color-brand-100: var(--brand-100);
   --color-brand-200: var(--brand-200);
@@ -328,11 +362,11 @@ body {
   box-shadow: var(--surface-glass-shadow);
 }
 
+/* Chrome, not decoration. This sits over scrolling content, so it is opaque —
+   the translucent version let page text read through the navigation. */
 .app-glass-solid {
-  border: 1px solid var(--surface-glass-border);
-  background: var(--surface-glass-dense);
-  backdrop-filter: blur(var(--surface-glass-blur));
-  -webkit-backdrop-filter: blur(var(--surface-glass-blur));
+  border: 1px solid var(--mx-border);
+  background: var(--mx-panel);
   box-shadow: var(--surface-glass-shadow);
 }
 
@@ -365,8 +399,7 @@ body {
 }
 
 .glass-panel,
-.land-panel,
-.mx-card {
+.land-panel {
   position: relative;
   border: 1px solid var(--surface-glass-border);
   background: var(--surface-glass);
@@ -416,7 +449,6 @@ body {
   .glass-panel,
   .glass-panel-dense,
   .land-panel,
-  .mx-card,
   .app-glass,
   .app-glass-solid {
     background: color-mix(in oklab, var(--app-bg-mid, #0b0f1a) 88%, white 12%);
@@ -737,16 +769,99 @@ body {
     filter: blur(0);
   }
 }
+/* Route-change flash — an accent sweep that crosses the viewport, plus a brief
+   bloom off the top edge. Purely decorative: never intercepts pointer events. */
+.site-route-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.site-route-flash::before {
+  content: "";
+  position: absolute;
+  inset: -20% -40%;
+  background: linear-gradient(
+    104deg,
+    transparent 40%,
+    color-mix(in oklab, var(--accent) 16%, transparent) 46%,
+    color-mix(in oklab, var(--accent-2) 22%, transparent) 52%,
+    transparent 60%
+  );
+  filter: blur(34px);
+  transform: translateX(-55%);
+}
+
+.site-route-flash::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 30vh;
+  background: radial-gradient(
+    ellipse 70% 100% at 50% 0%,
+    color-mix(in oklab, var(--accent-2) 10%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+}
+
+.site-route-flash-run {
+  animation: site-route-flash 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-route-flash-run::before {
+  animation: site-route-flash-sweep 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-route-flash-run::after {
+  animation: site-route-flash-bloom 0.52s ease-out both;
+}
+
+@keyframes site-route-flash {
+  0% { opacity: 0; }
+  22% { opacity: 0.38; }
+  100% { opacity: 0; }
+}
+
+@keyframes site-route-flash-sweep {
+  from { transform: translateX(-60%); }
+  to { transform: translateX(60%); }
+}
+
+@keyframes site-route-flash-bloom {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Opacity only. A transform or filter here — even an identity one left behind
+   by animation-fill-mode — would make .site-route-page the containing block for
+   position:fixed, which detaches the sidebar from the viewport and stretches it
+   to document height. The travel lives on .app-canvas instead. */
 @keyframes site-route-enter {
   from {
     opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Content-only travel: the canvas holds no fixed-position descendants. */
+.site-route-page.site-route-enter .app-canvas {
+  animation: site-route-content-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes site-route-content-enter {
+  from {
+    opacity: 0;
     transform: translateY(10px);
-    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
@@ -851,7 +966,7 @@ body {
 /* Join gateway — cinematic atmosphere + role card accents */
 .join-gateway-page .landing-hero-bg {
   background-image:
-    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(224, 164, 88, 0.08), transparent 55%),
+    radial-gradient(ellipse 55% 42% at 82% 58%, rgba(34, 199, 224, 0.08), transparent 55%),
     radial-gradient(ellipse 50% 38% at 18% 42%, rgba(0, 94, 184, 0.24), transparent 50%),
     radial-gradient(ellipse 65% 50% at 50% 0%, rgba(0, 114, 206, 0.28), transparent 58%),
     linear-gradient(155deg, #01060f 0%, #020b1c 28%, #061533 52%, #0a1a3a 78%, #01060f 100%);
@@ -862,9 +977,9 @@ body {
 }
 
 .join-card-athlete {
-  border-color: rgba(242, 201, 76, 0.22);
+  border-color: rgba(34, 199, 224, 0.22);
   background: rgba(18, 16, 10, 0.35);
-  box-shadow: 0 0 0 1px rgba(242, 201, 76, 0.06) inset;
+  box-shadow: 0 0 0 1px rgba(34, 199, 224, 0.06) inset;
 }
 
 .land-panel-head {
@@ -1078,8 +1193,8 @@ body {
   position: relative;
   overflow: hidden;
   background: linear-gradient(90deg, var(--athlete-clay-1), var(--athlete-clay-2));
-  color: var(--athlete-clay-text);
-  box-shadow: 0 10px 28px rgba(224, 164, 88, 0.32);
+  color: #f5f7fa;
+  box-shadow: 0 10px 28px rgba(59, 110, 246, 0.32);
   transition:
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.25s ease,
@@ -1102,14 +1217,14 @@ body {
 .btn-athlete-primary:hover {
   filter: brightness(1.06);
   transform: translateY(-2px);
-  box-shadow: 0 14px 34px rgba(224, 164, 88, 0.42);
+  box-shadow: 0 14px 34px rgba(59, 110, 246, 0.42);
 }
 .btn-athlete-primary:hover::after {
   transform: translateX(120%);
 }
 .btn-athlete-primary:active {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 6px 16px rgba(224, 164, 88, 0.28);
+  box-shadow: 0 6px 16px rgba(59, 110, 246, 0.28);
 }
 
 .btn-landing-secondary {
@@ -1688,12 +1803,18 @@ body {
   .site-entry-curtain,
   .site-entry-glow,
   .site-entry-mark,
-  .site-route-page.site-route-enter {
+  .site-route-page.site-route-enter,
+  .site-route-page.site-route-enter .app-canvas {
     animation: none !important;
     transition: none !important;
     opacity: 1;
     transform: none;
     filter: none;
+  }
+  .site-route-flash,
+  .site-route-flash::before,
+  .site-route-flash::after {
+    display: none !important;
   }
 }
 

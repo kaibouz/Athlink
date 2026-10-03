@@ -141,7 +141,7 @@ function InvitePageInner() {
         <ol className="mt-4 space-y-3">
           {playbook.map((step, i) => (
             <li key={step} className="flex gap-3 text-sm text-brand-700">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
                 {i + 1}
               </span>
               {step}

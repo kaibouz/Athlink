@@ -1,5 +1,6 @@
 "use client";
 
+import { todayKey } from "@/lib/dates";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, QrCode } from "lucide-react";
@@ -26,7 +27,7 @@ const statusKey: Record<BookingStatus, MessageKey> = {
 const statusTone: Record<BookingStatus, string> = {
   pending: "border-amber-400 bg-amber-500/20 text-amber-100",
   confirmed: "border-emerald-400 bg-emerald-500/20 text-emerald-100",
-  completed: "border-brand-300 bg-brand-500/20 text-brand-100",
+  completed: "border-brand-300 bg-accent/20 text-brand-100",
   cancelled: "border-slate-400 bg-slate-500/20 text-slate-300",
 };
 
@@ -51,8 +52,9 @@ function CalendarInner() {
   const { coach } = useMyCoach();
   const coachBookings = bookingsForCoach(bookings, coach?.id);
 
-  const [cursor, setCursor] = useState(() => startOfMonth(new Date("2026-07-29")));
-  const [selected, setSelected] = useState(toKey(new Date("2026-07-29")));
+  // Open on today (California) — this used to be frozen on a demo date.
+  const [cursor, setCursor] = useState(() => startOfMonth(new Date(`${todayKey()}T00:00:00`)));
+  const [selected, setSelected] = useState(() => todayKey());
 
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const weekdayLabels = useMemo(() => {
@@ -98,7 +100,7 @@ function CalendarInner() {
     a.startTime.localeCompare(b.startTime),
   );
 
-  const todayKey = toKey(new Date("2026-07-29"));
+  const today = todayKey();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -158,7 +160,7 @@ function CalendarInner() {
               }
               const events = byDate.get(cell.key) ?? [];
               const isSelected = cell.key === selected;
-              const isToday = cell.key === todayKey;
+              const isToday = cell.key === today;
               return (
                 <button
                   key={cell.key}
@@ -166,9 +168,9 @@ function CalendarInner() {
                   onClick={() => setSelected(cell.key!)}
                   className={`min-h-16 rounded-xl border p-1.5 text-left transition ${
                     isSelected
-                      ? "border-brand-600 bg-brand-600 text-white shadow-sm"
+                      ? "border-accent bg-accent text-white shadow-sm"
                       : isToday
-                        ? "border-brand-400 bg-brand-50 text-brand-950"
+                        ? "border-accent bg-brand-50 text-brand-950"
                         : "border-transparent bg-brand-50/50 text-brand-900 hover:border-brand-200"
                   }`}
                 >

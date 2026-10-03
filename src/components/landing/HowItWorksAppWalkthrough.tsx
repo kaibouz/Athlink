@@ -13,7 +13,8 @@ import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useLocale } from "@/lib/i18n/provider";
 import type { MessageKey } from "@/lib/i18n/messages";
-import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
+import { MARKET_TO_PLATFORM, signUpHref } from "@/lib/market-to-platform";
+import { joinPathFor } from "@/lib/onboarding";
 import "./how-it-works-walkthrough.css";
 
 export type WalkRole = "athlete" | "coach";
@@ -150,10 +151,14 @@ export function HowItWorksAppWalkthrough({
   const [playing, setPlaying] = useState(true);
   const [hoverPaused, setHoverPaused] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  // Autoplay only once the stage is actually on screen — otherwise the
+  // carousel runs while the section is still far below the fold and the
+  // brand frame is long gone by the time anyone scrolls to it.
+  const [inView, setInView] = useState(false);
 
   const frames = role === "coach" ? COACH_FRAMES : ATHLETE_FRAMES;
   const frame = frames[index] ?? frames[0];
-  const autoplayActive = playing && !hoverPaused && !reduceMotion;
+  const autoplayActive = playing && inView && !hoverPaused && !reduceMotion;
 
   useEffect(() => {
     setReduceMotion(prefersReducedMotion());
@@ -165,6 +170,20 @@ export function HowItWorksAppWalkthrough({
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const node = stageRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") {
+      const raf = requestAnimationFrame(() => setInView(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
+      { threshold: 0.35 },
+    );
+    io.observe(node);
+    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -272,22 +291,30 @@ export function HowItWorksAppWalkthrough({
           <div className="hiw-phone" aria-hidden={false}>
             <div className="hiw-phone-bezel">
               <div className="hiw-phone-screen">
-                {frames.map((f, i) => (
-                  <Image
-                    key={f.src}
-                    src={f.src}
-                    alt={i === index ? t(f.captionKey) : ""}
-                    width={520}
-                    height={1105}
-                    className={
-                      i === index
-                        ? "hiw-frame is-active"
-                        : "hiw-frame"
-                    }
-                    priority={i === 0}
-                    sizes="(max-width: 640px) 240px, 280px"
-                  />
-                ))}
+                {frames.map((f, i) => {
+                  // Only the current frame and its neighbours are mounted.
+                  // Rendering all nine at once saturated the browser's
+                  // per-host connection pool and the visible frame could be
+                  // the one left stalled, showing an empty phone.
+                  const len = frames.length;
+                  const dist = Math.min(
+                    Math.abs(i - index),
+                    len - Math.abs(i - index),
+                  );
+                  if (dist > 1) return null;
+                  return (
+                    <Image
+                      key={f.src}
+                      src={f.src}
+                      alt={i === index ? t(f.captionKey) : ""}
+                      width={520}
+                      height={1105}
+                      className={i === index ? "hiw-frame is-active" : "hiw-frame"}
+                      priority={i === index}
+                      sizes="(max-width: 640px) 240px, 280px"
+                    />
+                  );
+                })}
               </div>
             </div>
             <span className="hiw-phone-glow" aria-hidden />
@@ -371,8 +398,12 @@ export function HowItWorksAppWalkthrough({
         </div>
 
         <div className="hiw-walk-foot">
-          <Link href={MARKET_TO_PLATFORM.getStarted} className="hiw-walk-cta">
-            {t("hq_get_started")}
+          <Link href={signUpHref(joinPathFor("athlete"))} className="hiw-walk-cta">
+            {t("hq_start_athlete")}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link href={signUpHref(joinPathFor("coach"))} className="hiw-walk-cta">
+            {t("hq_start_coach")}
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link href={MARKET_TO_PLATFORM.browse} className="hiw-walk-cta-ghost">

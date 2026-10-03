@@ -57,7 +57,7 @@ export default function IosPreviewPage() {
               onClick={() => setScreen(s.path)}
               className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
                 screen === s.path
-                  ? "bg-brand-500 text-white"
+                  ? "bg-accent text-white"
                   : "bg-white/10 text-zinc-300 hover:bg-white/15"
               }`}
             >

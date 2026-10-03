@@ -46,7 +46,7 @@ function FunnelBar({
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-brand-100">
         <div
-          className="h-full rounded-full bg-brand-600 transition-all"
+          className="h-full rounded-full bg-accent transition-all"
           style={{ width: `${max > 0 ? Math.max(4, pct) : 0}%` }}
         />
       </div>
@@ -99,7 +99,7 @@ function AnalyticsInner() {
       <PageHeader title={t("analytics_title")} description={t("analytics_sub")} />
 
       <section className="mt-8 rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-brand-950">Earnings at a glance</h2>
+        <h2 className="text-lg font-bold text-brand-950">{t("px_earnings_glance")}</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-4">
           <div>
             <p className="text-xs font-semibold text-brand-500">Earned</p>
@@ -120,7 +120,7 @@ function AnalyticsInner() {
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-brand-500">Upcoming sessions</p>
+            <p className="text-xs font-semibold text-brand-500">{t("px_upcoming_sessions")}</p>
             <p className="mt-1 text-2xl font-black tabular-nums text-brand-950">
               {earnings?.upcoming ?? 0}
             </p>

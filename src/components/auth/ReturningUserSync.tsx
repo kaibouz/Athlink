@@ -3,7 +3,11 @@
 import { useEffect } from "react";
 import { useAuth as useClerkAuth, useUser } from "@clerk/nextjs";
 import { useAuth } from "@/lib/store";
-import { rememberReturningUser } from "@/lib/returning-user";
+import {
+  clearReturningUser,
+  readSaveLoginPreference,
+  rememberReturningUser,
+} from "@/lib/returning-user";
 
 /**
  * After a successful sign-in, persist a lightweight local profile so the next
@@ -17,6 +21,12 @@ export function ReturningUserSync() {
   useEffect(() => {
     if (!hydrated || !isLoaded) return;
     if (!isSignedIn || !user) return;
+
+    // Unchecked "save login info": keep nothing about the account on this device.
+    if (!readSaveLoginPreference()) {
+      clearReturningUser();
+      return;
+    }
 
     rememberReturningUser({
       userId: user.id,

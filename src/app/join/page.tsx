@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Legacy alias — role gateway lives at /get-started. */
+/** Consolidated into the single main site at `/` (role choice + walkthrough). */
 export default function JoinIndexPage() {
-  redirect("/get-started");
+  redirect("/");
 }

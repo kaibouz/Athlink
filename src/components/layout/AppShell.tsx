@@ -1,18 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "@/lib/i18n/provider";
-import { AppSidebar } from "@/components/layout/AppSidebar";
+import { AppTopNav } from "@/components/layout/AppTopNav";
+import { PasskeyEnrollPrompt } from "@/components/auth/PasskeyEnrollPrompt";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
+import { useForceDarkTheme } from "@/lib/theme";
 import { joinPathFor, shouldEnterOnboarding } from "@/lib/onboarding";
 import { isMarketingPath, isAuthFunnelPath, isMemberOnlyPath, MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
-import { HamburgerButton } from "@/components/ui/NavigationDrawer";
+
+/** Platform surfaces are dark-only — see useForceDarkTheme. Renders nothing. */
+function ForceDarkTheme() {
+  useForceDarkTheme();
+  return null;
+}
 
 /** Marketing home: no chrome. Login/signup: minimal bar. App: sidebar. */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -20,12 +26,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, hydrated } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const menuBtnRef = useRef<HTMLButtonElement>(null);
-  const drawerId = useId();
-  const navDrawerId = `app-nav-drawer${drawerId.replace(/:/g, "")}`;
-
-  const setDrawerOpen = useCallback((next: boolean) => setOpen(next), []);
 
   useEffect(() => {
     if (!hydrated || !user) return;
@@ -45,11 +45,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!isMemberOnlyPath(pathname)) return;
     router.replace(MARKET_TO_PLATFORM.hq);
   }, [hydrated, user, pathname, router]);
-
-  // Close the drawer on route change (link taps inside the panel).
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   const isIosPreview = pathname === "/ios";
   const isMarketingHome = isMarketingPath(pathname);
@@ -83,11 +78,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (isClerkAuthRoute || (isAuthForm && !user)) {
     return (
       <div className="app-page-bg flex min-h-full flex-1 flex-col">
+        <ForceDarkTheme />
         <header className="relative z-20 flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <AthlinkProLogo href="/" size="header" variant="lockup" tone="onGradient" priority />
           <div className="flex items-center gap-1.5">
             <ClerkNavAuth loginLabel={t("nav_login")} compact />
-            <MarketingThemeToggle />
             <LocaleSwitcher compact />
           </div>
         </header>
@@ -98,36 +93,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <AppSidebar
-        mobileOpen={open}
-        onOpenChange={setDrawerOpen}
-        drawerId={navDrawerId}
-        menuButtonRef={menuBtnRef}
-      />
+      <ForceDarkTheme />
+      <AppTopNav />
+      <PasskeyEnrollPrompt />
 
-      <div className="flex min-h-full min-w-0 flex-1 flex-col md:pl-64">
+      <div className="flex min-h-full min-w-0 flex-1 flex-col">
         <div className="app-canvas flex min-h-full min-w-0 flex-1 flex-col">
-          <header className="app-glass sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-white/10 px-4 md:hidden">
-            <HamburgerButton
-              open={open}
-              onClick={() => setDrawerOpen(!open)}
-              controlsId={navDrawerId}
-              label={t("nav_menu")}
-              buttonRef={menuBtnRef}
-            />
-            <AthlinkProLogo
-              href={user?.role === "coach" ? MARKET_TO_PLATFORM.coachHome : MARKET_TO_PLATFORM.athleteHome}
-              size="header"
-              variant="lockup"
-              tone="onGradient"
-            />
-            <div className="flex items-center gap-1">
-              <ClerkNavAuth loginLabel={t("nav_login")} compact />
-              <MarketingThemeToggle />
-              <LocaleSwitcher compact />
-            </div>
-          </header>
-
           {children}
           <Footer />
         </div>

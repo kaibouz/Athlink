@@ -69,7 +69,7 @@ export function CalendarAutoPrefSelect({ className }: { className?: string }) {
       <select
         value={pref}
         onChange={(e) => onChange(e.target.value as CalendarAutoPref)}
-        className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+        className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
       >
         <option value="both">{t("cal_auto_both")}</option>
         <option value="google">{t("cal_auto_google")}</option>

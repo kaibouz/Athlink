@@ -1,27 +1,13 @@
 import { NextResponse } from "next/server";
 import { after } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
-import { getClerkSessionUser } from "@/lib/clerk-auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { remainingAiBreakdowns } from "@/lib/platform-plans";
 import { getBreakdownsForAthlete } from "@/lib/server/athlete";
 import { createBreakdownJob, processBreakdown } from "@/lib/server/ai-breakdown";
 import { audienceForUser, countAiBreakdownsThisMonth, resolveUserPlan } from "@/lib/server/plan";
 
-async function resolveAuthedUser() {
-  let user = null;
-  if (process.env.DATABASE_URL) {
-    try {
-      user = await getCurrentUser();
-    } catch {
-      user = null;
-    }
-  }
-  if (!user) user = await getClerkSessionUser();
-  return user;
-}
-
 export async function GET() {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
@@ -34,7 +20,7 @@ export async function GET() {
 
 /** Submit a clip for AI analysis. Returns the job immediately (status "processing"). */
 export async function POST(req: Request) {
-  const user = await resolveAuthedUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

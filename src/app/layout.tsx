@@ -71,7 +71,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Script id="athlink-theme-init" strategy="beforeInteractive">
-          {`(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`}
+          {`(function(){try{var t=localStorage.getItem("athlink_theme")==="light"?"light":"dark";document.documentElement.classList.toggle("dark",t==="dark");document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`}
         </Script>
         <ClerkProvider afterSignOutUrl={MARKET_TO_PLATFORM.hq}>
           <ThemeProvider>

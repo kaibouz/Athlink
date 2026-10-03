@@ -227,14 +227,29 @@ const DEFAULT_GOALS: GoalSuggestion[] = [
 ];
 
 /** Position-aware starter goals for athlete onboarding. */
+/** Position codes offered as chips during onboarding (deck order first). */
+export const ATHLETE_POSITIONS = ["SS", "2B", "C", "P", "OF", "1B", "3B", "CF", "RF", "LF"] as const;
+
+const OUTFIELD = new Set(["OF", "CF", "RF", "LF"]);
+const INFIELD = new Set(["SS", "1B", "2B", "3B", "IF", "INF"]);
+
 export function goalsForPosition(position: string): GoalSuggestion[] {
-  const p = position.toUpperCase();
-  if (p.includes("P")) return GOALS_BY_POSITION.P;
-  if (p.includes("C")) return GOALS_BY_POSITION.C;
-  if (p.includes("OF") || p.includes("CF") || p.includes("RF") || p.includes("LF"))
-    return GOALS_BY_POSITION.OF;
-  if (p.includes("SS") || p.includes("1B") || p.includes("2B") || p.includes("3B") || p.includes("IF"))
+  const p = position.trim().toUpperCase();
+
+  // Exact codes first. Substring matching here is unsafe: "SHORTSTOP" contains
+  // "P" and used to resolve to pitcher goals.
+  if (p === "P") return GOALS_BY_POSITION.P;
+  if (p === "C") return GOALS_BY_POSITION.C;
+  if (OUTFIELD.has(p)) return GOALS_BY_POSITION.OF;
+  if (INFIELD.has(p)) return GOALS_BY_POSITION.INF;
+
+  // Legacy free-text rows saved before positions became chips.
+  if (p.includes("OUTFIELD") || OUTFIELD.has(p.slice(0, 2))) return GOALS_BY_POSITION.OF;
+  if (p.includes("SHORT") || p.includes("INFIELD") || p.includes("BASE")) {
     return GOALS_BY_POSITION.INF;
+  }
+  if (p.includes("CATCH")) return GOALS_BY_POSITION.C;
+  if (p.includes("PITCH")) return GOALS_BY_POSITION.P;
   return DEFAULT_GOALS;
 }
 

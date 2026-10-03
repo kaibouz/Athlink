@@ -46,6 +46,7 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
     pathname === "/" ? "done" : "hold",
   );
   const contentRef = useRef<HTMLDivElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
   const routeReady = useRef(false);
 
   useEffect(() => {
@@ -84,6 +85,13 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
     // Force reflow so the enter animation retriggers on every navigation.
     void el.offsetWidth;
     el.classList.add("site-route-enter");
+
+    const flash = flashRef.current;
+    if (flash) {
+      flash.classList.remove("site-route-flash-run");
+      void flash.offsetWidth;
+      flash.classList.add("site-route-flash-run");
+    }
   }, [pathname]);
 
   return (
@@ -112,6 +120,8 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       ) : null}
+
+      <div ref={flashRef} className="site-route-flash" aria-hidden />
 
       <div ref={contentRef} className="site-route-page">
         {children}

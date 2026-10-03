@@ -148,7 +148,7 @@ export function HamburgerButton({
       type="button"
       id={autoId}
       className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-lg text-brand-700 transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40",
+        "inline-flex h-10 w-10 items-center justify-center rounded-lg text-brand-700 transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
         className,
       )}
       aria-label={label}
