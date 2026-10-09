@@ -2,7 +2,7 @@ import { and, asc, count, desc, eq, gte, inArray } from "drizzle-orm";
 import { randomBytes } from "crypto";
 import { getDb, isDatabaseConfigured } from "@/db";
 import { summarize, type VerificationRecord } from "@/lib/verification";
-import { addDaysToKey, todayKey } from "@/lib/dates";
+import { addDaysToKey, isNotOver, todayKey } from "@/lib/dates";
 import { isPackageType, priceFor } from "@/lib/pricing";
 import {
   coachVerifications,
@@ -191,8 +191,7 @@ export async function getReviewsByCoach(coachId: string): Promise<Review[]> {
 
 export async function getSlotsByCoach(coachId: string): Promise<TimeSlot[]> {
   if (!isDatabaseConfigured()) {
-    const today = todayKey();
-    return getStaticSlotsByCoach(coachId).filter((s) => s.date >= today);
+    return getStaticSlotsByCoach(coachId).filter((s) => isNotOver(s.date, s.startTime));
   }
   await ensureRollingSlots(coachId);
   const rows = await getDb()
@@ -200,7 +199,8 @@ export async function getSlotsByCoach(coachId: string): Promise<TimeSlot[]> {
     .from(timeSlots)
     .where(and(eq(timeSlots.coachId, coachId), gte(timeSlots.date, todayKey())))
     .orderBy(asc(timeSlots.date), asc(timeSlots.startTime));
-  return rows.map(mapTimeSlot);
+  // Today's slots that have already started are no longer bookable.
+  return rows.filter((r) => isNotOver(r.date, r.startTime)).map(mapTimeSlot);
 }
 
 export async function listBookingsForUser(userId: string, role: string): Promise<Booking[]> {
@@ -250,7 +250,8 @@ export async function createBooking(
   if (!isPackageType(input.packageType)) throw new Error("INVALID_PACKAGE");
   if (input.format !== "in_person" && input.format !== "online") throw new Error("INVALID_FORMAT");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input.date)) throw new Error("INVALID_DATE");
-  if (input.date < todayKey()) throw new Error("SLOT_IN_PAST");
+  if (!/^\d{2}:\d{2}$/.test(input.startTime)) throw new Error("INVALID_DATE");
+  if (!isNotOver(input.date, input.startTime)) throw new Error("SLOT_IN_PAST");
 
   const coach = await getCoachById(input.coachId);
   if (!coach) throw new Error("COACH_UNAVAILABLE");

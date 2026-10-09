@@ -34,17 +34,17 @@ const notoSansJp = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: {
-    default: "AthLink — Private baseball coaching in California",
-    template: "%s | AthLink",
+    default: "AthlinkPro — Private baseball coaching in California",
+    template: "%s | AthlinkPro",
   },
   description:
     "Marketplace connecting baseball athletes with experienced private coaches. Search, book, pay, and message — launching in California.",
-  applicationName: "AthLink",
+  applicationName: "AthlinkPro",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "AthLink",
+    title: "AthlinkPro",
   },
 };
 

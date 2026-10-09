@@ -228,19 +228,37 @@ export async function seedDemoAccount(email: string, { reset = false } = {}) {
     .select()
     .from(messageThreads)
     .where(eq(messageThreads.athleteId, SOURCE_ATHLETE_ID));
+  // Fixture chats were written weeks before the fixture lessons, so after the
+  // rebase they read as older than the sessions they talk about. Re-anchor
+  // each thread so its last message is the evening after the latest lesson.
+  const lastLesson = sourceBookings
+    .filter((bk) => bk.status === "completed")
+    .map((bk) => addDaysIso(bk.date, shift))
+    .sort()
+    .at(-1);
   for (const th of sourceThreads) {
     const threadId = demoId("th");
+    const srcMsgs = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.threadId, th.id));
+    const latestMsg = srcMsgs.reduce<Date | null>(
+      (acc, m) => (!acc || m.createdAt > acc ? m.createdAt : acc),
+      null,
+    );
+    const msgShiftMs =
+      lastLesson && latestMsg
+        ? new Date(`${addDaysIso(lastLesson, 1)}T${latestMsg.toISOString().slice(11)}`).getTime() -
+          latestMsg.getTime()
+        : shift * DAY_MS;
+    const moveMsg = (d: Date) => new Date(d.getTime() + msgShiftMs);
     await db.insert(messageThreads).values({
       ...th,
       id: threadId,
       athleteId,
       athleteName: name,
-      updatedAt: addDays(th.updatedAt, shift),
+      updatedAt: latestMsg ? moveMsg(latestMsg) : addDays(th.updatedAt, shift),
     });
-    const srcMsgs = await db
-      .select()
-      .from(messages)
-      .where(eq(messages.threadId, th.id));
     if (srcMsgs.length) {
       await db.insert(messages).values(
         srcMsgs.map((m) => ({
@@ -251,7 +269,7 @@ export async function seedDemoAccount(email: string, { reset = false } = {}) {
           senderName: m.senderId === SOURCE_ATHLETE_ID ? name : m.senderName,
           bookingId: null,
           breakdownId: null,
-          createdAt: addDays(m.createdAt, shift),
+          createdAt: moveMsg(m.createdAt),
         })),
       );
     }

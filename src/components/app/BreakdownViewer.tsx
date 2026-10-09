@@ -119,7 +119,7 @@ export function BreakdownViewer({ breakdown }: { breakdown: AiBreakdown }) {
 
   const providerLabel =
     bd.provider && bd.provider.startsWith("athlink")
-      ? "AthLink Motion (on-box)"
+      ? "AthlinkPro Motion (on-box)"
       : bd.provider === "openai"
         ? `OpenAI · ${bd.model ?? "model"}`
         : bd.provider === "anthropic"

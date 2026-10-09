@@ -11,26 +11,12 @@ import { signInHref } from "@/lib/market-to-platform";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import type { SocialPostType } from "@/types";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 const SAMPLE_VIDEOS = [
-  {
-    id: "sample-1",
-    labelKey: "social_video_demo" as const,
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    poster: "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
-  },
-  {
-    id: "sample-2",
-    labelKey: "social_video_demo" as const,
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    poster: "https://images.unsplash.com/photo-1508344928928-7528d0e3b3a5?w=800&q=80",
-  },
-  {
-    id: "sample-3",
-    labelKey: "social_video_demo" as const,
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    poster: "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
-  },
+  { id: "sample-1", labelKey: "social_video_demo" as const, url: DEMO_CLIPS.windup.url, poster: DEMO_CLIPS.windup.poster },
+  { id: "sample-2", labelKey: "social_video_demo" as const, url: DEMO_CLIPS.release.url, poster: DEMO_CLIPS.release.poster },
+  { id: "sample-3", labelKey: "social_video_demo" as const, url: DEMO_CLIPS.fielding.url, poster: DEMO_CLIPS.fielding.poster },
 ];
 
 export default function ComposePostPage() {

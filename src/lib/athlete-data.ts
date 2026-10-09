@@ -3,6 +3,7 @@
  * Keyed by athlete USER id (u-athlete-1..4) so the same records power both the
  * athlete Progress tab and the coach athlete-detail mirror.
  */
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 export interface AthleteMetricSeed {
   id: string;
@@ -132,8 +133,8 @@ const USER_POSE = [
   [0.42, 0.93], [0.58, 0.93],
 ];
 
-const POSTER_SWING = "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80";
-const POSTER_PITCH = "https://images.unsplash.com/photo-1508344928928-7528d0e3b3a5?w=800&q=80";
+const POSTER_SWING = DEMO_CLIPS.windup.poster;
+const POSTER_PITCH = DEMO_CLIPS.release.poster;
 
 export const aiBreakdownSeed: AiBreakdownSeed[] = [
   {
@@ -142,7 +143,7 @@ export const aiBreakdownSeed: AiBreakdownSeed[] = [
     coachId: "c1",
     coachName: "Shota Tanaka",
     title: "Swing breakdown — outside fastball",
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: DEMO_CLIPS.windup.url,
     posterUrl: POSTER_SWING,
     status: "ready",
     processedSeconds: 44,
@@ -169,7 +170,7 @@ export const aiBreakdownSeed: AiBreakdownSeed[] = [
     coachId: null,
     coachName: null,
     title: "Delivery breakdown — glove side",
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    videoUrl: DEMO_CLIPS.release.url,
     posterUrl: POSTER_PITCH,
     status: "ready",
     processedSeconds: 39,

@@ -103,7 +103,8 @@ export function AppTopNav() {
               className="hidden items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs font-semibold text-brand-700 transition hover:text-brand-950 sm:inline-flex"
             >
               <Sparkles className="h-3.5 w-3.5 text-[color:var(--mx-blue-2)]" />
-              {isPro ? t("plan_pro_name") : t("plan_free_name")}
+              {/* Signed out there is no plan yet — this is just the way to pricing. */}
+              {!user ? t("land_nav_pricing") : isPro ? t("plan_pro_name") : t("plan_free_name")}
             </Link>
 
             {user ? (

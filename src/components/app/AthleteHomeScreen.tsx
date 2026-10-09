@@ -2,7 +2,7 @@
 
 import { isNotOver, monthKey, todayKey } from "@/lib/dates";
 import Link from "next/link";
-import { CalendarDays, MapPin, MessageSquare, Navigation, Play, Sparkles } from "lucide-react";
+import { CalendarDays, MessageSquare, Navigation, Play, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
@@ -72,12 +72,6 @@ export function AthleteHomeScreen() {
     .sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime))
     .slice(0, 6);
   const first = user.name.split(" ")[0] || user.name;
-  const initials = user.name
-    .split(" ")
-    .map((p) => p[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 
   const weekday = new Date().toLocaleDateString(dateLocale, {
     weekday: "long",
@@ -133,9 +127,6 @@ export function AthleteHomeScreen() {
         <div>
           <h1>{t("mx_greeting", { name: first })}</h1>
           <small>{weekday}</small>
-        </div>
-        <div className="mx-avatar" aria-hidden>
-          {initials}
         </div>
       </header>
 
@@ -296,16 +287,6 @@ export function AthleteHomeScreen() {
                 doneLabel={t("mx_cal_done")}
                 upcomingLabel={t("mx_cal_upcoming")}
               />
-            </Link>
-          </div>
-
-          <div className="flex gap-2">
-            <Link href="/bookings" className="mx-btn mx-btn-ghost flex-1 text-[0.75rem]">
-              <MapPin className="h-3.5 w-3.5" />
-              {t("mx_all_bookings")}
-            </Link>
-            <Link href="/progress" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
-              {t("mx_progress")}
             </Link>
           </div>
 

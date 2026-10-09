@@ -2,7 +2,7 @@
 
 import { addDaysToKey, todayKey } from "@/lib/dates";
 import Link from "next/link";
-import { CalendarDays, MessageSquare, QrCode, Sparkles } from "lucide-react";
+import { MessageSquare, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
@@ -113,9 +113,6 @@ export function CoachTodayScreen() {
             {formatPrice(todayConfirmed + todayPendingTotal)}
           </small>
         </div>
-        <div className="mx-avatar mx-avatar-coach" aria-hidden>
-          {initials(coach.name)}
-        </div>
       </header>
 
       <div className="mx-stat-grid mb-3">
@@ -221,15 +218,8 @@ export function CoachTodayScreen() {
         </div>
       ) : null}
 
-      <div className="mt-2 flex flex-wrap gap-2">
-        <Link href="/coach/calendar" className="mx-btn mx-btn-ghost flex-1 text-[0.75rem]">
-          <CalendarDays className="h-3.5 w-3.5" />
-          {t("coach_nav_calendar")}
-        </Link>
-        <Link href="/coach/qr" className="mx-btn mx-btn-ghost flex-1 text-[0.75rem]">
-          <QrCode className="h-3.5 w-3.5" />
-          {t("coach_nav_qr")}
-        </Link>
+      {/* Calendar and QR live in the tab bar / top menu already. */}
+      <div className="mt-2 flex">
         <Link href="/me" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
           {t("dash_edit")}
         </Link>

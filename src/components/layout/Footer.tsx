@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "@/lib/i18n/provider";
+import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 
 export function Footer() {
   const { t } = useLocale();
@@ -10,12 +11,7 @@ export function Footer() {
     <footer className="mt-auto border-t border-white/10 bg-app-bg text-slate-300">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-sm font-black text-white">
-              A
-            </span>
-            <span className="text-lg font-bold text-white">AthLink</span>
-          </div>
+          <AthlinkProLogo href="/" size="header" variant="lockup" tone="onGradient" />
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">{t("footer_tagline")}</p>
         </div>
         <div>
@@ -52,7 +48,7 @@ export function Footer() {
               </Link>
             </li>
             <li>{t("footer_minor")}</li>
-            <li>© 2026 AthLink Inc.</li>
+            <li>© 2026 AthlinkPro Inc.</li>
           </ul>
         </div>
       </div>

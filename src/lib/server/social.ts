@@ -3,6 +3,7 @@ import { desc, eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured } from "@/db";
 import { athleteProfiles, socialPosts } from "@/db/schema";
 import type { AthletePublicProfile, SocialPost, SocialPostType, User } from "@/types";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 const POST_TYPES: SocialPostType[] = ["form", "practice", "game", "training", "highlight"];
 
@@ -140,8 +141,7 @@ export async function createSocialPostForUser(
   const id = `p-${randomBytes(6).toString("hex")}`;
   const createdAt = new Date();
   const posterUrl =
-    input.posterUrl?.trim() ||
-    "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80";
+    input.posterUrl?.trim() || DEMO_CLIPS.windup.poster;
 
   const row = {
     id,

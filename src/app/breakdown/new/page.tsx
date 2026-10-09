@@ -9,33 +9,31 @@ import { useLocale } from "@/lib/i18n/provider";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import { ATHLETE_FREE } from "@/lib/platform-plans";
 import type { AiBreakdown } from "@/types";
-
-const POSTER_SWING = "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80";
-const POSTER_PITCH = "https://images.unsplash.com/photo-1508344928928-7528d0e3b3a5?w=800&q=80";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 type ClipType = "swing" | "pitching";
 
 const CLIP_PRESETS: { id: string; label: string; url: string; poster: string; type: ClipType }[] = [
   {
-    id: "swing-front",
-    label: "Batting practice — front angle",
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    poster: POSTER_SWING,
-    type: "swing",
-  },
-  {
-    id: "pitch-glove",
-    label: "Bullpen — glove side",
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    poster: POSTER_PITCH,
+    id: "pitch-windup",
+    label: "Bullpen — wind-up",
+    url: DEMO_CLIPS.windup.url,
+    poster: DEMO_CLIPS.windup.poster,
     type: "pitching",
   },
   {
-    id: "swing-side",
-    label: "Cage session — side angle",
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    poster: POSTER_SWING,
-    type: "swing",
+    id: "pitch-release",
+    label: "Bullpen — release point",
+    url: DEMO_CLIPS.release.url,
+    poster: DEMO_CLIPS.release.poster,
+    type: "pitching",
+  },
+  {
+    id: "glove-work",
+    label: "Glove side — follow-through",
+    url: DEMO_CLIPS.glove.url,
+    poster: DEMO_CLIPS.glove.poster,
+    type: "pitching",
   },
 ];
 

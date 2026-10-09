@@ -7,7 +7,7 @@ import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { priceFor } from "@/lib/pricing";
-import { todayKey } from "@/lib/dates";
+import { isNotOver } from "@/lib/dates";
 import { autoSyncBookingToCalendars } from "@/lib/calendar";
 import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
@@ -28,7 +28,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const { t, locale } = useLocale();
   const isCoachPublishing = user?.role === "coach";
   const [slots, setSlots] = useState<TimeSlot[]>(() =>
-    getSlotsByCoach(coach.id).filter((s) => s.date >= todayKey()),
+    getSlotsByCoach(coach.id).filter((s) => isNotOver(s.date, s.startTime)),
   );
   const [submitting, setSubmitting] = useState(false);
   const dates = useMemo(() => [...new Set(slots.map((s) => s.date))], [slots]);

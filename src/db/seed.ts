@@ -41,6 +41,7 @@ import {
   athleteMetricSeed,
   studentUserLinks,
 } from "@/lib/athlete-data";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 const DEMO_PASSWORD = "Athlink2026!";
 
@@ -288,7 +289,7 @@ async function main() {
         es: "Comparto mi análisis de swing — las notas del ángulo de ataque.",
       },
       kind: "clip",
-      attachmentUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      attachmentUrl: DEMO_CLIPS.windup.url,
       breakdownId: "bd-a1-1",
       createdAt: new Date("2026-07-26T18:05:00"),
     },

@@ -546,7 +546,7 @@ export async function getNextSlots(coachIds: string[]): Promise<Record<string, N
     .orderBy(asc(timeSlots.date), asc(timeSlots.startTime));
   const out: Record<string, NextSlot> = {};
   for (const r of rows) {
-    if (r.date < today) continue;
+    if (r.date < today || !isNotOver(r.date, r.startTime)) continue;
     if (out[r.coachId]) continue;
     out[r.coachId] = { coachId: r.coachId, date: r.date, startTime: r.startTime, endTime: r.endTime };
   }

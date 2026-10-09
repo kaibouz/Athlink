@@ -31,12 +31,9 @@ import { useAuth } from "@/lib/store";
 import { trackEvent } from "@/lib/track-event";
 import { cn } from "@/lib/utils";
 import type { SocialPostType } from "@/types";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
-const DEMO_VIDEOS = [
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-];
+const DEMO_VIDEOS = [DEMO_CLIPS.windup.url, DEMO_CLIPS.release.url, DEMO_CLIPS.fielding.url];
 
 function stepBefore(step: OnboardingStep): OnboardingStep | null {
   const idx = ONBOARDING_WIZARD_STEPS.indexOf(step as (typeof ONBOARDING_WIZARD_STEPS)[number]);
@@ -319,8 +316,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             type: draft.postType as SocialPostType,
             caption: draft.postCaption.trim(),
             videoUrl: DEMO_VIDEOS[0]!,
-            posterUrl:
-              "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
+            posterUrl: DEMO_CLIPS.windup.poster,
           });
         } catch {
           setError(t("onboard_error_post"));
@@ -367,7 +363,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       return;
     }
     try {
-      await navigator.share({ title: "AthLink", url: bookUrl });
+      await navigator.share({ title: "AthlinkPro", url: bookUrl });
     } catch {
       /* ignore */
     }

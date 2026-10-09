@@ -158,7 +158,7 @@ function AthleteProfileContent() {
               {copied ? t("social_copied") : t("social_share_link")}
             </Button>
             <a
-              href={`mailto:?subject=${encodeURIComponent(`AthLink profile: ${athlete.name}`)}&body=${encodeURIComponent(shareUrl)}`}
+              href={`mailto:?subject=${encodeURIComponent(`AthlinkPro profile: ${athlete.name}`)}&body=${encodeURIComponent(shareUrl)}`}
             >
               <Button variant="secondary">
                 <Link2 className="h-4 w-4" />

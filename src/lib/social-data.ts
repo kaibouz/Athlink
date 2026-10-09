@@ -1,3 +1,4 @@
+import { DEMO_CLIPS } from "@/lib/demo-media";
 import type { AthletePublicProfile, SocialPost } from "@/types";
 
 export const athleteProfiles: AthletePublicProfile[] = [
@@ -102,12 +103,12 @@ export const athleteProfiles: AthletePublicProfile[] = [
   },
 ];
 
-/** Demo short clips (public sample MP4s) */
+/** Demo short clips — bundled locally (see demo-media.ts) */
 const V = {
-  a: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  b: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  c: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  d: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  a: DEMO_CLIPS.windup,
+  b: DEMO_CLIPS.release,
+  c: DEMO_CLIPS.fielding,
+  d: DEMO_CLIPS.glove,
 };
 
 export const seedSocialPosts: SocialPost[] = [
@@ -121,8 +122,8 @@ export const seedSocialPosts: SocialPost[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ethan",
     type: "form",
     caption: "Side view — working on attack angle vs outside FB. Feedback welcome.",
-    videoUrl: V.a,
-    posterUrl: "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
+    videoUrl: V.a.url,
+    posterUrl: V.a.poster,
     statsNote: "Season AVG .342",
     coachName: "Shota Tanaka",
     sessionLabel: "Hitting · Jul 20",
@@ -144,8 +145,8 @@ export const seedSocialPosts: SocialPost[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Sofia",
     type: "practice",
     caption: "Bullpen — FB command glove side. Looking for a pitching coach in OC.",
-    videoUrl: V.b,
-    posterUrl: "https://images.unsplash.com/photo-1508344928928-7528d0e3b3a5?w=800&q=80",
+    videoUrl: V.b.url,
+    posterUrl: V.b.poster,
     statsNote: "ERA 1.84 · 92 K",
     coachName: "Open to coaches",
     sessionLabel: "Bullpen · Jul 27",
@@ -164,8 +165,8 @@ export const seedSocialPosts: SocialPost[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Maya",
     type: "game",
     caption: "Game throwdown — pop ~2.05. Open to college coaches & scouts.",
-    videoUrl: V.c,
-    posterUrl: "https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=800&q=80",
+    videoUrl: V.c.url,
+    posterUrl: V.c.poster,
     statsNote: "2026: .311 / .398 / .467",
     createdAt: "2026-07-26T19:40:00",
     likes: 67,
@@ -180,8 +181,8 @@ export const seedSocialPosts: SocialPost[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Kenji",
     type: "training",
     caption: "Self-training: funnel & backhand footwork at the park.",
-    videoUrl: V.d,
-    posterUrl: "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?w=800&q=80",
+    videoUrl: V.d.url,
+    posterUrl: V.d.poster,
     createdAt: "2026-07-25T09:15:00",
     likes: 18,
   },
@@ -195,8 +196,8 @@ export const seedSocialPosts: SocialPost[] = [
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ethan",
     type: "highlight",
     caption: "Game triple to the gap — sharing for coaches reviewing my profile.",
-    videoUrl: V.b,
-    posterUrl: "https://images.unsplash.com/photo-1529768167804-613441e17f4f?w=800&q=80",
+    videoUrl: V.b.url,
+    posterUrl: V.b.poster,
     statsNote: "4 HR · 28 RBI",
     createdAt: "2026-07-24T21:00:00",
     likes: 33,
