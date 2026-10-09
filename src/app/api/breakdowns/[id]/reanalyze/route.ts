@@ -3,13 +3,13 @@ import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured } from "@/db";
 import { aiBreakdowns } from "@/db/schema";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { getBreakdownById } from "@/lib/server/athlete";
 import { processBreakdown } from "@/lib/server/ai-breakdown";
 
 /** Re-run analysis on an existing clip (resets the job to "processing"). */
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

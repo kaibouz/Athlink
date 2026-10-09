@@ -4,6 +4,8 @@ export type UserRole = "athlete" | "coach" | "parent" | "executive";
 export type LessonFormat = "in_person" | "online";
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 export type PackageType = "single" | "pack" | "subscription";
+/** Platform membership tier (Free forever vs paid Pro). */
+export type PlatformPlanId = "free" | "pro";
 export type { Localized };
 
 export interface User {
@@ -12,6 +14,10 @@ export interface User {
   email: string;
   role: UserRole;
   avatarUrl?: string;
+  /** Account state. Suspended accounts are treated as signed out. */
+  status?: "active" | "suspended" | "deleted";
+  /** Resolved Free/Pro tier. Defaults to free when omitted. */
+  plan?: PlatformPlanId;
 }
 
 export interface CoachProfile {
@@ -30,6 +36,21 @@ export interface CoachProfile {
   rating: number;
   reviewCount: number;
   verified: boolean;
+  /** Evidence behind the badge — derived, never stored as a flag. */
+  verification?: {
+    active: string[];
+    missing: string[];
+    expired: string[];
+    nextExpiry: string | null;
+    details: {
+      type: string;
+      required: boolean;
+      state: "active" | "expired" | "missing" | "pending" | "failed";
+      provider: string | null;
+      checkedAt: string | null;
+      expiresAt: string | null;
+    }[];
+  };
   formats: LessonFormat[];
   avatarUrl: string;
   coverGradient: string;

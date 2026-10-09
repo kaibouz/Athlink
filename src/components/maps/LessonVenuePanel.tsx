@@ -71,7 +71,7 @@ export function LessonVenuePanel({
             href={links.directionsGoogle}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-brand-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-brand-700"
+            className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-accent-strong"
           >
             <Navigation className="h-3 w-3" />
             {t("lesson_venue_directions")}

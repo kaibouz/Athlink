@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Lock, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
 import { formatDateJa } from "@/lib/utils";
+import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import type { AthleteProgress, ProgressMetric } from "@/types";
 
 const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
@@ -37,10 +38,11 @@ function trendSince(metric: ProgressMetric): string {
   return `${arrow} ${Math.abs(diff)}${metric.unit} · ${improved ? "improving" : "watch"}`;
 }
 
-/** Progress tab — live headline metric + sparkline, ranked goals, report cards, Pro framing */
+/** Progress tab — Free: headline + report cards; Pro: goals + week framing. */
 export function AthleteProgressScreen() {
   const { user } = useAuth();
   const { t, locale } = useLocale();
+  const { isPro } = usePlatformPlan();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
   const { data, loading } = useApi<{ progress: AthleteProgress | null }>(
     user ? "/api/me/progress" : null,
@@ -50,7 +52,7 @@ export function AthleteProgressScreen() {
   if (!user) {
     return (
       <div className="mx-app mx-auto max-w-lg px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Progress</h1>
+        <h1 className="text-2xl font-bold">{t("nav_progress")}</h1>
         <p className="mt-2 text-[var(--mx-dim)]">{t("bookings_login_hint")}</p>
         <Link href="/sign-in?redirect_url=/progress" className="mt-6 inline-block">
           <Button className="mx-btn mx-btn-accent border-0">{t("nav_login")}</Button>
@@ -64,15 +66,19 @@ export function AthleteProgressScreen() {
   const reportCards = progress?.reportCards ?? [];
 
   return (
-    <div className="mx-app mx-route-texture mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <div className="mx-app mx-route-texture w-full px-4 py-6 sm:px-6 lg:px-8">
       <header className="mx-hdr">
         <div>
-          <h1>Progress</h1>
-          <small>Live from your last sessions</small>
+          <h1>{t("nav_progress")}</h1>
+          <small>{t("plan_progress_sub")}</small>
         </div>
-        <span className="mx-pill mx-pill-accent inline-flex items-center gap-1">
-          <Sparkles className="h-3 w-3" /> Pro
-        </span>
+        {isPro ? (
+          <span className="mx-pill mx-pill-accent inline-flex items-center gap-1">
+            <Sparkles className="h-3 w-3" /> {t("plan_pro_name")}
+          </span>
+        ) : (
+          <span className="mx-pill inline-flex items-center gap-1">{t("plan_free_name")}</span>
+        )}
       </header>
 
       {headline ? (
@@ -81,53 +87,67 @@ export function AthleteProgressScreen() {
           <div className="mx-big">
             {headline.latest}
             {headline.unit ? <span className="text-sm"> {headline.unit}</span> : null}{" "}
-            <span className="text-sm font-semibold text-[var(--mx-green)]">{trendSince(headline)}</span>
+            {isPro ? (
+              <span className="text-sm font-semibold text-[var(--mx-green)]">{trendSince(headline)}</span>
+            ) : null}
           </div>
-          <svg viewBox="0 0 280 64" className="mt-3 h-16 w-full" aria-hidden>
-            <polyline
-              fill="none"
-              stroke="var(--mx-blue-2)"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              points={sparkPoints(headline.series)}
-            />
-          </svg>
+          {isPro ? (
+            <svg viewBox="0 0 280 64" className="mt-3 h-16 w-full" aria-hidden>
+              <polyline
+                fill="none"
+                stroke="var(--mx-blue-2)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={sparkPoints(headline.series)}
+              />
+            </svg>
+          ) : null}
         </div>
       ) : (
         <div className="mx-card mb-3">
-          <div className="mx-t">Headline metric</div>
-          <p className="text-sm text-[var(--mx-dim)]">{loading ? "Loading…" : "No metrics yet."}</p>
+          <div className="mx-t">{t("plan_progress_headline")}</div>
+          <p className="text-sm text-[var(--mx-dim)]">
+            {loading ? t("plan_loading") : t("plan_progress_no_metrics")}
+          </p>
+        </div>
+      )}
+
+      {isPro ? (
+        <div className="mx-card mb-3">
+          <div className="mx-t">{t("plan_progress_goals")}</div>
+          {goals.map((g, i) => (
+            <div key={g.id}>
+              <div className="mx-rank">
+                <span className="n">{i + 1}</span>
+                <span className="min-w-0 flex-1 truncate">
+                  {g.label} → {g.target}
+                  {g.unit}
+                </span>
+                <span className="v">
+                  {g.current}
+                  {g.unit}
+                </span>
+              </div>
+              <div className="mx-bar mb-2 mt-1">
+                <i style={{ width: `${Math.round(Math.min(100, g.pct * 100))}%` }} />
+              </div>
+            </div>
+          ))}
+          {goals.length === 0 && (
+            <p className="text-sm text-[var(--mx-dim)]">
+              {loading ? t("plan_loading") : t("plan_progress_no_goals")}
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="mb-3">
+          <ProUpgradeBanner titleKey="plan_progress_gate_title" bodyKey="plan_progress_gate_body" />
         </div>
       )}
 
       <div className="mx-card mb-3">
-        <div className="mx-t">Goals · ranked for your position</div>
-        {goals.map((g, i) => (
-          <div key={g.id}>
-            <div className="mx-rank">
-              <span className="n">{i + 1}</span>
-              <span className="min-w-0 flex-1 truncate">
-                {g.label} → {g.target}
-                {g.unit}
-              </span>
-              <span className="v">
-                {g.current}
-                {g.unit}
-              </span>
-            </div>
-            <div className="mx-bar mb-2 mt-1">
-              <i style={{ width: `${Math.round(Math.min(100, g.pct * 100))}%` }} />
-            </div>
-          </div>
-        ))}
-        {goals.length === 0 && (
-          <p className="text-sm text-[var(--mx-dim)]">{loading ? "Loading…" : "No goals set yet."}</p>
-        )}
-      </div>
-
-      <div className="mx-card mb-3">
-        <div className="mx-t">Report cards</div>
+        <div className="mx-t">{t("plan_progress_reports")}</div>
         {reportCards.length > 0 ? (
           reportCards.map((r) => (
             <Link key={r.id} href="/messages" className="mx-li mb-2">
@@ -142,24 +162,11 @@ export function AthleteProgressScreen() {
             </Link>
           ))
         ) : (
-          <p className="text-sm text-[var(--mx-dim)]">No report cards yet.</p>
+          <p className="text-sm text-[var(--mx-dim)]">{t("plan_progress_no_reports")}</p>
         )}
       </div>
 
-      <div className="mx-card mx-route-texture">
-        <div className="flex items-center gap-2">
-          <span className="mx-toast-ic">
-            <Lock className="h-3.5 w-3.5" />
-          </span>
-          <div>
-            <b className="text-[0.8rem]">AthLink Pro — deeper analytics</b>
-            <span className="block text-[0.7rem] text-[var(--mx-dimmer)]">
-              Percentile ranks, opponent-adjusted trends & video-linked metrics.
-            </span>
-          </div>
-        </div>
-        <Button className="mx-btn mx-btn-accent mt-3 border-0 text-[0.75rem]">Unlock Pro</Button>
-      </div>
+      {!isPro ? <ProUpgradeBanner /> : null}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { UserRole } from "@/types";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 const COMPLETE_PREFIX = "athlink_onboarding_complete_";
 const PENDING_KEY = "athlink_onboarding_pending";
@@ -7,18 +8,14 @@ const DRAFT_KEY = "athlink_onboarding_draft";
 export type OnboardingStep =
   | "welcome"
   | "account"
-  | "intro"
   | "profile"
-  | "details"
   | "social"
   | "finish";
 
 export const ONBOARDING_STEPS: OnboardingStep[] = [
   "welcome",
   "account",
-  "intro",
   "profile",
-  "details",
   "social",
   "finish",
 ];
@@ -27,7 +24,6 @@ export interface OnboardingDraft {
   role: "coach" | "athlete";
   name: string;
   email: string;
-  password: string;
   // coach profile
   sport: string;
   specialty: string;
@@ -46,6 +42,7 @@ export interface OnboardingDraft {
   batsThrows: string;
   lookingForCoach: boolean;
   openToScouts: boolean;
+  focusAreas: string[];
   // athlete goals + guardian (position-aware onboarding)
   selectedGoals: string[];
   guardianName: string;
@@ -60,7 +57,6 @@ export function defaultDraft(role: "coach" | "athlete" = "athlete"): OnboardingD
     role,
     name: "",
     email: "",
-    password: "",
     sport: "baseball",
     specialty: "hitting",
     location: "Los Angeles, CA",
@@ -77,6 +73,7 @@ export function defaultDraft(role: "coach" | "athlete" = "athlete"): OnboardingD
     batsThrows: "R/R",
     lookingForCoach: true,
     openToScouts: true,
+    focusAreas: [],
     selectedGoals: [],
     guardianName: "",
     guardianEmail: "",
@@ -113,22 +110,24 @@ export function shouldEnterOnboarding(userId: string | null): boolean {
 }
 
 export function destinationFor(role: UserRole): string {
-  if (role === "executive") return "/admin";
-  // Athletes land in the marketplace (browse-first); coaches in their OS.
-  return role === "coach" ? "/coach/dashboard" : "/home";
+  if (role === "executive") return MARKET_TO_PLATFORM.adminHome;
+  // Athletes land in platform home; coaches in their OS. Marketplace stays at /search.
+  return role === "coach" ? MARKET_TO_PLATFORM.coachHome : MARKET_TO_PLATFORM.athleteHome;
 }
 
 /** Role-specific signup / onboarding entry (after /join gateway). */
 export function joinPathFor(role: UserRole | "coach" | "athlete"): string {
-  return role === "coach" ? "/join/coach" : "/join/athlete";
+  return role === "coach" ? MARKET_TO_PLATFORM.joinCoach : MARKET_TO_PLATFORM.joinAthlete;
 }
 
-/** Wizard steps shown on /join/coach and /join/athlete (no gateway pick). */
+/**
+ * Wizard steps on /join/coach and /join/athlete. The product tour lives on the
+ * main site's walkthrough now, so the wizard goes straight from the account to
+ * building the profile.
+ */
 export const ONBOARDING_WIZARD_STEPS: OnboardingStep[] = [
   "account",
-  "intro",
   "profile",
-  "details",
   "social",
   "finish",
 ];

@@ -1,12 +1,13 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { SlidersHorizontal } from "lucide-react";
+import { List, Map as MapIcon, SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { SPECIALTIES } from "@/lib/data";
 import { defaultFilters, filterCoaches } from "@/lib/search";
 import type { CoachProfile, NextSlot, SearchFilters } from "@/types";
 import { CoachBookRow } from "@/components/coaches/CoachBookRow";
+import { CoachMapView } from "@/components/coaches/CoachMapView";
 import { SearchFiltersPanel } from "@/components/coaches/SearchFiltersPanel";
 import { useLocale } from "@/lib/i18n/provider";
 import { specialtyLabel } from "@/lib/i18n/localize";
@@ -20,6 +21,7 @@ function SearchContent() {
   const { user } = useAuth();
   const params = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [view, setView] = useState<"list" | "map">("list");
   const [filters, setFilters] = useState<SearchFilters>(() => ({
     ...defaultFilters,
     query: params.get("q") ?? "",
@@ -133,14 +135,37 @@ function SearchContent() {
         </aside>
 
         <div className="space-y-2.5">
-          <p className="mb-1 text-sm font-medium text-[color:var(--mx-dim)]">
-            {t("search_results", { n: results.length })}
-          </p>
+          <div className="mb-1 flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-[color:var(--mx-dim)]">
+              {t("search_results", { n: results.length })}
+            </p>
+            {results.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setView((v) => (v === "list" ? "map" : "list"))}
+                className="inline-flex items-center gap-1.5 text-[0.8rem] font-semibold text-[color:var(--mx-blue-2)] hover:underline"
+              >
+                {view === "list" ? (
+                  <>
+                    <MapIcon className="h-3.5 w-3.5" />
+                    {t("search_map_view")}
+                  </>
+                ) : (
+                  <>
+                    <List className="h-3.5 w-3.5" />
+                    {t("search_list_view")}
+                  </>
+                )}
+              </button>
+            ) : null}
+          </div>
           {results.length === 0 ? (
             <div className="mx-card border-dashed text-center">
               <p className="font-medium">{t("search_empty")}</p>
               <p className="mt-1 text-sm text-[color:var(--mx-dimmer)]">{t("search_empty_hint")}</p>
             </div>
+          ) : view === "map" ? (
+            <CoachMapView coaches={results} nextSlots={nextSlots} />
           ) : (
             results.map((coach) => (
               <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />

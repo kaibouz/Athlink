@@ -209,8 +209,8 @@ export default function CoachRegisterPage() {
                     onClick={() => toggleLanguage(lang)}
                     className={`rounded-full border px-3 py-1.5 text-sm font-medium transition ${
                       selected
-                        ? "border-brand-600 bg-brand-600 text-white"
-                        : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400"
+                        ? "border-accent bg-accent text-white"
+                        : "border-brand-200 bg-surface text-brand-700 hover:border-accent"
                     }`}
                   >
                     {languageLabel(t, lang)}

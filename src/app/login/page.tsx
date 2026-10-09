@@ -8,7 +8,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const qs = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
-    if (typeof value === "string") qs.set(key, value);
+    // Legacy links say ?next=…; the Clerk sign-in page reads ?redirect_url=….
+    if (typeof value === "string") qs.set(key === "next" ? "redirect_url" : key, value);
   }
   const query = qs.toString();
   redirect(query ? `/sign-in?${query}` : "/sign-in");

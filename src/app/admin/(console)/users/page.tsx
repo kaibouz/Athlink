@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AdminMemberPanel, StatusBadge } from "@/components/admin/AdminMemberPanel";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { useDeferredEffect } from "@/lib/admin/use-deferred-effect";
 import { useLocale } from "@/lib/i18n/provider";
@@ -11,6 +12,7 @@ type AdminUser = {
   email: string;
   name: string;
   role: UserRole;
+  status?: "active" | "suspended";
   createdAt: string;
 };
 
@@ -23,6 +25,7 @@ export default function AdminUsersPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
 
   async function loadUsers() {
     setLoading(true);
@@ -124,6 +127,9 @@ export default function AdminUsersPage() {
                 <th className="px-4 py-3 text-left font-medium">Name</th>
                 <th className="px-4 py-3 text-left font-medium">Email</th>
                 <th className="px-4 py-3 text-left font-medium">Role</th>
+                <th className="px-4 py-3 text-left font-medium">Status</th>
+                <th className="px-4 py-3 text-left font-medium">Registered</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -132,12 +138,34 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-3">{user.name}</td>
                   <td className="px-4 py-3 text-[var(--admin-text-dim)]">{user.email}</td>
                   <td className="px-4 py-3 capitalize">{user.role}</td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={user.status} />
+                  </td>
+                  <td className="px-4 py-3 text-[var(--admin-text-dim)]">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button type="button" className="admin-btn-ghost text-xs" onClick={() => setSelected(user.id)}>
+                      Details
+                    </button>
+                  </td>
                 </tr>
               ))}
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-10 text-center text-[var(--admin-text-dim)]">
+                    No registered members yet
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         )}
       </section>
+
+      {selected ? (
+        <AdminMemberPanel userId={selected} onClose={() => setSelected(null)} onChanged={() => void loadUsers()} />
+      ) : null}
     </div>
   );
 }

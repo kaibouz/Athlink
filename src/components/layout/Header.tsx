@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { cn } from "@/lib/utils";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 export function Header() {
   const pathname = usePathname();
@@ -17,6 +18,12 @@ export function Header() {
   const { user, logout, switchRole } = useAuth();
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
+
+  async function handleLogout(closeMenu = false) {
+    await logout();
+    if (closeMenu) setOpen(false);
+    router.replace(MARKET_TO_PLATFORM.hq);
+  }
 
   const links =
     user?.role === "coach"
@@ -40,7 +47,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-brand-100/80 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <AthlinkProLogo href="/" size="header" variant="monogram" />
+        <AthlinkProLogo href="/" size="header" variant="lockup" />
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => (
@@ -117,8 +124,7 @@ export function Header() {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  logout();
-                  router.push("/");
+                  void handleLogout();
                 }}
                 aria-label={t("nav_logout")}
               >
@@ -198,9 +204,7 @@ export function Header() {
             {user ? (
               <button
                 onClick={() => {
-                  logout();
-                  setOpen(false);
-                  router.push("/");
+                  void handleLogout(true);
                 }}
                 className="rounded-lg px-3 py-2.5 text-left text-sm font-medium text-brand-700 hover:bg-brand-50"
               >

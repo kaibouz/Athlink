@@ -2,6 +2,7 @@
  * Seed the database with demo data from static lib files.
  * Run: npm run db:push && npm run db:seed
  */
+import { addDaysToKey, todayKey } from "@/lib/dates";
 import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { getDb } from "./index";
@@ -40,15 +41,13 @@ import {
   athleteMetricSeed,
   studentUserLinks,
 } from "@/lib/athlete-data";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 const DEMO_PASSWORD = "Athlink2026!";
 
 /** Date string N days from today (local midnight). Keeps demo slots/bookings always current. */
 function dayOffset(offset: number): string {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + offset);
-  return d.toISOString().slice(0, 10);
+  return addDaysToKey(todayKey(), offset);
 }
 
 const SLOT_TIMES: [string, string][] = [
@@ -290,7 +289,7 @@ async function main() {
         es: "Comparto mi análisis de swing — las notas del ángulo de ataque.",
       },
       kind: "clip",
-      attachmentUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      attachmentUrl: DEMO_CLIPS.windup.url,
       breakdownId: "bd-a1-1",
       createdAt: new Date("2026-07-26T18:05:00"),
     },

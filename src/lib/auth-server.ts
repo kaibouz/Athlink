@@ -9,13 +9,15 @@ import { isExecutiveEmail } from "@/lib/admin-auth";
 
 export const SESSION_COOKIE = "athlink_session";
 const SESSION_DAYS = 30;
-export const PUBLIC_SIGNUP_ROLES: UserRole[] = ["athlete", "coach", "parent"];
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 12);
 }
 
 export async function verifyPassword(password: string, hash: string) {
+  // Clerk-provisioned rows carry a placeholder instead of a digest; reject
+  // anything that is not a bcrypt hash before it reaches bcrypt.compare.
+  if (!/^\$2[aby]?\$/.test(hash)) return false;
   return bcrypt.compare(password, hash);
 }
 
@@ -32,6 +34,7 @@ export function toPublicUser(row: typeof users.$inferSelect): User {
     name: row.name,
     role: row.role,
     avatarUrl: row.avatarUrl ?? undefined,
+    status: row.status === "suspended" || row.status === "deleted" ? row.status : "active",
   };
 }
 
@@ -82,6 +85,13 @@ export async function getCurrentUser(): Promise<User | null> {
     .where(eq(sessions.token, token))
     .limit(1);
 
+  if (result && result.user.status !== "active") {
+    // Suspended by an admin or self-deleted: drop the session and treat the visitor as signed out.
+    await db.delete(sessions).where(eq(sessions.token, token));
+    cookieStore.delete(SESSION_COOKIE);
+    return null;
+  }
+
   if (!result || result.expiresAt <= now) {
     if (token) {
       await db.delete(sessions).where(eq(sessions.token, token));
@@ -93,41 +103,6 @@ export async function getCurrentUser(): Promise<User | null> {
   return toPublicUser(result.user);
 }
 
-export async function registerUser(input: {
-  email: string;
-  password: string;
-  name: string;
-  role: UserRole;
-}) {
-  if (!PUBLIC_SIGNUP_ROLES.includes(input.role)) {
-    throw new Error("ROLE_FORBIDDEN");
-  }
-
-  const db = getDb();
-  const email = input.email.trim().toLowerCase();
-  const [existing] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  if (existing) {
-    throw new Error("EMAIL_TAKEN");
-  }
-
-  const id = `u-${randomBytes(6).toString("hex")}`;
-  const passwordHash = await hashPassword(input.password);
-  const avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(input.name || email)}`;
-
-  await db.insert(users).values({
-    id,
-    email,
-    passwordHash,
-    name: input.name.trim(),
-    role: input.role,
-    avatarUrl,
-  });
-
-  await createSession(id);
-  const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
-  return toPublicUser(user);
-}
-
 export async function loginUser(email: string, password: string) {
   const db = getDb();
   const normalized = email.trim().toLowerCase();
@@ -136,6 +111,8 @@ export async function loginUser(email: string, password: string) {
 
   const valid = await verifyPassword(password, row.passwordHash);
   if (!valid) throw new Error("INVALID_CREDENTIALS");
+  if (row.status === "deleted") throw new Error("INVALID_CREDENTIALS");
+  if (row.status === "suspended") throw new Error("ACCOUNT_SUSPENDED");
 
   await createSession(row.id);
   return toPublicUser(row);

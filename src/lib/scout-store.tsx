@@ -65,9 +65,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     (athleteId: string, athleteName: string, email?: string) => {
       upsert(athleteId, athleteName, "contact");
       if (typeof window === "undefined") return;
-      const subject = encodeURIComponent(`AthLink — interest in ${athleteName}`);
+      const subject = encodeURIComponent(`AthlinkPro — interest in ${athleteName}`);
       const body = encodeURIComponent(
-        `Hi ${athleteName},\n\nI saw your AthLink profile / clip and would like to connect.\n\nProfile: ${window.location.origin}/athletes/${athleteId}\n\n— Sent via AthLink`,
+        `Hi ${athleteName},\n\nI saw your AthlinkPro profile / clip and would like to connect.\n\nProfile: ${window.location.origin}/athletes/${athleteId}\n\n— Sent via AthlinkPro`,
       );
       const to = email || "";
       window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;

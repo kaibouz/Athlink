@@ -12,19 +12,27 @@ export async function GET() {
     return NextResponse.json({ allowed: false, reason: "no_database" });
   }
 
-  const executiveCount = await countExecutives();
-  const hasBootstrap = Boolean(process.env.ADMIN_BOOTSTRAP_SECRET?.trim());
+  try {
+    const executiveCount = await countExecutives();
+    const hasBootstrap = Boolean(process.env.ADMIN_BOOTSTRAP_SECRET?.trim());
 
-  if (executiveCount === 0 && hasBootstrap) {
-    return NextResponse.json({ allowed: true, reason: "bootstrap" });
+    if (executiveCount === 0 && hasBootstrap) {
+      return NextResponse.json({ allowed: true, reason: "bootstrap" });
+    }
+
+    const user = await getCurrentUser();
+    if (user?.role === "executive") {
+      return NextResponse.json({ allowed: true, reason: "executive" });
+    }
+
+    if (executiveCount === 0 && !hasBootstrap) {
+      return NextResponse.json({ allowed: false, reason: "no_bootstrap_secret" });
+    }
+    return NextResponse.json({ allowed: false, reason: "closed" });
+  } catch (err) {
+    console.error("[admin/register] database check failed", err);
+    return NextResponse.json({ allowed: false, reason: "database_unavailable" });
   }
-
-  const user = await getCurrentUser();
-  if (user?.role === "executive") {
-    return NextResponse.json({ allowed: true, reason: "executive" });
-  }
-
-  return NextResponse.json({ allowed: false, reason: "closed" });
 }
 
 export async function POST(req: Request) {

@@ -13,6 +13,7 @@ function AdminRegisterForm() {
 
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [needsBootstrap, setNeedsBootstrap] = useState(false);
+  const [blockedReason, setBlockedReason] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +27,7 @@ function AdminRegisterForm() {
       .then((data: { allowed?: boolean; reason?: string }) => {
         setAllowed(Boolean(data.allowed));
         setNeedsBootstrap(data.reason === "bootstrap");
+        setBlockedReason(data.allowed ? null : (data.reason ?? null));
       })
       .catch(() => setAllowed(false));
   }, []);
@@ -75,7 +77,13 @@ function AdminRegisterForm() {
     return (
       <div className="mx-auto max-w-sm px-4 py-16 text-center">
         <div className="admin-auth-card p-8">
-          <p className="text-[var(--admin-text-dim)]">{t("admin_not_executive")}</p>
+          <p className="text-[var(--admin-text-dim)]">
+            {blockedReason === "database_unavailable" || blockedReason === "no_database"
+              ? "The database is not reachable, so registration is unavailable. Check DATABASE_URL in .env.local and restart the dev server."
+              : blockedReason === "no_bootstrap_secret"
+                ? "ADMIN_BOOTSTRAP_SECRET is not set. Add it to .env.local and restart the dev server."
+                : t("admin_not_executive")}
+          </p>
           <Link
             href="/admin/login"
             className="mt-6 inline-block font-semibold text-sky-300 hover:underline"

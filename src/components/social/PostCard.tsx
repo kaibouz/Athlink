@@ -16,6 +16,7 @@ import { useSocial } from "@/lib/social-store";
 import { Badge } from "@/components/ui/Badge";
 import { AthleteOutreachButtons } from "@/components/social/AthleteOutreachButtons";
 import { cn } from "@/lib/utils";
+import { Avatar } from "@/components/ui/Avatar";
 
 const typeKey: Record<SocialPost["type"], MessageKey> = {
   form: "social_type_form",
@@ -51,12 +52,7 @@ export function PostCard({
       <article className="px-4 py-3 transition hover:bg-brand-50/40">
         <div className="flex gap-3">
           <Link href={`/athletes/${post.athleteId}`} className="shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={post.avatarUrl}
-              alt=""
-              className="h-10 w-10 rounded-full bg-brand-50"
-            />
+            <Avatar src={post.avatarUrl} name={post.athleteName} size={40} />
           </Link>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -153,12 +149,7 @@ export function PostCard({
     <article className="overflow-hidden rounded-2xl border border-brand-100 bg-surface shadow-sm">
       <div className="flex items-center gap-3 p-4">
         <Link href={`/athletes/${post.athleteId}`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={post.avatarUrl}
-            alt=""
-            className="h-11 w-11 rounded-xl bg-brand-50"
-          />
+          <Avatar src={post.avatarUrl} name={post.athleteName} size={44} className="rounded-xl" />
         </Link>
         <div className="min-w-0 flex-1">
           <Link

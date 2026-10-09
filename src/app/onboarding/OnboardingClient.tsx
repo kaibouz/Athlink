@@ -1,28 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  CalendarDays,
-  Check,
-  Copy,
-  Handshake,
-  Share2,
-  UserRound,
-  Users,
-} from "lucide-react";
+import { Check, Copy, Share2 } from "lucide-react";
 import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
-import { goalsForPosition } from "@/lib/athlete-data";
+import { ATHLETE_POSITIONS, goalsForPosition } from "@/lib/athlete-data";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
 import {
   clearDraft,
   defaultDraft,
   destinationFor,
+  isOnboardingComplete,
   joinPathFor,
   loadDraft,
   markOnboardingComplete,
@@ -32,17 +25,15 @@ import {
   type OnboardingDraft,
   type OnboardingStep,
 } from "@/lib/onboarding";
+import { MARKET_TO_PLATFORM, signInHref, signUpHref } from "@/lib/market-to-platform";
 import { useSocial } from "@/lib/social-store";
 import { useAuth } from "@/lib/store";
 import { trackEvent } from "@/lib/track-event";
 import { cn } from "@/lib/utils";
 import type { SocialPostType } from "@/types";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
-const DEMO_VIDEOS = [
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-];
+const DEMO_VIDEOS = [DEMO_CLIPS.windup.url, DEMO_CLIPS.release.url, DEMO_CLIPS.fielding.url];
 
 function stepBefore(step: OnboardingStep): OnboardingStep | null {
   const idx = ONBOARDING_WIZARD_STEPS.indexOf(step as (typeof ONBOARDING_WIZARD_STEPS)[number]);
@@ -53,8 +44,8 @@ function stepBefore(step: OnboardingStep): OnboardingStep | null {
 export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   const router = useRouter();
   const { t } = useLocale();
-  const { user, hydrated, signup } = useAuth();
-  const { createProfile, addPost } = useSocial();
+  const { user, hydrated, refreshUser } = useAuth();
+  const { addPost } = useSocial();
   const primaryBtnClass =
     role === "athlete" ? "btn-athlete-primary border-0" : "btn-landing-primary border-0";
 
@@ -68,11 +59,27 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   const [submitting, setSubmitting] = useState(false);
   const [coachId, setCoachId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const athleteProfileIdRef = useRef<string | null>(null);
 
   const patchDraft = useCallback((patch: Partial<OnboardingDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch }));
   }, []);
+
+  /** Persist the wizard's role onto the Clerk member, then re-read /api/auth/me. */
+  const claimRole = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ role }),
+      });
+      if (!res.ok) return false;
+      await refreshUser();
+      return true;
+    } catch {
+      return false;
+    }
+  }, [role, refreshUser]);
 
   const goalSuggestions = useMemo(
     () => goalsForPosition(draft.position),
@@ -100,6 +107,13 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   useEffect(() => {
     if (!hydrated || !user) return;
     if (user.role !== role && user.role !== "parent") {
+      // Clerk sign-up always lands on the default role, so the wizard the member
+      // actually opened is the better signal — claim it while they are still
+      // onboarding. An account that already finished keeps its established role.
+      if (!isOnboardingComplete(user.id)) {
+        void claimRole();
+        return;
+      }
       router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
       return;
     }
@@ -108,7 +122,10 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       email: draft.email || user.email,
       role,
     });
-  }, [hydrated, user, patchDraft, draft.name, draft.email, role, router]);
+    // Arriving back from Clerk, the account is already made — don't make them
+    // click past a step that only confirms it.
+    setStep((prev) => (prev === "account" ? "profile" : prev));
+  }, [hydrated, user, patchDraft, draft.name, draft.email, role, router, claimRole]);
 
   const bookUrl = useMemo(() => {
     if (!coachId) return "";
@@ -123,7 +140,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
   function goBack() {
     setError("");
     if (step === "account") {
-      router.push("/join");
+      router.push(MARKET_TO_PLATFORM.hq);
       return;
     }
     const prev = stepBefore(step);
@@ -176,30 +193,47 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
     }
   }
 
-  function ensureAthleteProfile() {
-    if (athleteProfileIdRef.current || !user) return athleteProfileIdRef.current;
-    const profile = createProfile({
-      userId: user.id,
-      name: user.name || draft.name,
-      email: user.email || draft.email,
-      school: draft.school.trim(),
-      classYear: draft.classYear,
-      height: draft.height.trim() || "—",
-      weight: draft.weight.trim() || "—",
-      position: draft.position,
-      batsThrows: draft.batsThrows,
-      location: draft.athleteLocation.trim(),
-      bio: draft.athleteBio.trim(),
-      lookingForCoach: draft.lookingForCoach,
-      openToScouts: draft.openToScouts,
-      seasonLabel: `${draft.classYear} season`,
-    });
-    athleteProfileIdRef.current = profile.id;
-    return profile.id;
-  }
-
-  async function saveAthleteOnboarding() {
+  async function saveAthleteOnboarding(): Promise<boolean> {
     const goals = goalSuggestions.filter((g) => draft.selectedGoals.includes(g.metric));
+
+    // Save the registration profile to the database so it shows up in admin.
+    // 503 DATABASE_NOT_CONFIGURED = pure demo mode, where nothing is persisted.
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/athletes/me", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          school: draft.school,
+          classYear: draft.classYear,
+          height: draft.height,
+          weight: draft.weight,
+          position: draft.position,
+          batsThrows: draft.batsThrows,
+          location: draft.athleteLocation,
+          bio: draft.athleteBio,
+          lookingForCoach: draft.lookingForCoach,
+          openToScouts: draft.openToScouts,
+          focusAreas: draft.focusAreas,
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        if (data.error !== "DATABASE_NOT_CONFIGURED") {
+          setError(t("onboard_error_save"));
+          return false;
+        }
+      } else {
+        trackEvent("athlete_register_complete", { role: "athlete" });
+      }
+    } catch {
+      setError(t("onboard_error_save"));
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+
     try {
       if (goals.length > 0) {
         await fetch("/api/me/goals", {
@@ -221,44 +255,36 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
         });
       }
     } catch {
-      /* best-effort: onboarding continues even if the write fails */
+      /* best-effort: goals / guardian invite must not block registration */
     }
+    return true;
   }
 
   async function goNext() {
     setError("");
 
     if (step === "account") {
+      // Accounts are created by Clerk, never here — the wizard only resumes once
+      // the member comes back signed in.
       if (!user) {
-        if (!draft.name.trim() || !draft.email.trim() || !draft.password) {
-          setError(t("onboard_error_required"));
-          return;
-        }
-        setSubmitting(true);
-        const result = await signup(
-          draft.email.trim(),
-          draft.password,
-          draft.name.trim(),
-          draft.role,
-        );
-        setSubmitting(false);
-        if (!result.ok) {
-          setError(
-            result.error === "EMAIL_TAKEN" ? t("signup_email_taken") : t("signup_error"),
-          );
-          return;
-        }
-        trackEvent("onboarding_account_complete", { role: draft.role });
+        router.push(signUpHref(joinPathFor(role)));
+        return;
       }
-      setStep("intro");
-      return;
-    }
-
-    if (step === "intro") {
+      if (user.role !== role && user.role !== "parent") {
+        setSubmitting(true);
+        const claimed = await claimRole();
+        setSubmitting(false);
+        if (!claimed) {
+          setError(t("signup_error"));
+          return;
+        }
+      }
+      trackEvent("onboarding_account_complete", { role: draft.role });
       setStep("profile");
       return;
     }
 
+    // Deck runs a 3-step wizard; profile and details are one screen there.
     if (step === "profile") {
       if (draft.role === "coach") {
         const name = (user?.name || draft.name).trim();
@@ -266,55 +292,37 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
           setError(t("onboard_error_required"));
           return;
         }
+        const ok = await saveCoachProfile();
+        if (!ok) return;
       } else {
         if (!draft.school.trim() || !draft.position.trim() || !draft.classYear.trim()) {
           setError(t("onboard_error_required"));
           return;
         }
-        // Pre-select the position's starter goals when first entering details.
-        if (draft.selectedGoals.length === 0) {
-          patchDraft({
-            selectedGoals: goalsForPosition(draft.position).map((g) => g.metric),
-          });
-        }
-      }
-      setStep("details");
-      return;
-    }
-
-    if (step === "details") {
-      if (draft.role === "coach") {
-        const ok = await saveCoachProfile();
+        const ok = await saveAthleteOnboarding();
         if (!ok) return;
-      }
-      if (draft.role === "athlete") {
-        ensureAthleteProfile();
-        await saveAthleteOnboarding();
       }
       setStep("social");
       return;
     }
 
     if (step === "social") {
-      if (draft.role === "athlete" && user) {
-        const profileId = ensureAthleteProfile();
-        if (profileId && draft.postCaption.trim()) {
-          const name = user.name || draft.name;
-          addPost({
-            athleteId: profileId,
-            athleteName: name,
-            school: draft.school.trim(),
-            position: draft.position,
-            classYear: draft.classYear,
-            avatarUrl:
-              user.avatarUrl ??
-              `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(user.name)}`,
+      // The server derives athlete identity from the session and owns the
+      // athlete_profiles row, so only the clip itself travels from here.
+      if (draft.role === "athlete" && user && draft.postCaption.trim()) {
+        setSubmitting(true);
+        try {
+          await addPost({
             type: draft.postType as SocialPostType,
             caption: draft.postCaption.trim(),
             videoUrl: DEMO_VIDEOS[0]!,
-            posterUrl:
-              "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80",
+            posterUrl: DEMO_CLIPS.windup.poster,
           });
+        } catch {
+          setError(t("onboard_error_post"));
+          return;
+        } finally {
+          setSubmitting(false);
         }
       }
       setStep("finish");
@@ -355,7 +363,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       return;
     }
     try {
-      await navigator.share({ title: "AthLink", url: bookUrl });
+      await navigator.share({ title: "AthlinkPro", url: bookUrl });
     } catch {
       /* ignore */
     }
@@ -393,34 +401,22 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             </div>
           ) : (
             <div className="mt-8 space-y-4">
-              <div>
-                <Label htmlFor="ob-name">{t("login_name")}</Label>
-                <Input
-                  id="ob-name"
-                  value={draft.name}
-                  onChange={(e) => patchDraft({ name: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="ob-email">{t("login_email")}</Label>
-                <Input
-                  id="ob-email"
-                  type="email"
-                  value={draft.email}
-                  onChange={(e) => patchDraft({ email: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="ob-password">{t("login_password")}</Label>
-                <Input
-                  id="ob-password"
-                  type="password"
-                  value={draft.password}
-                  onChange={(e) => patchDraft({ password: e.target.value })}
-                  required
-                />
+              <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-6">
+                <p className="text-sm leading-relaxed text-brand-700">
+                  {t("onboard_account_clerk_body")}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link href={signUpHref(joinPathFor(role))}>
+                    <Button size="lg" className={primaryBtnClass}>
+                      {t("onboard_account_create")}
+                    </Button>
+                  </Link>
+                  <Link href={signInHref(joinPathFor(role))}>
+                    <Button size="lg" variant="outline">
+                      {t("onboard_account_have_one")}
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           )}
@@ -431,54 +427,11 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()} disabled={submitting}>
-              {submitting ? t("loading") : t("onboard_next")}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {step === "intro" && (
-        <div>
-          <h1 className="text-2xl font-bold text-brand-950">{t("onboard_intro_title")}</h1>
-          <p className="mt-2 text-brand-600">{t("onboard_intro_sub")}</p>
-
-          <ol className="mt-8 space-y-4">
-            {[
-              { icon: Users, title: t("onboard_intro_1_title"), desc: t("onboard_intro_1_desc") },
-              {
-                icon: CalendarDays,
-                title: t("onboard_intro_2_title"),
-                desc: t("onboard_intro_2_desc"),
-              },
-              {
-                icon: Handshake,
-                title: t("onboard_intro_3_title"),
-                desc: t("onboard_intro_3_desc"),
-              },
-            ].map(({ icon: Icon, title, desc }) => (
-              <li
-                key={title}
-                className="flex gap-4 rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm"
-              >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="font-bold text-brand-950">{title}</p>
-                  <p className="mt-1 text-sm text-brand-600">{desc}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button variant="outline" onClick={goBack}>
-              {t("onboard_back")}
-            </Button>
-            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
-              {t("onboard_next")}
-            </Button>
+            {user && (
+              <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()} disabled={submitting}>
+                {submitting ? t("loading") : t("onboard_next")}
+              </Button>
+            )}
           </div>
         </div>
       )}
@@ -565,13 +518,67 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                 />
               </div>
               <div>
-                <Label htmlFor="ath-position">{t("onboard_athlete_position")}</Label>
-                <Input
-                  id="ath-position"
-                  value={draft.position}
-                  onChange={(e) => patchDraft({ position: e.target.value })}
-                  required
-                />
+                <Label>{t("onboard_athlete_position")}</Label>
+                {/* Chips, not free text: goal suggestions key off the exact code. */}
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {ATHLETE_POSITIONS.map((pos) => {
+                    const selected = draft.position === pos;
+                    return (
+                      <button
+                        key={pos}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() =>
+                          patchDraft({
+                            position: pos,
+                            // Seed this position's starter goals; the goal picker
+                            // now lives on the same screen.
+                            selectedGoals: goalsForPosition(pos).map((g) => g.metric),
+                          })
+                        }
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-sm font-semibold transition",
+                          selected
+                            ? "border-accent bg-accent text-white"
+                            : "border-brand-200 bg-surface text-brand-700 hover:border-accent",
+                        )}
+                      >
+                        {pos}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="sm:col-span-2">
+                <Label>{t("onboard_athlete_focus")}</Label>
+                <p className="mb-2 text-xs text-brand-500">{t("onboard_athlete_focus_hint")}</p>
+                <div className="flex flex-wrap gap-2">
+                  {SPECIALTIES.map((id) => {
+                    const selected = draft.focusAreas.includes(id);
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() =>
+                          patchDraft({
+                            focusAreas: selected
+                              ? draft.focusAreas.filter((f) => f !== id)
+                              : [...draft.focusAreas, id],
+                          })
+                        }
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-sm font-medium transition",
+                          selected
+                            ? "border-accent bg-accent text-white"
+                            : "border-brand-200 bg-surface text-brand-700 hover:border-accent",
+                        )}
+                      >
+                        {specialtyLabel(t, id)}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <Label htmlFor="ath-class">{t("onboard_athlete_class")}</Label>
@@ -603,24 +610,6 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
             </div>
           )}
 
-          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button variant="outline" onClick={goBack}>
-              {t("onboard_back")}
-            </Button>
-            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
-              {t("onboard_next")}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {step === "details" && (
-        <div>
-          <h1 className="text-2xl font-bold text-brand-950">{t("onboard_details_title")}</h1>
-          <p className="mt-2 text-brand-600">{t("onboard_details_sub")}</p>
-
           {draft.role === "coach" ? (
             <div className="mt-8 space-y-5">
               <div>
@@ -650,8 +639,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                         className={cn(
                           "rounded-full border px-3 py-1.5 text-sm font-medium transition",
                           selected
-                            ? "border-brand-600 bg-brand-600 text-white"
-                            : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400",
+                            ? "border-accent bg-accent text-white"
+                            : "border-brand-200 bg-surface text-brand-700 hover:border-accent",
                         )}
                       >
                         {languageLabel(t, lang)}
@@ -707,7 +696,6 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                 />
                 <span className="text-sm font-medium text-brand-800">{t("onboard_athlete_scouts")}</span>
               </label>
-
               <div className="sm:col-span-2">
                 <Label>{t("onboard_goals_title")}</Label>
                 <p className="mb-2 text-xs text-brand-500">{t("onboard_goals_sub")}</p>
@@ -722,8 +710,8 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                         className={cn(
                           "flex items-center justify-between rounded-xl border px-4 py-3 text-left transition",
                           selected
-                            ? "border-brand-600 bg-brand-600/10"
-                            : "border-brand-200 bg-surface hover:border-brand-400",
+                            ? "border-accent bg-accent/10"
+                            : "border-brand-200 bg-surface hover:border-accent",
                         )}
                       >
                         <span>
@@ -737,7 +725,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                           className={cn(
                             "flex h-5 w-5 items-center justify-center rounded-full border",
                             selected
-                              ? "border-brand-600 bg-brand-600 text-white"
+                              ? "border-accent bg-accent text-white"
                               : "border-brand-300 text-transparent",
                           )}
                         >
@@ -748,7 +736,6 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
                   })}
                 </div>
               </div>
-
               <div className="sm:col-span-2 rounded-2xl border border-brand-100 bg-brand-50/40 p-4">
                 <Label>{t("onboard_guardian_title")}</Label>
                 <p className="mb-3 text-xs text-brand-500">{t("onboard_guardian_sub")}</p>
@@ -775,15 +762,14 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
               </div>
             </div>
           )}
-
           {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Button variant="outline" onClick={goBack}>
               {t("onboard_back")}
             </Button>
-            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()} disabled={submitting}>
-              {submitting ? t("loading") : t("onboard_next")}
+            <Button size="lg" className={primaryBtnClass} onClick={() => void goNext()}>
+              {t("onboard_next")}
             </Button>
           </div>
         </div>

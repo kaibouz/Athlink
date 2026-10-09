@@ -1,3 +1,4 @@
+import { addDaysToKey, isNotOver, monthKey, todayKey } from "@/lib/dates";
 import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { randomBytes } from "crypto";
 import { getDb, isDatabaseConfigured } from "@/db";
@@ -5,6 +6,7 @@ import {
   aiBreakdowns,
   athleteGoals,
   athleteMetrics,
+  athleteProfiles,
   bookings,
   coachFeedback,
   coachProfiles,
@@ -30,7 +32,7 @@ import type {
 } from "@/types";
 
 function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
+  return todayKey();
 }
 
 /** Metrics we prefer as the two Home headline numbers, in priority order. */
@@ -140,16 +142,13 @@ function buildHeatmap(activityDates: string[]): HeatCell[] {
   const counts = new Map<string, number>();
   for (const d of activityDates) counts.set(d, (counts.get(d) ?? 0) + 1);
   const cells: HeatCell[] = [];
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  start.setDate(start.getDate() - 48);
+  const start = addDaysToKey(todayKey(), -48);
   for (let i = 0; i < 49; i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    const key = d.toISOString().slice(0, 10);
+    const key = addDaysToKey(start, i);
+    const d = new Date(`${key}T00:00:00Z`);
     const activity = counts.get(key) ?? 0;
     // Light baseline texture on weekdays, boosted by real activity
-    const weekday = d.getDay() !== 0 && d.getDay() !== 6;
+    const weekday = d.getUTCDay() !== 0 && d.getUTCDay() !== 6;
     let level = activity > 0 ? Math.min(4, 2 + activity) : weekday && (i * 3) % 5 === 0 ? 1 : 0;
     if (activity > 0) level = Math.min(4, level);
     cells.push({ date: key, level });
@@ -198,7 +197,7 @@ export async function getAthleteProgress(athleteUserId: string): Promise<Athlete
 
   const today = todayStr();
   const upcoming = bookingRows
-    .filter((b) => b.status !== "cancelled" && b.date >= today)
+    .filter((b) => (b.status === "pending" || b.status === "confirmed") && b.date >= today && isNotOver(b.date, b.endTime))
     .sort((a, b) => (a.date + a.startTime < b.date + b.startTime ? -1 : 1));
   const nextSession = upcoming[0] ? mapBooking(upcoming[0]) : null;
 
@@ -247,6 +246,50 @@ async function resolveCoachId(user: User): Promise<string | null> {
   const db = getDb();
   const [row] = await db.select().from(coachProfiles).where(eq(coachProfiles.userId, user.id)).limit(1);
   return row?.id ?? null;
+}
+
+/** The athlete or the coach on a thread (or an executive) — nobody else. */
+async function canAccessThread(user: User, threadId: string): Promise<boolean> {
+  if (user.role === "executive") return true;
+  const db = getDb();
+  const [thread] = await db
+    .select({ athleteId: messageThreads.athleteId, coachId: messageThreads.coachId })
+    .from(messageThreads)
+    .where(eq(messageThreads.id, threadId))
+    .limit(1);
+  if (!thread) return false;
+  if (thread.athleteId === user.id) return true;
+  const coachId = await resolveCoachId(user);
+  return coachId !== null && thread.coachId === coachId;
+}
+
+/**
+ * Who may see an athlete's swing breakdown: the athlete, a coach who works
+ * with them (assigned on the clip, roster link or an open thread), or an
+ * executive. These are videos of minors — the id alone is not a key.
+ */
+export async function canViewBreakdown(
+  user: User | null,
+  breakdown: { athleteId: string; coachId?: string | null },
+): Promise<boolean> {
+  if (!user) return false;
+  if (user.role === "executive" || breakdown.athleteId === user.id) return true;
+  const coachId = await resolveCoachId(user);
+  if (!coachId) return false;
+  if (breakdown.coachId === coachId) return true;
+  const db = getDb();
+  const [thread] = await db
+    .select({ id: messageThreads.id })
+    .from(messageThreads)
+    .where(and(eq(messageThreads.coachId, coachId), eq(messageThreads.athleteId, breakdown.athleteId)))
+    .limit(1);
+  if (thread) return true;
+  const [student] = await db
+    .select({ id: studentAthletes.id })
+    .from(studentAthletes)
+    .where(and(eq(studentAthletes.coachId, coachId), eq(studentAthletes.userId, breakdown.athleteId)))
+    .limit(1);
+  return Boolean(student);
 }
 
 /** Threads for a user + full message timeline with booking-derived system chips merged in. */
@@ -324,6 +367,7 @@ export async function sendMessage(
   user: User,
   input: { threadId: string; body: string; kind?: "text" | "clip"; attachmentUrl?: string; breakdownId?: string },
 ): Promise<ThreadMessage> {
+  if (!(await canAccessThread(user, input.threadId))) throw new Error("FORBIDDEN");
   const db = getDb();
   const id = `m-${randomBytes(6).toString("hex")}`;
   const createdAt = new Date();
@@ -368,13 +412,19 @@ export async function sendBreakdownToThread(
   const db = getDb();
   const [bd] = await db.select().from(aiBreakdowns).where(eq(aiBreakdowns.id, breakdownId)).limit(1);
   if (!bd) return null;
+  if (bd.athleteId !== user.id && user.role !== "executive") throw new Error("FORBIDDEN");
 
   let threadId = bd.threadId ?? undefined;
   if (!threadId) {
+    // Prefer the thread with the coach the clip was made for.
     const [t] = await db
       .select()
       .from(messageThreads)
-      .where(eq(messageThreads.athleteId, bd.athleteId))
+      .where(
+        bd.coachId
+          ? and(eq(messageThreads.athleteId, bd.athleteId), eq(messageThreads.coachId, bd.coachId))
+          : eq(messageThreads.athleteId, bd.athleteId),
+      )
       .limit(1);
     threadId = t?.id;
   }
@@ -422,7 +472,11 @@ export async function createFeedback(
   const coachId = await resolveCoachId(user);
   if (!coachId) return null;
   const db = getDb();
-  const [student] = await db.select().from(studentAthletes).where(eq(studentAthletes.id, input.studentId)).limit(1);
+  const [student] = await db
+    .select()
+    .from(studentAthletes)
+    .where(and(eq(studentAthletes.id, input.studentId), eq(studentAthletes.coachId, coachId)))
+    .limit(1);
   if (!student) return null;
   const id = `f-${randomBytes(6).toString("hex")}`;
   const createdAt = new Date();
@@ -462,7 +516,7 @@ export async function getCoachEarnings(user: User): Promise<CoachEarnings | null
   if (!coachId) return null;
   const db = getDb();
   const rows = await db.select().from(bookings).where(eq(bookings.coachId, coachId));
-  const month = new Date().toISOString().slice(0, 7);
+  const month = monthKey();
   let earned = 0;
   let pending = 0;
   let thisMonth = 0;
@@ -492,7 +546,7 @@ export async function getNextSlots(coachIds: string[]): Promise<Record<string, N
     .orderBy(asc(timeSlots.date), asc(timeSlots.startTime));
   const out: Record<string, NextSlot> = {};
   for (const r of rows) {
-    if (r.date < today) continue;
+    if (r.date < today || !isNotOver(r.date, r.startTime)) continue;
     if (out[r.coachId]) continue;
     out[r.coachId] = { coachId: r.coachId, date: r.date, startTime: r.startTime, endTime: r.endTime };
   }
@@ -561,6 +615,71 @@ export async function saveOnboardingGoals(
   }));
   if (rows.length > 0) await db.insert(athleteGoals).values(rows);
   return rows.length;
+}
+
+export interface AthleteProfileInput {
+  school: string;
+  classYear: string;
+  height?: string;
+  weight?: string;
+  position: string;
+  batsThrows?: string;
+  location: string;
+  bio?: string;
+  lookingForCoach?: boolean;
+  openToScouts?: boolean;
+  /** SPECIALTIES ids the athlete wants to work on. */
+  focusAreas?: string[];
+}
+
+/**
+ * Persist the athlete's registration profile (athlete_profiles), one row per user.
+ * Before this existed only the seed script created rows, so real athletes never
+ * appeared in the admin console.
+ */
+export async function upsertAthleteProfile(
+  user: User,
+  input: AthleteProfileInput,
+): Promise<{ id: string; created: boolean }> {
+  if (!isDatabaseConfigured()) throw new Error("DATABASE_NOT_CONFIGURED");
+  const db = getDb();
+  const fields = {
+    name: user.name,
+    email: user.email,
+    school: input.school.trim(),
+    classYear: input.classYear.trim(),
+    height: input.height?.trim() || "—",
+    weight: input.weight?.trim() || "—",
+    position: input.position.trim(),
+    batsThrows: input.batsThrows?.trim() || "R/R",
+    location: input.location.trim(),
+    bio: input.bio?.trim() ?? "",
+    lookingForCoach: Boolean(input.lookingForCoach),
+    openToScouts: Boolean(input.openToScouts),
+    focusAreas: Array.isArray(input.focusAreas) ? input.focusAreas : [],
+  };
+
+  const [existing] = await db
+    .select({ id: athleteProfiles.id })
+    .from(athleteProfiles)
+    .where(eq(athleteProfiles.userId, user.id))
+    .limit(1);
+  if (existing) {
+    await db.update(athleteProfiles).set(fields).where(eq(athleteProfiles.id, existing.id));
+    return { id: existing.id, created: false };
+  }
+
+  const id = `a-${randomBytes(6).toString("hex")}`;
+  await db.insert(athleteProfiles).values({
+    id,
+    userId: user.id,
+    ...fields,
+    avatarUrl:
+      user.avatarUrl ??
+      `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(user.name || user.email)}`,
+    seasonStats: { seasonLabel: `${input.classYear.trim()} season` },
+  });
+  return { id, created: true };
 }
 
 /** Invite a parent/guardian for a newly onboarded athlete (writes parent_links). */

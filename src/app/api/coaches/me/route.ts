@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { getCoachAnalytics, getCoachByUserId } from "@/lib/server/data";
 
 export async function GET() {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }

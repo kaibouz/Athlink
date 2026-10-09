@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "@/lib/i18n/provider";
 import { Check, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Textarea } from "@/components/ui/Input";
@@ -33,6 +34,7 @@ export function CoachReportComposer({
   studentName: string;
   onSent?: () => void;
 }) {
+  const { t } = useLocale();
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [aiAttached, setAiAttached] = useState(false);
@@ -75,7 +77,7 @@ export function CoachReportComposer({
 
   return (
     <section className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm">
-      <h2 className="font-bold text-brand-950">Send a report card</h2>
+      <h2 className="font-bold text-brand-950">{t("px_send_report_card")}</h2>
       <p className="mt-0.5 text-sm text-brand-500">To {studentName}. Appears on their Progress tab.</p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -84,7 +86,7 @@ export function CoachReportComposer({
             key={p.label}
             type="button"
             onClick={() => applyPreset(p)}
-            className="rounded-full border border-brand-200 bg-surface px-3 py-1 text-xs font-semibold text-brand-700 transition hover:border-brand-400"
+            className="rounded-full border border-brand-200 bg-surface px-3 py-1 text-xs font-semibold text-brand-700 transition hover:border-accent"
           >
             {p.label}
           </button>
@@ -93,7 +95,7 @@ export function CoachReportComposer({
 
       <div className="mt-3 space-y-3">
         <div>
-          <Label htmlFor="rc-subject">Subject</Label>
+          <Label htmlFor="rc-subject">{t("fld_subject")}</Label>
           <Input
             id="rc-subject"
             value={subject}
@@ -105,7 +107,7 @@ export function CoachReportComposer({
           />
         </div>
         <div>
-          <Label htmlFor="rc-body">Message</Label>
+          <Label htmlFor="rc-body">{t("fld_message")}</Label>
           <Textarea
             id="rc-body"
             rows={4}

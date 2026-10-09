@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { recordAnalyticsEvent } from "@/lib/server/data";
 
 export async function POST(req: Request) {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "MISSING_NAME" }, { status: 400 });
   }
 
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
 
   await recordAnalyticsEvent({
     name: body.name,

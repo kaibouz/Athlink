@@ -8,7 +8,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   const params = await searchParams;
   const qs = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
-    if (typeof value === "string") qs.set(key, value);
+    if (typeof value === "string") qs.set(key === "next" ? "redirect_url" : key, value);
   }
   const query = qs.toString();
   redirect(query ? `/sign-up?${query}` : "/sign-up");

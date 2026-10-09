@@ -22,7 +22,13 @@ function initials(name: string) {
 }
 
 /** Concept feed — one clip at a time, vertical snap, coach + session tags and breakdown chips. */
-export function FeedViewer({ posts }: { posts: SocialPost[] }) {
+export function FeedViewer({
+  posts,
+  highlightId,
+}: {
+  posts: SocialPost[];
+  highlightId?: string | null;
+}) {
   if (posts.length === 0) {
     return <div className="px-4 py-16 text-center text-[var(--mx-dim)]">No clips yet.</div>;
   }
@@ -30,7 +36,15 @@ export function FeedViewer({ posts }: { posts: SocialPost[] }) {
   return (
     <div className="mx-feed">
       {posts.map((post) => (
-        <section key={post.id} className="mx-feed-item">
+        <section
+          key={post.id}
+          id={`post-${post.id}`}
+          className={
+            highlightId === post.id
+              ? "mx-feed-item ring-2 ring-inset ring-emerald-400"
+              : "mx-feed-item"
+          }
+        >
           <video
             src={post.videoUrl}
             poster={post.posterUrl}

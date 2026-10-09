@@ -9,8 +9,8 @@ import {
   Home,
   MessageSquare,
   Radar,
-  Search,
   Users,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
@@ -23,7 +23,7 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
-/** Mobile concept tabs — athlete: Home/Book/Feed/Messages/Progress; coach: Today/Calendar/Athletes/Messages/Earnings */
+/** Mobile concept tabs — athlete: Home/Find coach/Feed/Messages/Progress; coach: Today/Calendar/Scout/Inbox/Earnings (PDF) */
 export function MobileNav() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -32,13 +32,13 @@ export function MobileNav() {
   if (
     !user ||
     pathname === "/" ||
-    pathname === "/get-started" ||
-    pathname === "/for-athletes" ||
-    pathname === "/for-coaches" ||
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/sign-in" ||
+    pathname.startsWith("/sign-in/") ||
     pathname === "/sign-up" ||
+    pathname.startsWith("/sign-up/") ||
+    pathname === "/app" ||
     pathname === "/ios" ||
     pathname.startsWith("/join")
   ) {
@@ -71,7 +71,7 @@ export function MobileNav() {
     },
     {
       href: "/messages",
-      label: t("nav_messages"),
+      label: t("nav_inbox"),
       icon: MessageSquare,
       match: (p) => p.startsWith("/messages") || p.startsWith("/coach/feedback"),
     },

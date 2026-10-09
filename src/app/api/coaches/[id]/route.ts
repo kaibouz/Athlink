@@ -6,13 +6,17 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const coach = await getCoachById(id);
-  if (!coach) {
-    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  try {
+    const coach = await getCoachById(id);
+    if (!coach) {
+      return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    }
+    const [reviews, slots] = await Promise.all([
+      getReviewsByCoach(id),
+      getSlotsByCoach(id),
+    ]);
+    return NextResponse.json({ coach, reviews, slots });
+  } catch {
+    return NextResponse.json({ error: "DATABASE_UNAVAILABLE" }, { status: 503 });
   }
-  const [reviews, slots] = await Promise.all([
-    getReviewsByCoach(id),
-    getSlotsByCoach(id),
-  ]);
-  return NextResponse.json({ coach, reviews, slots });
 }

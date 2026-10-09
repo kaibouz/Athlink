@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
+import { isDatabaseConfigured } from "@/db";
 import { requireExecutive } from "@/lib/auth-server";
-import { listCoachesForAdmin, listCoachApplications } from "@/lib/admin/data";
+import { listCoachesForAdmin } from "@/lib/admin/data";
 
 export async function GET() {
   try {
     await requireExecutive();
-    const [coaches, applications] = await Promise.all([
-      listCoachesForAdmin(),
-      listCoachApplications(),
-    ]);
-    return NextResponse.json({ coaches, applications });
+    if (!isDatabaseConfigured()) {
+      return NextResponse.json({ error: "DATABASE_NOT_CONFIGURED", coaches: [] }, { status: 503 });
+    }
+    const coaches = await listCoachesForAdmin();
+    return NextResponse.json({ coaches });
   } catch (err) {
     if (err instanceof Error && err.message === "UNAUTHORIZED") {
       return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });

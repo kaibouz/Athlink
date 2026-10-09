@@ -20,7 +20,7 @@ type Overview = {
   sessions: { booked: number; completed: number; cancelled: number; pending: number };
   users: { total: number; coaches: number; athletes: number; executives: number };
   alertsOpen: number;
-  applicationsPending: number;
+  suspended: number;
 };
 
 export default function AdminDashboardPage() {
@@ -99,17 +99,17 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      {overview.applicationsPending > 0 || overview.alertsOpen > 0 ? (
+      {overview.suspended > 0 || overview.sessions.pending > 0 || overview.alertsOpen > 0 ? (
         <section className="admin-panel mt-6 rounded-xl p-5">
           <h2 className="text-sm font-semibold text-[var(--admin-text)]">{t("admin_needs_attention")}</h2>
           <ul className="mt-3 space-y-2 text-sm">
-            {overview.applicationsPending > 0 ? (
+            {overview.suspended > 0 ? (
               <li className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.03] px-3 py-2">
                 <span className="text-[var(--admin-text-dim)]">
-                  {overview.applicationsPending} coach application(s) pending
+                  {overview.suspended} suspended account(s)
                 </span>
-                <Link href="/admin/coaches" className="admin-btn-primary text-xs">
-                  Review
+                <Link href="/admin/users" className="admin-btn-primary text-xs">
+                  View
                 </Link>
               </li>
             ) : null}

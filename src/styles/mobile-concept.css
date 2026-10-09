@@ -1,4 +1,6 @@
-/* AthlinkPro mobile-concept design system — web adaptation */
+/* AthlinkPro mobile-concept design system — web adaptation.
+   Dark-only by design, matching the mobile app: these tokens have no light
+   counterpart, and AppShell pins platform routes to the dark theme. */
 :root,
 .dark {
   --mx-bg: #05070c;
@@ -8,7 +10,7 @@
   --mx-border-strong: rgba(255, 255, 255, 0.16);
   --mx-text: #f5f7fa;
   --mx-dim: #9aa3b2;
-  --mx-dimmer: #5f6773;
+  --mx-dimmer: #7b8494;
   --mx-blue-1: #3b6ef6;
   --mx-blue-2: #22c7e0;
   --mx-accent: #22c7e0;
@@ -21,7 +23,7 @@
 /* Role accent — one source of truth; every screen recolors from these tokens.
    athlete = energetic cyan + amber highlight; coach = deeper, calmer blue. */
 [data-role="athlete"] {
-  --mx-blue-1: #2b8ef6;
+  --mx-blue-1: #3b6ef6;
   --mx-blue-2: #22c7e0;
   --mx-accent: #22c7e0;
   --mx-accent-soft: rgba(34, 199, 224, 0.16);
@@ -77,11 +79,21 @@
   font-weight: 400;
 }
 
+/* Solid panel, as in the app. The concept deck's surfaces are opaque
+   --panel over --bg with a hairline border; frosted glass reads as a
+   different product the moment you put the two side by side. */
 .mx-card {
   background: var(--mx-panel);
   border: 1px solid var(--mx-border);
   border-radius: 14px;
   padding: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+}
+
+/* Raised variant for surfaces that sit on top of another panel. */
+.mx-card-raised {
+  background: var(--mx-panel-2);
+  border-color: var(--mx-border-strong);
 }
 .mx-card .mx-t {
   font-size: 0.7rem;
@@ -119,7 +131,13 @@
   color: var(--mx-dim);
 }
 
+/* Buttons read as physical: a lit top edge, a shadow the surface casts, and a
+   press that actually travels. Depth comes from lighting, not bevels. */
 .mx-btn {
+  position: relative;
+  isolation: isolate;
+  /* Clips the sheen sweep to the button face — without this it paints outside. */
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -128,19 +146,129 @@
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
-  transition: filter 0.15s ease, transform 0.15s ease;
+  transform: translateZ(0);
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
 }
+
+/* Specular: light falls from above, strongest at the top edge. */
+.mx-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.04) 46%,
+    rgba(0, 0, 0, 0.12)
+  );
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Sheen that crosses the face on hover. */
+.mx-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
 .mx-btn:hover {
-  filter: brightness(1.06);
+  transform: translateY(-1.5px);
 }
+
+.mx-btn:hover::after {
+  opacity: 1;
+  transform: translateX(120%);
+  transition:
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+.mx-btn:active {
+  transform: translateY(1px) scale(0.994);
+}
+
+.mx-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--mx-bg),
+    0 0 0 4px var(--mx-blue-2);
+}
+
 .mx-btn-accent {
   background: linear-gradient(90deg, var(--mx-blue-1), var(--mx-blue-2));
   color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 6px 14px -5px rgba(59, 110, 246, 0.6),
+    0 14px 34px -12px rgba(34, 199, 224, 0.42);
 }
+
+.mx-btn-accent:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.36),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 10px 22px -6px rgba(59, 110, 246, 0.68),
+    0 22px 46px -14px rgba(34, 199, 224, 0.5);
+}
+
+/* Pressed: the button sinks into its own shadow. */
+.mx-btn-accent:active {
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 6px -3px rgba(59, 110, 246, 0.5);
+}
+
 .mx-btn-ghost {
   border: 1px solid var(--mx-border-strong);
   color: var(--mx-text);
-  background: transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 12px -6px rgba(0, 0, 0, 0.7);
+}
+
+.mx-btn-ghost:hover {
+  border-color: var(--mx-blue-2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 8px 20px -8px rgba(34, 199, 224, 0.4);
+}
+
+.mx-btn-ghost:active {
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-btn,
+  .mx-btn:hover,
+  .mx-btn:active {
+    transform: none;
+    transition: none;
+  }
+  .mx-btn::after {
+    display: none;
+  }
 }
 
 .mx-input {
@@ -389,4 +517,179 @@
   border: 1px solid var(--mx-border);
   padding: 4px 10px;
   border-radius: 999px;
+}
+
+/* ————————————————————————————————————————————————————————————————
+   Components ported from the app concept deck so every surface speaks
+   the same language. Sizes are scaled up from the deck's 390px phone
+   for desktop legibility; proportions, radii and colour roles match.
+   ———————————————————————————————————————————————————————————————— */
+
+/* Booking — open time slots */
+.mx-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+.mx-slot {
+  font-size: 0.8125rem;
+  padding: 10px 0;
+  text-align: center;
+  border: 1px solid var(--mx-border-strong);
+  border-radius: 8px;
+  color: var(--mx-dim);
+  background: transparent;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
+}
+.mx-slot:hover:not(:disabled) {
+  border-color: var(--mx-blue-2);
+  color: var(--mx-text);
+}
+.mx-slot:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.mx-slot-on {
+  background: var(--mx-accent-soft);
+  border-color: var(--mx-blue-2);
+  color: var(--mx-blue-2);
+  font-weight: 600;
+}
+
+/* Booking — week strip */
+.mx-days {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 8px 0 6px;
+}
+.mx-day {
+  flex: 1;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--mx-dimmer);
+  background: transparent;
+  border: 0;
+}
+.mx-day b {
+  position: relative;
+  display: block;
+  margin-top: 3px;
+  padding: 7px 0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--mx-text);
+  transition: background 0.18s ease;
+}
+.mx-day:hover b {
+  background: var(--mx-accent-soft);
+}
+.mx-day-on b {
+  background: var(--mx-blue-2);
+  color: #05070c;
+}
+/* A dot marks a day that still has open slots. */
+.mx-day-dot b::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--mx-blue-2);
+}
+.mx-day-on.mx-day-dot b::after {
+  background: #05070c;
+}
+
+/* Confirm sheet */
+.mx-sheet {
+  background: var(--mx-panel);
+  border: 1px solid var(--mx-border-strong);
+  border-radius: 22px;
+  padding: 14px 16px 20px;
+  box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.5);
+}
+.mx-sheet-handle {
+  width: 36px;
+  height: 4px;
+  margin: 0 auto 12px;
+  border-radius: 999px;
+  background: var(--mx-border-strong);
+}
+
+/* Messages — thread bubbles and booking system chips */
+.mx-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mx-msg {
+  max-width: 82%;
+  align-self: flex-start;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  background: var(--mx-panel-2);
+  border: 1px solid var(--mx-border);
+  color: var(--mx-text);
+}
+.mx-msg-me {
+  align-self: flex-end;
+  background: var(--mx-accent-soft);
+  border-color: rgba(59, 110, 246, 0.35);
+}
+.mx-msg small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.65rem;
+  color: var(--mx-dimmer);
+}
+.mx-msg-clip {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Progress — metric rows */
+.mx-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  font-size: 0.8125rem;
+  color: var(--mx-dim);
+  border-bottom: 1px solid var(--mx-border);
+}
+.mx-metric:last-child {
+  border-bottom: 0;
+}
+.mx-metric b {
+  color: var(--mx-text);
+  font-size: 0.9rem;
+}
+
+/* Media placeholder — matches the deck's clip tile */
+.mx-vid {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #141b30, var(--mx-panel));
+  color: var(--mx-dimmer);
+  font-size: 0.75rem;
 }

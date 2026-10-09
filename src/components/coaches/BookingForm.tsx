@@ -6,6 +6,8 @@ import type { CoachProfile, LessonFormat, PackageType, TimeSlot } from "@/types"
 import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
 import { formatDateJa, formatPrice } from "@/lib/utils";
+import { priceFor } from "@/lib/pricing";
+import { isNotOver } from "@/lib/dates";
 import { autoSyncBookingToCalendars } from "@/lib/calendar";
 import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
@@ -25,9 +27,14 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const { user, addBooking } = useAuth();
   const { t, locale } = useLocale();
   const isCoachPublishing = user?.role === "coach";
-  const [slots, setSlots] = useState<TimeSlot[]>(() => getSlotsByCoach(coach.id));
+  const [slots, setSlots] = useState<TimeSlot[]>(() =>
+    getSlotsByCoach(coach.id).filter((s) => isNotOver(s.date, s.startTime)),
+  );
+  const [submitting, setSubmitting] = useState(false);
   const dates = useMemo(() => [...new Set(slots.map((s) => s.date))], [slots]);
-  const [date, setDate] = useState("");
+  const [pickedDate, setDate] = useState("");
+  // Fall back to the first open day whenever the picked one is gone (slots refreshed).
+  const date = pickedDate && dates.includes(pickedDate) ? pickedDate : (dates[0] ?? "");
   const [slotId, setSlotId] = useState("");
   const [format, setFormat] = useState<LessonFormat>(coach.formats[0]);
   const [packageType, setPackageType] = useState<PackageType>("single");
@@ -38,12 +45,14 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const [created, setCreated] = useState<Booking | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  const [slotsVersion, setSlotsVersion] = useState(0);
+
   useEffect(() => {
     let cancelled = false;
     void fetch(`/api/coaches/${coach.id}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data: { slots?: TimeSlot[] } | null) => {
-        if (cancelled || !data?.slots?.length) return;
+        if (cancelled || !data?.slots) return;
         setSlots(data.slots);
       })
       .catch(() => {
@@ -52,31 +61,12 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
     return () => {
       cancelled = true;
     };
-  }, [coach.id]);
-
-  useEffect(() => {
-    if (dates.length === 0) return;
-    if (!date || !dates.includes(date)) {
-      setDate(dates[0]);
-      setSlotId("");
-    }
-  }, [dates, date]);
+  }, [coach.id, slotsVersion]);
 
   const daySlots = slots.filter((s) => s.date === date);
-  const priceMultiplier =
-    packageType === "pack" ? 5 * 0.9 : packageType === "subscription" ? 4 * 0.85 : 1;
-  const suggestedTotal = Math.round(coach.pricePerHour * priceMultiplier);
-  const [priceInput, setPriceInput] = useState(String(suggestedTotal));
+  // Same table the server charges from — the athlete sees exactly what is billed.
+  const total = priceFor(coach.pricePerHour, packageType);
   const selected: TimeSlot | undefined = daySlots.find((s) => s.id === slotId);
-
-  useEffect(() => {
-    setPriceInput(String(suggestedTotal));
-  }, [suggestedTotal]);
-
-  const total = useMemo(() => {
-    const n = Number(priceInput);
-    return Number.isFinite(n) && n > 0 ? Math.round(n) : 0;
-  }, [priceInput]);
 
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
 
@@ -91,18 +81,17 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       setError(t("booking_pick_slot"));
       return;
     }
-    if (total <= 0) {
-      setError(t("booking_total_invalid"));
-      return;
-    }
     setConfirmOpen(true);
   }
 
   async function confirmBooking() {
-    if (!user || !selected) return;
+    if (!user || !selected || submitting) return;
     trackEvent("booking_start", { coachId: coach.id }, coach.id);
     const composedNote = [sessionType, note].filter(Boolean).join(" — ");
-    const booking = await addBooking({
+    setSubmitting(true);
+    let booking: Booking;
+    try {
+      booking = await addBooking({
       coachId: coach.id,
       coachName: coach.name,
       athleteId: user.id,
@@ -114,7 +103,21 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       packageType,
       price: total,
       note: composedNote || undefined,
-    });
+      });
+    } catch (err) {
+      const code = err instanceof Error ? err.message : "";
+      setConfirmOpen(false);
+      if (code === "SLOT_TAKEN" || code === "SLOT_IN_PAST") {
+        setError(t("booking_slot_taken"));
+        setSlotId("");
+        setSlotsVersion((v) => v + 1);
+      } else {
+        setError(t("booking_failed"));
+      }
+      return;
+    } finally {
+      setSubmitting(false);
+    }
     setCreated(booking);
     autoSyncBookingToCalendars(booking);
     setConfirmOpen(false);
@@ -160,7 +163,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       {/* Week-strip date picker (slot-first ordering) */}
       <div>
         <Label>{t("booking_date")}</Label>
-        <div className="-mx-1 mt-1 flex gap-2 overflow-x-auto px-1 pb-1">
+        <div className="mx-days">
           {dates.map((d) => {
             const dObj = new Date(`${d}T00:00:00`);
             const wd = dObj.toLocaleDateString(dateLocale, { weekday: "short" });
@@ -174,14 +177,10 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
                   setDate(d);
                   setSlotId("");
                 }}
-                className={`flex min-w-[3.25rem] flex-col items-center rounded-xl border px-2 py-2 text-center transition ${
-                  on
-                    ? "border-brand-600 bg-brand-600 text-white"
-                    : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400"
-                }`}
+                className={on ? "mx-day mx-day-on mx-day-dot" : "mx-day mx-day-dot"}
               >
-                <span className="text-[11px] font-medium uppercase opacity-80">{wd}</span>
-                <span className="text-lg font-black leading-tight">{dayNum}</span>
+                {wd}
+                <b>{dayNum}</b>
               </button>
             );
           })}
@@ -190,20 +189,18 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
 
       <div>
         <Label>{t("booking_slots")}</Label>
-        <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="mx-slots">
           {daySlots.length === 0 && (
-            <p className="col-span-full text-sm text-brand-500">{t("booking_no_slots")}</p>
+            <p className="col-span-full text-sm text-[color:var(--mx-dim)]">
+              {t("booking_no_slots")}
+            </p>
           )}
           {daySlots.map((s) => (
             <button
               key={s.id}
               type="button"
               onClick={() => setSlotId(s.id)}
-              className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-                slotId === s.id
-                  ? "border-brand-600 bg-brand-600 text-white"
-                  : "border-brand-200 bg-surface text-brand-800 hover:border-brand-400"
-              }`}
+              className={slotId === s.id ? "mx-slot mx-slot-on" : "mx-slot"}
             >
               {s.startTime}–{s.endTime}
             </button>
@@ -213,7 +210,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
 
       {/* Session-type picker */}
       <div>
-        <Label>Session type</Label>
+        <Label>{t("fld_session_type")}</Label>
         <div className="mt-1 flex flex-wrap gap-2">
           {SESSION_TYPES.map((st) => (
             <button
@@ -222,8 +219,8 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               onClick={() => setSessionType(st)}
               className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
                 sessionType === st
-                  ? "border-brand-600 bg-brand-600 text-white"
-                  : "border-brand-200 bg-surface text-brand-700 hover:border-brand-400"
+                  ? "border-accent bg-accent text-white"
+                  : "border-brand-200 bg-surface text-brand-700 hover:border-accent"
               }`}
             >
               {st}
@@ -270,23 +267,16 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       </div>
       <div className="rounded-xl bg-brand-50 px-3 py-2.5">
         <div className="flex items-center justify-between gap-2">
-          <Label htmlFor="total" className="mb-0 shrink-0 text-sm">
+          <Label className="mb-0 shrink-0 text-sm">
             {t("booking_total")}
           </Label>
-          <div className="inline-flex h-9 items-center gap-0.5 rounded-lg border border-brand-200 bg-surface px-2">
-            <span className="text-base font-bold text-brand-500">$</span>
-            <input
-              id="total"
-              type="number"
-              min={1}
-              step={1}
-              inputMode="numeric"
-              value={priceInput}
-              onChange={(e) => setPriceInput(e.target.value)}
-              aria-label={t("booking_total")}
-              className="h-8 w-[4.5rem] border-0 bg-transparent p-0 text-right text-xl font-black tabular-nums text-brand-950 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-          </div>
+          <output
+            id="total"
+            aria-label={t("booking_total")}
+            className="text-xl font-black tabular-nums text-brand-950"
+          >
+            {formatPrice(total)}
+          </output>
         </div>
         <p className="mt-1 text-[11px] leading-snug text-brand-500">{t("booking_total_hint")}</p>
       </div>
@@ -306,52 +296,50 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           onClick={() => setConfirmOpen(false)}
         >
           <div
-            className="mx-app w-full max-w-md rounded-t-2xl border border-[color:var(--mx-border-strong)] bg-[color:var(--mx-panel)] p-5 sm:rounded-2xl"
+            className="mx-app mx-sheet w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[color:var(--mx-border-strong)] sm:hidden" />
-            <h4 className="text-base font-bold text-[color:var(--mx-text)]">Confirm booking</h4>
-            <div className="mt-3 space-y-2 text-sm">
-              <div className="flex justify-between gap-3">
-                <span className="text-[color:var(--mx-dim)]">Coach</span>
-                <span className="font-semibold text-[color:var(--mx-text)]">{coach.name}</span>
+            <div className="mx-sheet-handle sm:hidden" />
+            <h4 className="text-base font-bold text-[color:var(--mx-text)]">{t("px_confirm_booking")}</h4>
+            <div className="mt-3">
+              <div className="mx-metric">
+                <span>{t("bk_coach")}</span>
+                <b>{coach.name}</b>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-[color:var(--mx-dim)]">When</span>
-                <span className="font-semibold text-[color:var(--mx-text)]">
-                  {formatDateJa(selected.date, dateLocale)} · {selected.startTime}–{selected.endTime}
-                </span>
+              <div className="mx-metric">
+                <span>{t("bk_when")}</span>
+                <b>
+                  {formatDateJa(selected.date, dateLocale)} · {selected.startTime}–
+                  {selected.endTime}
+                </b>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-[color:var(--mx-dim)]">Session</span>
-                <span className="font-semibold text-[color:var(--mx-text)]">
+              <div className="mx-metric">
+                <span>{t("bk_session")}</span>
+                <b>
                   {sessionType} · {format === "online" ? t("search_online") : t("search_in_person")}
-                </span>
+                </b>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-[color:var(--mx-dim)]">Total</span>
-                <span className="text-lg font-black text-[color:var(--mx-text)]">
-                  {formatPrice(total)}
-                </span>
+              <div className="mx-metric">
+                <span>{t("bk_total")}</span>
+                <b className="text-lg font-black">{formatPrice(total)}</b>
               </div>
             </div>
-            <p className="mt-3 rounded-lg bg-[color:var(--mx-panel-2)] px-3 py-2 text-[11px] leading-snug text-[color:var(--mx-dimmer)]">
-              Cancel policy: free cancellation up to 24h before. Within 24h, a 50% fee applies.
-            </p>
+            <p className="mt-3 rounded-lg bg-[color:var(--mx-panel-2)] px-3 py-2 text-[11px] leading-snug text-[color:var(--mx-dimmer)]">{t("px_cancel_policy")}</p>
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
                 onClick={() => setConfirmOpen(false)}
                 className="mx-btn mx-btn-ghost flex-1"
               >
-                Back
+                {t("bk_back")}
               </button>
               <button
                 type="button"
                 onClick={confirmBooking}
+                disabled={submitting}
                 className="mx-btn mx-btn-accent flex-1 border-0"
               >
-                Confirm
+                {submitting ? t("loading") : t("bk_confirm")}
               </button>
             </div>
           </div>

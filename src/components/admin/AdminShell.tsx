@@ -55,6 +55,7 @@ export function AdminShell({
       badge: badges.errors,
     },
     { href: "/admin/coaches", labelKey: "admin_nav_coaches", icon: Users, badge: badges.coaches },
+    { href: "/admin/verifications", labelKey: "admin_nav_verifications", icon: Shield },
     { href: "/admin/athletes", labelKey: "admin_nav_athletes", icon: Users },
     {
       href: "/admin/bookings",

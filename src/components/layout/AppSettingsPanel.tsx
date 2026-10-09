@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { UI_LOCALES, UI_LOCALE_LABELS, type UiLocale } from "@/lib/i18n/messages";
 import { CalendarAutoPrefSelect } from "@/components/calendar/AddToCalendar";
 import { Button } from "@/components/ui/Button";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 export function AppSettingsPanel({
   showRoleSwitch = true,
@@ -29,7 +30,7 @@ export function AppSettingsPanel({
         <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as UiLocale)}
-          className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          className="h-11 w-full rounded-xl border border-brand-200 bg-surface px-3.5 text-sm text-brand-950 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
         >
           {UI_LOCALES.map((code) => (
             <option key={code} value={code}>
@@ -78,9 +79,11 @@ export function AppSettingsPanel({
             variant="ghost"
             className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => {
-              logout();
-              onClose?.();
-              router.push("/");
+              void (async () => {
+                await logout();
+                onClose?.();
+                router.replace(MARKET_TO_PLATFORM.hq);
+              })();
             }}
           >
             <LogOut className="h-4 w-4" />

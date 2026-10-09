@@ -3,6 +3,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured } from "@/db";
 import { aiBreakdowns, athleteGoals, athleteMetrics, users } from "@/db/schema";
 import type { AiBreakdown, User } from "@/types";
+import { DEMO_CLIPS } from "@/lib/demo-media";
 
 /**
  * Production-style AI breakdown/analysis pipeline.
@@ -403,8 +404,8 @@ function mapRow(row: typeof aiBreakdowns.$inferSelect): AiBreakdown {
   };
 }
 
-const DEFAULT_POSTER_SWING = "https://images.unsplash.com/photo-1566577739112-5180d4bf694c?w=800&q=80";
-const DEFAULT_POSTER_PITCH = "https://images.unsplash.com/photo-1508344928928-7528d0e3b3a5?w=800&q=80";
+const DEFAULT_POSTER_SWING = DEMO_CLIPS.windup.poster;
+const DEFAULT_POSTER_PITCH = DEMO_CLIPS.release.poster;
 
 export interface CreateBreakdownInput {
   clipUrl: string;

@@ -3,7 +3,11 @@ import { cn } from "@/lib/utils";
 
 const LOGO_SRC = "/brand/athlinkpro-logo.png";
 const LOGO_TRANSPARENT_SRC = "/brand/athlinkpro-logo-transparent.png";
-const MONOGRAM_SRC = "/brand/athlinkpro-monogram.png";
+// Uncut AP mark (the old athlinkpro-monogram.png was clipped at the bottom/right edge).
+const MONOGRAM_SRC = "/brand/athlinkpro-mark.png";
+// Horizontal lockup: AP mark + ATHLINKPRO lettering, for headers (transparent / on solid black).
+const LOCKUP_H_SRC = "/brand/athlinkpro-lockup-h.png";
+const LOCKUP_H_BLACK_SRC = "/brand/athlinkpro-lockup-h-black.png";
 
 const sizeClasses = {
   sm: "h-8 w-8",
@@ -13,6 +17,16 @@ const sizeClasses = {
   xl: "h-28 w-28",
   /** Wide transparent lockup for hero / footer */
   hero: "h-auto w-[min(100%,18rem)] sm:w-[min(100%,24rem)]",
+} as const;
+
+/** Height-driven sizes for the horizontal lockup (width follows the image ratio). */
+const lockupClasses = {
+  sm: "h-7 w-auto",
+  header: "h-9 w-auto sm:h-11",
+  default: "h-10 w-auto",
+  lg: "h-14 w-auto",
+  xl: "h-20 w-auto",
+  hero: "h-16 w-auto sm:h-20",
 } as const;
 
 /** Official AthlinkPro mark — AP monogram + ATHLINKPRO wordmark */
@@ -27,8 +41,11 @@ export function AthlinkProLogo({
   className?: string;
   href?: string | null;
   size?: keyof typeof sizeClasses;
-  /** monogram crops to the AP mark — readable in compact headers */
-  variant?: "full" | "monogram";
+  /**
+   * monogram = AP mark only (compact spots like the sidebar);
+   * lockup = AP mark + ATHLINKPRO lettering side by side (headers, never clipped).
+   */
+  variant?: "full" | "monogram" | "lockup";
   /** onGradient = transparent AP mark for dark blue hero/nav washes; default = solid black tile */
   tone?: "default" | "onGradient";
   priority?: boolean;
@@ -36,14 +53,30 @@ export function AthlinkProLogo({
   const onGradient = tone === "onGradient";
 
   const image =
-    variant === "monogram" ? (
+    variant === "lockup" ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={onGradient ? LOCKUP_H_SRC : LOCKUP_H_BLACK_SRC}
+        alt="AthlinkPro"
+        width={onGradient ? 3020 : 3280}
+        height={onGradient ? 773 : 973}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        className={cn(
+          "shrink-0 object-contain",
+          onGradient ? "" : "rounded-lg",
+          lockupClasses[size],
+          className,
+        )}
+      />
+    ) : variant === "monogram" ? (
       onGradient ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={MONOGRAM_SRC}
           alt="AthlinkPro"
-          width={1300}
-          height={560}
+          width={1158}
+          height={765}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           className={cn("shrink-0 object-contain", sizeClasses[size], className)}

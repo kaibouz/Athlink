@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/Badge";
 import { BookingForm } from "@/components/coaches/BookingForm";
 import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
+import { VerificationPanel } from "@/components/coaches/VerificationPanel";
 
 function regionFromLocation(locStr: string): CaRegionId {
   const l = locStr.toLowerCase();
@@ -115,6 +116,9 @@ export function CoachDetailView({
             </div>
           </section>
 
+          {/* Directly under the profile: a parent decides on trust before price. */}
+          <VerificationPanel coach={coach} />
+
           {coach.formats.includes("in_person") && (
             <section className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm">
               <h2 className="text-lg font-bold text-brand-950">{t("lesson_venue_title")}</h2>
@@ -136,7 +140,7 @@ export function CoachDetailView({
             <ul className="mt-3 space-y-2">
               {locList(locale, coach.career).map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-brand-700">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                   {item}
                 </li>
               ))}

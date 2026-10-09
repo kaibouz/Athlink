@@ -5,8 +5,12 @@ import { listCoaches, getCoachById, getReviewsByCoach } from "@/lib/server/data"
 import { CoachDetailView } from "@/components/coaches/CoachDetailView";
 
 export async function generateStaticParams() {
-  const coaches = await listCoaches();
-  return coaches.map((c) => ({ id: c.id }));
+  try {
+    const coaches = await listCoaches();
+    return coaches.map((c) => ({ id: c.id }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({

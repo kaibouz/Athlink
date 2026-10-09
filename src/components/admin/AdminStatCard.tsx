@@ -15,7 +15,7 @@ export function AdminStatCard({
 }) {
   const accentClass =
     accent === "clay"
-      ? "from-[#e0a458] to-[#f2c94c]"
+      ? "from-[#3b6ef6] to-[#22c7e0]"
       : accent === "green"
         ? "from-[#3ddc97] to-[#22c7e0]"
         : accent === "red"

@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "@/lib/store";
 import { LocaleProvider } from "@/lib/i18n/provider";
@@ -13,6 +14,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RoleTheme } from "@/components/layout/RoleTheme";
 import { SitePageTransition } from "@/components/layout/SitePageTransition";
+import { ClerkAuthBridge } from "@/components/auth/ClerkAuthBridge";
+import { ReturningUserSync } from "@/components/auth/ReturningUserSync";
+import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
@@ -30,17 +34,17 @@ const notoSansJp = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: {
-    default: "AthLink — Private baseball coaching in California",
-    template: "%s | AthLink",
+    default: "AthlinkPro — Private baseball coaching in California",
+    template: "%s | AthlinkPro",
   },
   description:
     "Marketplace connecting baseball athletes with experienced private coaches. Search, book, pay, and message — launching in California.",
-  applicationName: "AthLink",
+  applicationName: "AthlinkPro",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "AthLink",
+    title: "AthlinkPro",
   },
 };
 
@@ -62,21 +66,19 @@ export default function RootLayout({
       className={`dark ${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";localStorage.setItem("athlink_theme","dark");}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`,
-          }}
-        />
-      </head>
       <body
         className="flex min-h-full flex-col app-page-bg-subtle font-sans text-foreground"
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <Script id="athlink-theme-init" strategy="beforeInteractive">
+          {`(function(){try{var t=localStorage.getItem("athlink_theme")==="light"?"light":"dark";document.documentElement.classList.toggle("dark",t==="dark");document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`}
+        </Script>
+        <ClerkProvider afterSignOutUrl={MARKET_TO_PLATFORM.hq}>
           <ThemeProvider>
             <LocaleProvider>
               <AuthProvider>
+                <ClerkAuthBridge />
+                <ReturningUserSync />
                 <RoleTheme />
                 <CoachToolsProvider>
                   <SocialProvider>

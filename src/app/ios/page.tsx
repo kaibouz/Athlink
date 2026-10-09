@@ -12,7 +12,7 @@ const SCREENS = [
   { id: "feed", path: "/sns", labelKey: "ios_screen_feed" as const },
 ];
 
-/** Desktop preview: AthLink inside an iPhone frame (iOS-style mobile UI) */
+/** Desktop preview: AthlinkPro inside an iPhone frame (iOS-style mobile UI) */
 export default function IosPreviewPage() {
   const { t } = useLocale();
   const [screen, setScreen] = useState(SCREENS[1].path);
@@ -57,7 +57,7 @@ export default function IosPreviewPage() {
               onClick={() => setScreen(s.path)}
               className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
                 screen === s.path
-                  ? "bg-brand-500 text-white"
+                  ? "bg-accent text-white"
                   : "bg-white/10 text-zinc-300 hover:bg-white/15"
               }`}
             >
@@ -84,7 +84,7 @@ export default function IosPreviewPage() {
 
               <iframe
                 key={screen}
-                title="AthLink iOS"
+                title="AthlinkPro iOS"
                 src={screen}
                 className="h-[780px] w-full border-0 bg-white"
                 style={{ paddingTop: 0 }}

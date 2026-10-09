@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getRequestUser } from "@/lib/server/current-user";
 import { getPlatformStats } from "@/lib/server/data";
 
 export async function GET(req: Request) {
-  const user = await getCurrentUser();
+  const user = await getRequestUser();
   if (user?.role === "executive") {
     const stats = await getPlatformStats();
     return NextResponse.json(stats);

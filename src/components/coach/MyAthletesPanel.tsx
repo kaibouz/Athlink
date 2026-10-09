@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import type { StudentAthlete } from "@/types";
+import { Avatar } from "@/components/ui/Avatar";
 
 /** Compact / full My Athletes roster for dashboard (and optional standalone). */
 export function MyAthletesPanel({
@@ -83,12 +84,7 @@ export function MyAthletesPanel({
             className="rounded-2xl border border-brand-100 bg-surface p-4 shadow-sm"
           >
             <div className="flex items-start gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={s.avatarUrl}
-                alt=""
-                className="h-12 w-12 rounded-xl bg-brand-50"
-              />
+              <Avatar src={s.avatarUrl} name={s.name} size={48} className="rounded-xl" />
               <div className="min-w-0 flex-1">
                 <h3 className="truncate font-bold text-brand-950">{s.name}</h3>
                 <p className="text-xs text-brand-600">

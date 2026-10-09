@@ -1,12 +1,6 @@
-import type { Metadata } from "next";
-import { CoachHomeLanding } from "@/components/coach/CoachHomeLanding";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "AthlinkPro for Coaches — Run Your Coaching Business",
-  description:
-    "The operating system for private baseball coaches — scheduling, client management, and growth tools without payment setup in MVP.",
-};
-
-export default function ForCoachesPage() {
-  return <CoachHomeLanding />;
+/** Consolidated into the single main site at `/` (role choice + walkthrough). */
+export default function Page() {
+  redirect("/");
 }
