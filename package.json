@@ -11,7 +11,8 @@
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx --env-file=.env.local src/db/seed.ts",
-    "db:demo": "tsx --env-file=.env.local src/db/demo-data.ts"
+    "db:demo": "tsx --env-file=.env.local src/db/demo-data.ts",
+    "db:seed:public": "tsx src/db/seed-public.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.8.4",
