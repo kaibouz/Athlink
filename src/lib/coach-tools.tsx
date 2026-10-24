@@ -27,6 +27,7 @@ export function CoachToolsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate from localStorage after mount (SSR-safe)
       if (raw) setFeedback(JSON.parse(raw) as CoachFeedback[]);
     } catch {
       /* ignore */

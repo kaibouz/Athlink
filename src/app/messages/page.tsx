@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Film, Paperclip, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
@@ -33,9 +33,7 @@ export default function MessagesPage() {
   const [draft, setDraft] = useState("");
   const [attachOpen, setAttachOpen] = useState(false);
 
-  useEffect(() => {
-    if (!activeId && threads.length > 0) setActiveId(threads[0].id);
-  }, [threads, activeId]);
+  if (!activeId && threads.length > 0) setActiveId(threads[0].id);
 
   const activeThread = threads.find((th) => th.id === activeId);
   const threadMessages = useMemo(

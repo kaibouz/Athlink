@@ -19,6 +19,13 @@ function QrInner() {
   const { coach, loading, hasProfile } = useMyCoach();
   const [copied, setCopied] = useState(false);
 
+  const coachId = coach?.id;
+  const bookUrl = useMemo(() => {
+    if (!coachId) return "";
+    if (typeof window === "undefined") return `/c/${coachId}`;
+    return `${window.location.origin}/c/${coachId}`;
+  }, [coachId]);
+
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center text-brand-500">{t("loading")}</div>
@@ -36,12 +43,6 @@ function QrInner() {
       </div>
     );
   }
-
-  const bookUrl = useMemo(() => {
-    if (!coach) return "";
-    if (typeof window === "undefined") return `/c/${coach.id}`;
-    return `${window.location.origin}/c/${coach.id}`;
-  }, [coach?.id]);
 
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&data=${encodeURIComponent(bookUrl)}`;
 

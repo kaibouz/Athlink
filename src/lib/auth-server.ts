@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { getDb } from "@/db";
 import { sessions, users } from "@/db/schema";
-import type { User, UserRole } from "@/types";
+import type { User } from "@/types";
 import { isExecutiveEmail } from "@/lib/admin-auth";
 
 export const SESSION_COOKIE = "athlink_session";

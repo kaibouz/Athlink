@@ -53,6 +53,7 @@ export function CalendarAutoPrefSelect({ className }: { className?: string }) {
   const [pref, setPref] = useState<CalendarAutoPref>("both");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- pref lives in localStorage, read after mount
     setPref(getCalendarAutoPref());
   }, []);
 

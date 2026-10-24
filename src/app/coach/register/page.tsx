@@ -40,9 +40,7 @@ export default function CoachRegisterPage() {
     }
   }, [user, hydrated, router]);
 
-  useEffect(() => {
-    if (user?.name && !name) setName(user.name);
-  }, [user, name]);
+  if (user?.name && !name) setName(user.name);
 
   function toggleLanguage(lang: string) {
     setLanguages((prev) =>

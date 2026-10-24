@@ -76,7 +76,7 @@ export function AdminShell({
     router.replace("/admin/login");
   }
 
-  function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  function renderNavLinks(onNavigate?: () => void) {
     return (
       <ul className="space-y-0.5">
         {nav.map(({ href, labelKey, icon: Icon, badge, exact }) => {
@@ -122,7 +122,7 @@ export function AdminShell({
           </p>
         </div>
         <nav className="flex-1 overflow-y-auto p-3">
-          <NavLinks />
+          {renderNavLinks()}
         </nav>
         <div className="border-t border-[var(--admin-border)] p-3 text-xs text-[var(--admin-text-dim)]">
           {user.name}
@@ -145,7 +145,7 @@ export function AdminShell({
               </button>
             </div>
             <nav className="flex-1 overflow-y-auto p-3">
-              <NavLinks onNavigate={() => setDrawerOpen(false)} />
+              {renderNavLinks(() => setDrawerOpen(false))}
             </nav>
           </aside>
         </div>

@@ -51,6 +51,7 @@ export function SitePageTransition({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (pathname === "/") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- entry gate reads sessionStorage/matchMedia, only after mount
       setEntry("done");
       return;
     }

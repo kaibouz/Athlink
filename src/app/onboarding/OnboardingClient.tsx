@@ -96,6 +96,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
 
   useEffect(() => {
     setOnboardingPending();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keeps draft role in sync with the wizard route
     patchDraft({ role });
     trackEvent("onboarding_start", { role });
   }, [role, patchDraft]);
@@ -117,6 +118,7 @@ export function OnboardingClient({ role }: { role: "coach" | "athlete" }) {
       router.replace(joinPathFor(user.role === "coach" ? "coach" : "athlete"));
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- prefill from the auth user once it hydrates
     patchDraft({
       name: draft.name || user.name,
       email: draft.email || user.email,

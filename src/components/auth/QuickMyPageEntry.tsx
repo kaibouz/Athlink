@@ -42,6 +42,7 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
   const [passkeyOk, setPasskeyOk] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- returning-user profile lives in browser storage
     setRemembered(readReturningUser());
     // Both the device and the Clerk instance must support passkeys; offering
     // Touch ID / Face ID when either can't deliver it only shows an error.
