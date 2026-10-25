@@ -464,4 +464,126 @@ export async function getCoachAnalytics(coachId: string) {
   };
 }
 
+function mapAthlete(row: typeof athleteProfiles.$inferSelect): AthletePublicProfile {
+  return {
+    id: row.id,
+    userId: row.userId,
+    name: row.name,
+    email: row.email,
+    school: row.school,
+    classYear: row.classYear,
+    height: row.height,
+    weight: row.weight,
+    position: row.position,
+    batsThrows: row.batsThrows,
+    location: row.location,
+    bio: row.bio,
+    avatarUrl: row.avatarUrl,
+    seasonStats: row.seasonStats as AthletePublicProfile["seasonStats"],
+    lookingForCoach: row.lookingForCoach,
+    openToScouts: row.openToScouts,
+  };
+}
+
+export async function getAthleteProfileByUserId(
+  userId: string,
+): Promise<AthletePublicProfile | undefined> {
+  if (!isDatabaseConfigured()) return undefined;
+  try {
+    const [row] = await getDb()
+      .select()
+      .from(athleteProfiles)
+      .where(eq(athleteProfiles.userId, userId))
+      .limit(1);
+    return row ? mapAthlete(row) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export type UpsertAthleteProfileInput = {
+  name: string;
+  school: string;
+  classYear: string;
+  height?: string;
+  weight?: string;
+  position: string;
+  batsThrows?: string;
+  location?: string;
+  bio?: string;
+  lookingForCoach?: boolean;
+  openToScouts?: boolean;
+  seasonLabel?: string;
+};
+
+/**
+ * Creates or updates the signed-in athlete’s Postgres profile.
+ * Foundation: replace localStorage onboarding writes with this table.
+ */
+export async function upsertAthleteProfile(
+  userId: string,
+  email: string,
+  avatarUrl: string | undefined,
+  input: UpsertAthleteProfileInput,
+): Promise<AthletePublicProfile> {
+  if (!isDatabaseConfigured()) {
+    throw new Error("DATABASE_NOT_CONFIGURED");
+  }
+
+  const existing = await getAthleteProfileByUserId(userId);
+  const name = input.name.trim();
+  const avatar =
+    avatarUrl ??
+    `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(name || email)}`;
+
+  if (existing) {
+    const [row] = await getDb()
+      .update(athleteProfiles)
+      .set({
+        name,
+        email: email.toLowerCase(),
+        school: input.school.trim(),
+        classYear: input.classYear.trim(),
+        height: (input.height ?? existing.height).trim() || "—",
+        weight: (input.weight ?? existing.weight).trim() || "—",
+        position: input.position.trim(),
+        batsThrows: (input.batsThrows ?? existing.batsThrows).trim() || "R/R",
+        location: (input.location ?? existing.location).trim() || "California",
+        bio: (input.bio ?? existing.bio).trim(),
+        avatarUrl: avatarUrl ?? existing.avatarUrl,
+        lookingForCoach: input.lookingForCoach ?? existing.lookingForCoach,
+        openToScouts: input.openToScouts ?? existing.openToScouts,
+        seasonStats: input.seasonLabel
+          ? { ...existing.seasonStats, seasonLabel: input.seasonLabel }
+          : existing.seasonStats,
+      })
+      .where(eq(athleteProfiles.userId, userId))
+      .returning();
+    return mapAthlete(row!);
+  }
+
+  const id = `a-${randomBytes(4).toString("hex")}`;
+  const row: typeof athleteProfiles.$inferInsert = {
+    id,
+    userId,
+    name,
+    email: email.toLowerCase(),
+    school: input.school.trim(),
+    classYear: input.classYear.trim(),
+    height: (input.height ?? "—").trim() || "—",
+    weight: (input.weight ?? "—").trim() || "—",
+    position: input.position.trim(),
+    batsThrows: (input.batsThrows ?? "R/R").trim() || "R/R",
+    location: (input.location ?? "California").trim() || "California",
+    bio: (input.bio ?? "").trim(),
+    avatarUrl: avatar,
+    seasonStats: { seasonLabel: input.seasonLabel ?? `${input.classYear.trim()} season` },
+    lookingForCoach: Boolean(input.lookingForCoach),
+    openToScouts: Boolean(input.openToScouts),
+  };
+
+  await getDb().insert(athleteProfiles).values(row);
+  return mapAthlete(row as typeof athleteProfiles.$inferSelect);
+}
+
 export type { CoachProfile, Review, Booking, TimeSlot };

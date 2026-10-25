@@ -42,3 +42,5 @@ npm run dev
 | `/login` `/signup` | デモ認証 |
 | `/coach/register` | 指導者登録 |
 | `/coach/dashboard` | 指導者ダッシュボード |
+
+進行計画（機能の正本）: [docs/PRODUCT-ROADMAP-MATCHING.md](docs/PRODUCT-ROADMAP-MATCHING.md) / 実装指示: [docs/AGENT-INSTRUCTIONS-MATCHING.md](docs/AGENT-INSTRUCTIONS-MATCHING.md)

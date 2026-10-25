@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getAppUser } from "@/lib/app-user";
 import { createBooking, listBookingsForUser } from "@/lib/server/data";
 import type { Booking } from "@/types";
 
 export async function GET() {
-  const user = await getCurrentUser();
+  const user = await getAppUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
@@ -13,7 +13,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const user = await getCurrentUser();
+  const user = await getAppUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
