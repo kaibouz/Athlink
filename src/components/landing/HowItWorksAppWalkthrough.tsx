@@ -161,6 +161,7 @@ export function HowItWorksAppWalkthrough({
   const autoplayActive = playing && inView && !hoverPaused && !reduceMotion;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- matchMedia is browser-only, read after mount
     setReduceMotion(prefersReducedMotion());
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onChange = () => {
@@ -186,9 +187,11 @@ export function HowItWorksAppWalkthrough({
     return () => io.disconnect();
   }, []);
 
-  useEffect(() => {
+  const [indexRole, setIndexRole] = useState(role);
+  if (indexRole !== role) {
+    setIndexRole(role);
     setIndex(0);
-  }, [role]);
+  }
 
   useEffect(() => {
     if (!autoplayActive) return;

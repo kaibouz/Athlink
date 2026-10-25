@@ -63,13 +63,16 @@ export default function ComposePostPage() {
     });
   }, [user, getMyProfile, createProfile]);
 
-  useEffect(() => {
-    if (!profile) return;
-    const s = profile.seasonStats;
-    if (s.avg) setStatsNote(`${s.seasonLabel}: AVG ${s.avg}`);
-    else if (s.era) setStatsNote(`${s.seasonLabel}: ERA ${s.era}`);
-    else setStatsNote(s.seasonLabel);
-  }, [profile]);
+  const [statsProfile, setStatsProfile] = useState<typeof profile>(undefined);
+  if (statsProfile !== profile) {
+    setStatsProfile(profile);
+    if (profile) {
+      const s = profile.seasonStats;
+      if (s.avg) setStatsNote(`${s.seasonLabel}: AVG ${s.avg}`);
+      else if (s.era) setStatsNote(`${s.seasonLabel}: ERA ${s.era}`);
+      else setStatsNote(s.seasonLabel);
+    }
+  }
 
   if (!user) {
     return (

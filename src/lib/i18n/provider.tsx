@@ -43,6 +43,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- locale comes from localStorage/navigator, only after mount
     setLocaleState(detectLocale());
     setReady(true);
   }, []);

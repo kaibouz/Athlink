@@ -56,6 +56,7 @@ export function LandingSplash({
   useEffect(() => {
     if (!shouldPlayIntro()) {
       finishedRef.current = true;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intro gate reads sessionStorage, only after mount
       setPhase("done");
       onReveal?.();
       onFinished?.();

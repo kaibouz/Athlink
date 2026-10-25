@@ -64,6 +64,7 @@ export function GrowthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate from localStorage after mount (SSR-safe)
       if (raw) setInvites(JSON.parse(raw) as GrowthInvite[]);
     } catch {
       /* ignore */

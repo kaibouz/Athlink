@@ -39,6 +39,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate from localStorage after mount (SSR-safe)
       if (raw) setItems(JSON.parse(raw) as AthleteOutreach[]);
     } catch {
       /* ignore */

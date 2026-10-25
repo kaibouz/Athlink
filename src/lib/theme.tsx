@@ -77,6 +77,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initial = readStoredTheme();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- theme comes from localStorage, only after mount
     setThemeState(initial);
     applyTheme(initial);
     setReady(true);

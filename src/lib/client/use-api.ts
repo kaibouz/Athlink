@@ -10,27 +10,28 @@ export function useApi<T>(url: string | null): {
   reload: () => void;
 } {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(Boolean(url));
-  const [error, setError] = useState(false);
   const [nonce, setNonce] = useState(0);
+  // The request (url + reload count) that last finished, and whether it failed.
+  const [settled, setSettled] = useState<{ key: string; error: boolean } | null>(null);
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
+  const requestKey = url ? `${nonce}:${url}` : null;
+  const loading = requestKey !== null && settled?.key !== requestKey;
+  const error = requestKey !== null && settled?.key === requestKey && settled.error;
 
   useEffect(() => {
     if (!url) return;
+    const key = `${nonce}:${url}`;
     let active = true;
-    setLoading(true);
-    setError(false);
     fetch(url, { credentials: "same-origin" })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((json: T) => {
-        if (active) setData(json);
+        if (!active) return;
+        setData(json);
+        setSettled({ key, error: false });
       })
       .catch(() => {
-        if (active) setError(true);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+        if (active) setSettled({ key, error: true });
       });
     return () => {
       active = false;

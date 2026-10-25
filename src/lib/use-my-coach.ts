@@ -1,41 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { CoachProfile } from "@/types";
+import type { CoachProfile, User } from "@/types";
 import { useAuth } from "@/lib/store";
+
+type FetchResult = { forUser: User; coach: CoachProfile | null };
 
 export function useMyCoach() {
   const { user, hydrated } = useAuth();
-  const [coach, setCoach] = useState<CoachProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [hasProfile, setHasProfile] = useState(false);
+  const [result, setResult] = useState<FetchResult | null>(null);
+
+  const isCoach = hydrated && user?.role === "coach";
 
   useEffect(() => {
-    if (!hydrated) return;
-    if (!user || user.role !== "coach") {
-      setCoach(null);
-      setHasProfile(false);
-      setLoading(false);
-      return;
-    }
+    if (!hydrated || !user || user.role !== "coach") return;
 
     let cancelled = false;
-    setLoading(true);
     void fetch("/api/coaches/me", { credentials: "include" })
       .then((r) => r.json())
       .then((data: { coach: CoachProfile | null }) => {
-        if (cancelled) return;
-        setCoach(data.coach);
-        setHasProfile(Boolean(data.coach));
+        if (!cancelled) setResult({ forUser: user, coach: data.coach });
       })
       .catch(() => {
-        if (!cancelled) {
-          setCoach(null);
-          setHasProfile(false);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setResult({ forUser: user, coach: null });
       });
 
     return () => {
@@ -43,5 +30,10 @@ export function useMyCoach() {
     };
   }, [user, hydrated]);
 
-  return { coach, loading, hasProfile };
+  // Until hydrated we don't know who the user is; for coaches we're loading
+  // until the fetch for the current user object has settled.
+  const loading = !hydrated || (isCoach && result?.forUser !== user);
+  const coach = isCoach ? (result?.coach ?? null) : null;
+
+  return { coach, loading, hasProfile: Boolean(coach) };
 }

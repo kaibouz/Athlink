@@ -1,7 +1,7 @@
 "use client";
 
 import { addDaysToKey, todayKey } from "@/lib/dates";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, History, type LucideIcon } from "lucide-react";
 import { regionForAthlete, regionLessonCounts, type CaRegionId } from "@/lib/dashboard-analytics";
 import type { Booking } from "@/types";

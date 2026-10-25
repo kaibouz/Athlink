@@ -15,9 +15,10 @@ export function BookingQuickBar() {
   const { t, locale } = useLocale();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
 
+  const { coach } = useMyCoach();
+
   if (user?.role !== "coach") return null;
 
-  const { coach } = useMyCoach();
   const pending = pendingCoachBookings(bookings, coach?.id);
   const next = pending[0];
 

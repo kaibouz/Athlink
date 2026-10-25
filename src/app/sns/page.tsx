@@ -39,11 +39,18 @@ function SnsContent() {
     void refresh();
   }, [refresh]);
 
+  const [seenPostedId, setSeenPostedId] = useState(postedId);
+  if (seenPostedId !== postedId) {
+    setSeenPostedId(postedId);
+    if (postedId) {
+      setShowPostedBanner(true);
+      setFeedMode("list");
+      setTab("timeline");
+    }
+  }
+
   useEffect(() => {
     if (!postedId) return;
-    setShowPostedBanner(true);
-    setFeedMode("list");
-    setTab("timeline");
     const tmr = window.setTimeout(() => {
       document.getElementById(`post-${postedId}`)?.scrollIntoView({
         behavior: "smooth",
