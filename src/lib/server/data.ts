@@ -7,15 +7,9 @@ import { isPackageType, priceFor } from "@/lib/pricing";
 import {
   coachVerifications,
   analyticsEvents,
-  athleteProfiles,
   bookings,
-  coachFeedback,
   coachProfiles,
-  messages,
-  messageThreads,
   reviews,
-  socialPosts,
-  studentAthletes,
   timeSlots,
   users,
 } from "@/db/schema";
@@ -27,15 +21,9 @@ import {
   getSlotsByCoach as getStaticSlotsByCoach,
 } from "@/lib/data";
 import type {
-  AthletePublicProfile,
   Booking,
-  CoachFeedback,
   CoachProfile,
-  Message,
-  MessageThread,
   Review,
-  SocialPost,
-  StudentAthlete,
   TimeSlot,
 } from "@/types";
 

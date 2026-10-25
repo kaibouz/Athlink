@@ -21,7 +21,6 @@ import {
   messages,
   parentLinks,
   reviews,
-  sessions,
   socialPosts,
   studentAthletes,
   timeSlots,

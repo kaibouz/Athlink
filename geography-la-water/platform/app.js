@@ -335,7 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const coloradoShare = Math.max(10, Math.min(40, colorado * 0.28));
     const swpShare = Math.max(12, 48 - laaShare * 0.35 - (colorado - 70) * 0.08);
     const localBase = 18 + recycled * 0.55;
-    const demand = 100 + pop;
     const supplyProxy = laaShare + coloradoShare + swpShare + localBase;
     const importDep = Math.max(35, Math.min(88, ((laaShare + coloradoShare + swpShare) / supplyProxy) * 100 + pop * 0.35 - recycled * 0.4));
     const localShare = Math.max(8, Math.min(45, (localBase / supplyProxy) * 100));
