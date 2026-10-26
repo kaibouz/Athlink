@@ -22,6 +22,7 @@ const statusKey: Record<BookingStatus, MessageKey> = {
   confirmed: "status_confirmed",
   completed: "status_completed",
   cancelled: "status_cancelled",
+  declined: "status_declined",
 };
 
 export default function BookingsPage() {
@@ -126,16 +127,27 @@ export default function BookingsPage() {
                   {b.note}
                 </p>
               )}
-              {b.format === "in_person" && b.status !== "cancelled" && (
+              {b.format === "in_person" && (b.status === "pending" || b.status === "confirmed") && (
                 <div className="mt-4">
                   <LessonVenuePanel booking={b} />
                 </div>
               )}
-              {b.status !== "cancelled" && b.status !== "completed" && (
+              {(b.status === "pending" || b.status === "confirmed") && (
                 <div className="mt-4 space-y-3">
-                  <AddToCalendarButtons booking={b} compact />
+                  {/* A request isn't a lesson yet — calendar export once accepted. */}
+                  {b.status === "confirmed" && <AddToCalendarButtons booking={b} compact />}
                   <div className="flex flex-wrap gap-2">
-                    {user?.role === "coach" || user?.role === "executive" ? (
+                    {user?.role !== "athlete" && b.status === "pending" ? (
+                      <>
+                        <Button size="sm" onClick={() => updateBookingStatus(b.id, "confirmed")}>
+                          {t("quickbar_confirm")}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => updateBookingStatus(b.id, "declined")}>
+                          {t("quickbar_decline")}
+                        </Button>
+                      </>
+                    ) : null}
+                    {user?.role !== "athlete" && b.status === "confirmed" ? (
                       <Button
                         variant="outline"
                         size="sm"
@@ -144,13 +156,15 @@ export default function BookingsPage() {
                         {t("bookings_complete")}
                       </Button>
                     ) : null}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => updateBookingStatus(b.id, "cancelled")}
-                    >
-                      {t("bookings_cancel")}
-                    </Button>
+                    {user?.role === "athlete" || b.status === "confirmed" ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => updateBookingStatus(b.id, "cancelled")}
+                      >
+                        {b.status === "pending" ? t("bookings_cancel_request") : t("bookings_cancel")}
+                      </Button>
+                    ) : null}
                     <Link href="/messages">
                       <Button variant="secondary" size="sm">
                         {t("bookings_message")}

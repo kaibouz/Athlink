@@ -2,7 +2,8 @@ import type { Localized } from "@/lib/i18n/localize";
 
 export type UserRole = "athlete" | "coach" | "parent" | "executive";
 export type LessonFormat = "in_person" | "online";
-export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
+/** pending = requested, waiting on the coach; declined = coach said no. */
+export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled" | "declined";
 export type PackageType = "single" | "pack" | "subscription";
 /** Platform membership tier (Free forever vs paid Pro). */
 export type PlatformPlanId = "free" | "pro";
@@ -57,6 +58,13 @@ export interface CoachProfile {
   career: Localized[];
   languages: string[];
   availabilityNote: string;
+  /** Positions coached (POSITIONS ids). */
+  positions?: string[];
+  /** Levels / age groups taught (LEVELS ids). */
+  levels?: string[];
+  /** In-person lesson venues the athlete can pick from. */
+  venues?: string[];
+  introVideoUrl?: string | null;
 }
 
 export interface Review {
@@ -90,6 +98,8 @@ export interface Booking {
   format: LessonFormat;
   packageType: PackageType;
   price: number;
+  /** Chosen venue for in-person lessons, or "online". */
+  location?: string;
   status: BookingStatus;
   note?: string;
   createdAt: string;

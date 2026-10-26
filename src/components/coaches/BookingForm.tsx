@@ -8,7 +8,6 @@ import { useAuth } from "@/lib/store";
 import { formatDateJa, formatPrice } from "@/lib/utils";
 import { priceFor } from "@/lib/pricing";
 import { isNotOver } from "@/lib/dates";
-import { autoSyncBookingToCalendars } from "@/lib/calendar";
 import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
@@ -16,7 +15,6 @@ import { Label, Select, Textarea } from "@/components/ui/Input";
 import {
   AddToCalendarButtons,
   CalendarAutoPrefSelect,
-  CalendarSyncedNote,
 } from "@/components/calendar/AddToCalendar";
 import type { Booking } from "@/types";
 
@@ -39,6 +37,10 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const date = pickedDate && dates.includes(pickedDate) ? pickedDate : (firstOpenDate || dates[0] || "");
   const [slotId, setSlotId] = useState("");
   const [format, setFormat] = useState<LessonFormat>(coach.formats[0]);
+  // In person, the athlete picks one of the coach's venues (if listed).
+  const venues = coach.venues ?? [];
+  const [venue, setVenue] = useState<string>(venues[0] ?? "");
+  const needsVenue = format === "in_person" && venues.length > 0;
   const [packageType, setPackageType] = useState<PackageType>("single");
   const [sessionType, setSessionType] = useState<string>(SESSION_TYPES[1]);
   const [note, setNote] = useState("");
@@ -104,6 +106,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       format,
       packageType,
       price: total,
+      location: needsVenue ? venue : undefined,
       note: composedNote || undefined,
       });
     } catch (err) {
@@ -113,6 +116,8 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         setError(t("booking_slot_taken"));
         setSlotId("");
         setSlotsVersion((v) => v + 1);
+      } else if (code === "INVALID_LOCATION") {
+        setError(t("booking_pick_location"));
       } else {
         setError(t("booking_failed"));
       }
@@ -121,7 +126,6 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       setSubmitting(false);
     }
     setCreated(booking);
-    autoSyncBookingToCalendars(booking);
     setConfirmOpen(false);
     setDone(true);
   }
@@ -136,7 +140,9 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           {formatDateJa(selected.date, dateLocale)} {selected.startTime}–{selected.endTime}
         </p>
         <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-200">{formatPrice(total)}</p>
-        <CalendarSyncedNote />
+        {!isCoachPublishing && (
+          <p className="mt-3 text-sm text-emerald-700 dark:text-emerald-200">{t("booking_done_hint")}</p>
+        )}
         {created && (
           <div className="mt-4">
             <p className="mb-2 text-xs font-semibold text-brand-600">{t("cal_add_manual")}</p>
@@ -250,6 +256,18 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           ))}
         </Select>
       </div>
+      {needsVenue && (
+        <div>
+          <Label htmlFor="venue">{t("booking_location")}</Label>
+          <Select id="venue" value={venue} onChange={(e) => setVenue(e.target.value)}>
+            {venues.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
       <div>
         <Label htmlFor="pkg">{t("booking_plan")}</Label>
         <Select
@@ -326,6 +344,12 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
                   {sessionType} · {format === "online" ? t("search_online") : t("search_in_person")}
                 </b>
               </div>
+              {needsVenue && (
+                <div className="mx-metric">
+                  <span>{t("booking_location")}</span>
+                  <b>{venue}</b>
+                </div>
+              )}
               <div className="mx-metric">
                 <span>{t("bk_total")}</span>
                 <b className="text-lg font-black">{formatPrice(total)}</b>

@@ -39,6 +39,8 @@ export function statusLabel(status: BookingStatus): string {
       return "Completed";
     case "cancelled":
       return "Cancelled";
+    case "declined":
+      return "Declined";
   }
 }
 

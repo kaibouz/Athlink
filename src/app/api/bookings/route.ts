@@ -32,6 +32,7 @@ export async function POST(req: Request) {
         startTime: body.startTime,
         format: body.format,
         packageType: body.packageType,
+        location: typeof body.location === "string" ? body.location : undefined,
         note: typeof body.note === "string" ? body.note : undefined,
       },
       user.id,
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
       INVALID_DATE: 400,
       INVALID_FORMAT: 400,
       INVALID_PACKAGE: 400,
+      INVALID_LOCATION: 400,
     };
     if (code in status) return NextResponse.json({ error: code }, { status: status[code] });
     return NextResponse.json({ error: "BOOKING_FAILED" }, { status: 500 });

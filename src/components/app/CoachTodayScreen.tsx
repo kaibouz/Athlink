@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
 import type { AthleteProgress, Booking, StudentAthlete } from "@/types";
 import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
+import { BookingRequestsCard } from "@/components/coach/BookingRequestsCard";
 
 function initials(name: string) {
   return name
@@ -115,6 +116,9 @@ export function CoachTodayScreen() {
           </small>
         </div>
       </header>
+
+      {/* New requests first: nothing reaches the calendar until it's accepted. */}
+      <BookingRequestsCard bookings={coachBookings} />
 
       <div className="mx-stat-grid mb-3">
         <Link href="/coach/analytics" className="mx-card block">

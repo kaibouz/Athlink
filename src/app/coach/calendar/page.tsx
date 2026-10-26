@@ -14,6 +14,7 @@ import type { MessageKey } from "@/lib/i18n/messages";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { AddToCalendarButtons } from "@/components/calendar/AddToCalendar";
+import { AvailabilityEditor } from "@/components/coach/AvailabilityEditor";
 import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
 import type { Booking, BookingStatus } from "@/types";
 
@@ -22,6 +23,7 @@ const statusKey: Record<BookingStatus, MessageKey> = {
   confirmed: "status_confirmed",
   completed: "status_completed",
   cancelled: "status_cancelled",
+  declined: "status_declined",
 };
 
 const statusTone: Record<BookingStatus, string> = {
@@ -29,6 +31,7 @@ const statusTone: Record<BookingStatus, string> = {
   confirmed: "border-emerald-400 bg-emerald-500/20 text-emerald-100",
   completed: "border-brand-300 bg-accent/20 text-brand-100",
   cancelled: "border-slate-400 bg-slate-500/20 text-slate-300",
+  declined: "border-slate-400 bg-slate-500/20 text-slate-300",
 };
 
 function startOfMonth(d: Date) {
@@ -115,6 +118,10 @@ function CalendarInner() {
             {t("coach_nav_qr")}
           </Button>
         </Link>
+      </div>
+
+      <div className="mt-6">
+        <AvailabilityEditor />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
@@ -254,7 +261,7 @@ function CalendarInner() {
                       size="sm"
                       variant="outline"
                       className="flex-1"
-                      onClick={() => updateBookingStatus(b.id, "cancelled")}
+                      onClick={() => updateBookingStatus(b.id, "declined")}
                     >
                       {t("quickbar_decline")}
                     </Button>

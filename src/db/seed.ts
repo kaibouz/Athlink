@@ -24,7 +24,6 @@ import {
   sessions,
   socialPosts,
   studentAthletes,
-  timeSlots,
   users,
 } from "./schema";
 import {
@@ -42,6 +41,8 @@ import {
   studentUserLinks,
 } from "@/lib/athlete-data";
 import { DEMO_CLIPS } from "@/lib/demo-media";
+import { demoCoachExtras } from "./demo-coach-extras";
+import { DEMO_AVAILABILITY, setAvailabilityTemplate } from "@/lib/server/data";
 
 const DEMO_PASSWORD = "Athlink2026!";
 
@@ -50,37 +51,7 @@ function dayOffset(offset: number): string {
   return addDaysToKey(todayKey(), offset);
 }
 
-const SLOT_TIMES: [string, string][] = [
-  ["09:00", "10:00"],
-  ["10:30", "11:30"],
-  ["13:00", "14:00"],
-  ["15:00", "16:00"],
-  ["17:00", "18:00"],
-  ["18:30", "19:30"],
-];
-
 /** Fresh, today-relative availability for every coach (14-day rolling window). */
-function generateSlots(coachIds: string[]) {
-  const rows: (typeof timeSlots.$inferInsert)[] = [];
-  coachIds.forEach((coachId) => {
-    for (let d = 0; d < 14; d++) {
-      const date = dayOffset(d);
-      SLOT_TIMES.forEach(([startTime, endTime], ti) => {
-        rows.push({
-          id: `${coachId}-${date}-${startTime}`,
-          coachId,
-          date,
-          startTime,
-          endTime,
-          // Deterministic but varied availability; keep some open every day
-          available: (d * 7 + ti) % 3 !== 0,
-        });
-      });
-    }
-  });
-  return rows;
-}
-
 /** Upcoming + recent bookings anchored to today so Home/Coach-Today/earnings all populate. */
 function generateBookings(): (typeof bookings.$inferInsert)[] {
   const mk = (
@@ -159,6 +130,7 @@ async function main() {
       message_threads,
       bookings,
       time_slots,
+      coach_availability,
       reviews,
       coach_profiles,
       sessions,
@@ -229,6 +201,7 @@ async function main() {
       career: c.career,
       languages: c.languages,
       availabilityNote: c.availabilityNote,
+      ...demoCoachExtras(c),
     })),
   );
 
@@ -245,7 +218,8 @@ async function main() {
     })),
   );
 
-  await db.insert(timeSlots).values(generateSlots(coaches.map((c) => c.id)));
+  // Bookable times come from each coach's weekly template.
+  for (const c of coaches) await setAvailabilityTemplate(c.id, DEMO_AVAILABILITY);
 
   await db.insert(bookings).values(generateBookings());
 

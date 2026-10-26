@@ -103,6 +103,7 @@ function mapBooking(row: typeof bookings.$inferSelect): Booking {
     packageType: row.packageType,
     price: row.price,
     status: row.status,
+    location: row.location ?? undefined,
     note: row.note ?? undefined,
     createdAt: row.createdAt.toISOString(),
   };
@@ -340,22 +341,24 @@ export async function getMessagesForUser(user: User): Promise<{
       .from(bookings)
       .where(and(eq(bookings.coachId, t.coachId), eq(bookings.athleteId, t.athleteId)));
     for (const b of rel) {
-      if (b.status === "confirmed" || b.status === "completed") {
-        systemMsgs.push({
-          id: `sys-${b.id}`,
-          threadId: t.id,
-          senderId: "system",
-          senderName: "system",
-          body: {
-            en: `Booking ${b.status} · ${b.date} ${b.startTime}`,
-            ja: `予約が${b.status === "completed" ? "完了" : "確定"}しました · ${b.date} ${b.startTime}`,
-            es: `Reserva ${b.status === "completed" ? "completada" : "confirmada"} · ${b.date} ${b.startTime}`,
-          },
-          kind: "system",
-          bookingId: b.id,
-          createdAt: b.createdAt.toISOString(),
-        });
-      }
+      const when = `${b.date} ${b.startTime}`;
+      const body: Record<string, { en: string; ja: string; es: string }> = {
+        pending: { en: `Lesson requested · ${when}`, ja: `レッスンをリクエストしました · ${when}`, es: `Clase solicitada · ${when}` },
+        confirmed: { en: `Booking confirmed · ${when}`, ja: `予約が確定しました · ${when}`, es: `Reserva confirmada · ${when}` },
+        completed: { en: `Lesson completed · ${when}`, ja: `レッスンが完了しました · ${when}`, es: `Clase completada · ${when}` },
+        declined: { en: `Request declined · ${when}`, ja: `リクエストは辞退されました · ${when}`, es: `Solicitud rechazada · ${when}` },
+        cancelled: { en: `Booking cancelled · ${when}`, ja: `予約がキャンセルされました · ${when}`, es: `Reserva cancelada · ${when}` },
+      };
+      systemMsgs.push({
+        id: `sys-${b.id}`,
+        threadId: t.id,
+        senderId: "system",
+        senderName: "system",
+        body: body[b.status],
+        kind: "system",
+        bookingId: b.id,
+        createdAt: b.createdAt.toISOString(),
+      });
     }
   }
 
