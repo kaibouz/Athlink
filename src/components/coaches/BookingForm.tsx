@@ -77,6 +77,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   function openConfirm(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    trackEvent("book_click", { coachId: coach.id }, coach.id);
     if (!user) {
       router.push(`/login?next=/c/${coach.id}`);
       return;

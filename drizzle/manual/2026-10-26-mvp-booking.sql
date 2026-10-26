@@ -5,6 +5,7 @@
 ALTER TYPE booking_status ADD VALUE IF NOT EXISTS 'declined';
 
 ALTER TABLE bookings ADD COLUMN IF NOT EXISTS location text;
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS reminded_at timestamptz;
 
 ALTER TABLE coach_profiles ADD COLUMN IF NOT EXISTS positions jsonb NOT NULL DEFAULT '[]'::jsonb;
 ALTER TABLE coach_profiles ADD COLUMN IF NOT EXISTS levels jsonb NOT NULL DEFAULT '[]'::jsonb;

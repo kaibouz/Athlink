@@ -4,6 +4,7 @@ import { getDb, isDatabaseConfigured } from "@/db";
 import { users } from "@/db/schema";
 import { toPublicUser } from "@/lib/auth-server";
 import type { User, UserRole } from "@/types";
+import { recordAnalyticsEvent } from "@/lib/server/data";
 
 /**
  * Clerk is canonical for public members. Admin/executive auth is a separate
@@ -143,7 +144,7 @@ async function reconcile(identity: ClerkIdentity): Promise<User> {
   }
 
   const id = `u-${randomBytes(6).toString("hex")}`;
-  await db
+  const inserted = await db
     .insert(users)
     .values({
       id,
@@ -154,7 +155,10 @@ async function reconcile(identity: ClerkIdentity): Promise<User> {
       role: identity.metadataRole ?? DEFAULT_CLERK_ROLE,
       avatarUrl: avatarFor(identity.name, identity.email, identity.imageUrl),
     })
-    .onConflictDoNothing();
+    .onConflictDoNothing()
+    .returning({ id: users.id });
+  // First time we see this Clerk account = a sign-up (funnel step 1).
+  if (inserted.length) await recordAnalyticsEvent({ name: "signup", userId: id, props: { role: identity.metadataRole ?? DEFAULT_CLERK_ROLE } });
 
   const [created] = await db
     .select()

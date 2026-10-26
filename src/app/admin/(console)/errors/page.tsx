@@ -6,6 +6,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { useDeferredEffect } from "@/lib/admin/use-deferred-effect";
 import { useLocale } from "@/lib/i18n/provider";
 import type { HealthCheck } from "@/lib/admin/health";
+import { ErrorLogTable } from "@/components/admin/ErrorLogTable";
 
 export default function AdminErrorsPage() {
   const { t } = useLocale();
@@ -70,6 +71,7 @@ export default function AdminErrorsPage() {
         Stripe webhook retries, Resend bounce log, and Sentry issue grouping will live here once those
         services are connected.
       </p>
+      <ErrorLogTable />
     </div>
   );
 }

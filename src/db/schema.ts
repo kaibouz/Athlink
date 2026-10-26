@@ -163,6 +163,8 @@ export const bookings = pgTable("bookings", {
   status: bookingStatusEnum("status").notNull(),
   /** Where the lesson happens: one of the coach's venues, or "online". */
   location: text("location"),
+  /** Set when the day-before reminder went out (so it's sent once). */
+  remindedAt: timestamp("reminded_at", { withTimezone: true }),
   note: text("note"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
 });
