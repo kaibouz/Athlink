@@ -99,6 +99,7 @@ const statusKey: Record<BookingStatus, MessageKey> = {
   confirmed: "status_confirmed",
   completed: "status_completed",
   cancelled: "status_cancelled",
+  declined: "status_declined",
 };
 
 function RingToggle({

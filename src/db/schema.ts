@@ -11,11 +11,16 @@ import {
 
 export const userRoleEnum = pgEnum("user_role", ["athlete", "coach", "parent", "executive"]);
 export const lessonFormatEnum = pgEnum("lesson_format", ["in_person", "online"]);
+/**
+ * pending = requested by the athlete, waiting on the coach;
+ * declined = the coach said no (slot released); cancelled = withdrawn later.
+ */
 export const bookingStatusEnum = pgEnum("booking_status", [
   "pending",
   "confirmed",
   "completed",
   "cancelled",
+  "declined",
 ]);
 export const packageTypeEnum = pgEnum("package_type", ["single", "pack", "subscription"]);
 export const socialPostTypeEnum = pgEnum("social_post_type", [
@@ -77,6 +82,14 @@ export const coachProfiles = pgTable("coach_profiles", {
   career: jsonb("career").$type<{ en: string; ja: string; es: string }[]>().notNull(),
   languages: jsonb("languages").$type<string[]>().notNull(),
   availabilityNote: text("availability_note").notNull(),
+  /** Positions coached (POSITIONS ids), e.g. ["pitcher", "catcher"]. */
+  positions: jsonb("positions").$type<string[]>().notNull().default([]),
+  /** Athlete levels / age groups taught (LEVELS ids), e.g. ["12u", "high_school"]. */
+  levels: jsonb("levels").$type<string[]>().notNull().default([]),
+  /** Where in-person lessons happen — the athlete picks one when booking. */
+  venues: jsonb("venues").$type<string[]>().notNull().default([]),
+  /** Optional intro video (YouTube / Vimeo / mp4 URL). */
+  introVideoUrl: text("intro_video_url"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
@@ -91,6 +104,33 @@ export const reviews = pgTable("reviews", {
   comment: jsonb("comment").$type<{ en: string; ja: string; es: string }>().notNull(),
   date: text("date").notNull(),
   athleteLevel: text("athlete_level").notNull(),
+});
+
+/**
+ * A coach's weekly availability template — the times they are willing to
+ * teach. Bookable time_slots are generated from this for a rolling window;
+ * a coach with no template has no bookable times (nothing is invented).
+ */
+export const coachAvailability = pgTable("coach_availability", {
+  id: text("id").primaryKey(),
+  coachId: text("coach_id")
+    .notNull()
+    .references(() => coachProfiles.id, { onDelete: "cascade" }),
+  /** 0 = Sunday … 6 = Saturday */
+  weekday: integer("weekday").notNull(),
+  startTime: text("start_time").notNull(),
+  endTime: text("end_time").notNull(),
+});
+
+/** Server-side errors worth a human look (API failures, unexpected throws). */
+export const errorLogs = pgTable("error_logs", {
+  id: text("id").primaryKey(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  source: text("source").notNull(),
+  message: text("message").notNull(),
+  stack: text("stack"),
+  path: text("path"),
+  userId: text("user_id"),
 });
 
 export const timeSlots = pgTable("time_slots", {
@@ -121,6 +161,10 @@ export const bookings = pgTable("bookings", {
   packageType: packageTypeEnum("package_type").notNull(),
   price: real("price").notNull(),
   status: bookingStatusEnum("status").notNull(),
+  /** Where the lesson happens: one of the coach's venues, or "online". */
+  location: text("location"),
+  /** Set when the day-before reminder went out (so it's sent once). */
+  remindedAt: timestamp("reminded_at", { withTimezone: true }),
   note: text("note"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
 });

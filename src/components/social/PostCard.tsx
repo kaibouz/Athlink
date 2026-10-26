@@ -13,6 +13,7 @@ import type { MessageKey } from "@/lib/i18n/messages";
 import type { SocialPost } from "@/types";
 import { useLocale } from "@/lib/i18n/provider";
 import { useSocial } from "@/lib/social-store";
+import { useAuth } from "@/lib/store";
 import { Badge } from "@/components/ui/Badge";
 import { AthleteOutreachButtons } from "@/components/social/AthleteOutreachButtons";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,10 @@ export function PostCard({
   variant?: "card" | "timeline";
 }) {
   const { t, locale } = useLocale();
+  // Contact / Scout are tools for coaches and scouts — athletes and visitors
+  // get the clean feed card, like the app.
+  const { user: viewer } = useAuth();
+  const canOutreach = viewer?.role === "coach" || viewer?.role === "executive";
   const { profiles } = useSocial();
   const athlete = profiles.find((p) => p.id === post.athleteId);
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
@@ -130,15 +135,17 @@ export function PostCard({
               </Link>
             </div>
 
-            <div className="mt-3">
-              <AthleteOutreachButtons
-                athleteId={post.athleteId}
-                athleteName={post.athleteName}
-                email={athlete?.email}
-                openToScouts={athlete?.openToScouts ?? true}
-                className="w-full [&_button]:flex-1"
-              />
-            </div>
+            {canOutreach && (
+              <div className="mt-3">
+                <AthleteOutreachButtons
+                  athleteId={post.athleteId}
+                  athleteName={post.athleteName}
+                  email={athlete?.email}
+                  openToScouts={athlete?.openToScouts ?? true}
+                  className="w-full [&_button]:flex-1"
+                />
+              </div>
+            )}
           </div>
         </div>
       </article>
@@ -188,13 +195,15 @@ export function PostCard({
           <p className="text-xs font-medium text-brand-600">{post.statsNote}</p>
         )}
 
-        <AthleteOutreachButtons
-          athleteId={post.athleteId}
-          athleteName={post.athleteName}
-          email={athlete?.email}
-          openToScouts={athlete?.openToScouts ?? true}
-          className="w-full [&_button]:flex-1"
-        />
+        {canOutreach && (
+          <AthleteOutreachButtons
+            athleteId={post.athleteId}
+            athleteName={post.athleteName}
+            email={athlete?.email}
+            openToScouts={athlete?.openToScouts ?? true}
+            className="w-full [&_button]:flex-1"
+          />
+        )}
 
         <div className="flex items-center justify-between pt-0.5 text-xs text-brand-400">
           <span>

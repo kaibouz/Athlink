@@ -5,9 +5,10 @@ import type { Booking } from "@/types";
 export type LessonVenue = {
   name: string;
   address: string;
-  lat: number;
-  lng: number;
-  regionId: CaRegionId;
+  /** Known coordinates (region fallback venues). Coach-entered venues have none. */
+  lat?: number;
+  lng?: number;
+  regionId?: CaRegionId;
 };
 
 const REGION_VENUES: Record<CaRegionId, LessonVenue> = {
@@ -80,7 +81,9 @@ export function venueForCoach(location: string): LessonVenue {
 
 /** Resolve a concrete lesson venue for a booking (demo: region-based facilities). */
 export function venueForBooking(booking: Booking): LessonVenue | null {
-  if (booking.format === "online") return null;
+  if (booking.format === "online" || booking.location === "online") return null;
+  // The venue the athlete picked from the coach's list is the real answer.
+  if (booking.location) return { name: booking.location, address: booking.location };
   const coach = getCoachById(booking.coachId);
   const athleteRegion = regionForAthlete(booking.athleteName);
   const coachRegion = coach ? regionFromCoachLocation(coach.location) : athleteRegion;
@@ -89,12 +92,24 @@ export function venueForBooking(booking: Booking): LessonVenue | null {
 }
 
 export function venueEmbedUrl(venue: LessonVenue, zoom = 15) {
+  if (venue.lat == null || venue.lng == null) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(venue.address)}&z=${zoom}&output=embed`;
+  }
   return mapEmbedUrl(venue.lat, venue.lng, zoom);
 }
 
 export function venueMapLinks(venue: LessonVenue) {
   const { lat, lng, name, address } = venue;
-  const label = `${name}, ${address}`;
+  const label = name === address ? address : `${name}, ${address}`;
+  if (lat == null || lng == null) {
+    const q = encodeURIComponent(label);
+    return {
+      viewGoogle: `https://www.google.com/maps/search/?api=1&query=${q}`,
+      viewApple: `https://maps.apple.com/?q=${q}`,
+      directionsGoogle: `https://www.google.com/maps/dir/?api=1&destination=${q}`,
+      directionsApple: `https://maps.apple.com/?daddr=${q}`,
+    };
+  }
   return {
     viewGoogle: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
     viewApple: `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(label)}`,

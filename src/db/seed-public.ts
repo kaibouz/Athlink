@@ -15,7 +15,10 @@
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { getDb } from "./index";
-import { athleteProfiles, coachProfiles, featureFlags, socialPosts, users } from "./schema";
+import { eq } from "drizzle-orm";
+import { athleteProfiles, coachAvailability, coachProfiles, featureFlags, socialPosts, users } from "./schema";
+import { demoCoachExtras } from "./demo-coach-extras";
+import { DEMO_AVAILABILITY, setAvailabilityTemplate } from "@/lib/server/data";
 import { coaches } from "@/lib/data";
 import { athleteProfiles as staticAthletes, seedSocialPosts } from "@/lib/social-data";
 
@@ -56,6 +59,7 @@ async function main() {
         career: c.career,
         languages: c.languages,
         availabilityNote: c.availabilityNote,
+        ...demoCoachExtras(c),
       })),
     )
     .onConflictDoNothing()
@@ -123,8 +127,17 @@ async function main() {
     .onConflictDoNothing()
     .returning({ key: featureFlags.key });
 
-  // Time slots are created on demand (rolling 14-day window) by the app.
-  console.log(`users +${u.length}, coaches +${cp.length}, athletes +${ap.length}, posts +${sp.length}, flags +${ff.length}`);
+  // Weekly availability for demo coaches that don't have one yet; bookable
+  // times are then rolled forward on demand by the app.
+  let av = 0;
+  for (const c of coaches) {
+    const [has] = await db.select({ id: coachAvailability.id }).from(coachAvailability).where(eq(coachAvailability.coachId, c.id)).limit(1);
+    if (!has) {
+      await setAvailabilityTemplate(c.id, DEMO_AVAILABILITY);
+      av++;
+    }
+  }
+  console.log(`users +${u.length}, coaches +${cp.length}, athletes +${ap.length}, posts +${sp.length}, flags +${ff.length}, availability +${av}`);
   process.exit(0);
 }
 

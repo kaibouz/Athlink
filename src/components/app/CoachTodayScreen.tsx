@@ -6,12 +6,13 @@ import { MessageSquare, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatTimeRange } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
 import type { AthleteProgress, Booking, StudentAthlete } from "@/types";
 import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
+import { BookingRequestsCard } from "@/components/coach/BookingRequestsCard";
 
 function initials(name: string) {
   return name
@@ -116,6 +117,9 @@ export function CoachTodayScreen() {
         </div>
       </header>
 
+      {/* New requests first: nothing reaches the calendar until it's accepted. */}
+      <BookingRequestsCard bookings={coachBookings} />
+
       <div className="mx-stat-grid mb-3">
         <Link href="/coach/analytics" className="mx-card block">
           <div className="mx-t">{t("mx_this_week")}</div>
@@ -155,7 +159,7 @@ export function CoachTodayScreen() {
                   <div className="mx-w">
                     <b>{b.athleteName}</b>
                     <span>
-                      {b.startTime}–{b.endTime}
+                      {formatTimeRange(b.startTime, b.endTime, locale)}
                       {b.note ? ` · ${b.note}` : ""}
                     </span>
                   </div>
@@ -221,7 +225,7 @@ export function CoachTodayScreen() {
 
       {/* Calendar and QR live in the tab bar / top menu already. */}
       <div className="mt-2 flex">
-        <Link href="/me" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
+        <Link href="/coach/profile" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
           {t("dash_edit")}
         </Link>
       </div>

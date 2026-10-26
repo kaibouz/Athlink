@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
+import { notifyBooking } from "@/lib/server/notify";
+import { logError } from "@/lib/server/error-log";
 import { getRequestUser } from "@/lib/server/current-user";
-import { createBooking, listBookingsForUser, type CreateBookingInput } from "@/lib/server/data";
+import { createBooking, listBookingsForUser, recordAnalyticsEvent, type CreateBookingInput } from "@/lib/server/data";
 
 export async function GET() {
   const user = await getRequestUser();
@@ -32,11 +34,16 @@ export async function POST(req: Request) {
         startTime: body.startTime,
         format: body.format,
         packageType: body.packageType,
+        location: typeof body.location === "string" ? body.location : undefined,
         note: typeof body.note === "string" ? body.note : undefined,
       },
       user.id,
       user.name,
     );
+    after(async () => {
+      await recordAnalyticsEvent({ name: "booking_request", userId: user.id, coachId: booking.coachId });
+      await notifyBooking("requested", booking);
+    });
     return NextResponse.json({ booking }, { status: 201 });
   } catch (err) {
     const code = err instanceof Error ? err.message : "";
@@ -47,8 +54,10 @@ export async function POST(req: Request) {
       INVALID_DATE: 400,
       INVALID_FORMAT: 400,
       INVALID_PACKAGE: 400,
+      INVALID_LOCATION: 400,
     };
     if (code in status) return NextResponse.json({ error: code }, { status: status[code] });
+    await logError("POST /api/bookings", err, { path: "/api/bookings", userId: user.id });
     return NextResponse.json({ error: "BOOKING_FAILED" }, { status: 500 });
   }
 }

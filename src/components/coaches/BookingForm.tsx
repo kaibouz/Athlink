@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import type { CoachProfile, LessonFormat, PackageType, TimeSlot } from "@/types";
 import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
-import { formatDateJa, formatPrice } from "@/lib/utils";
+import { formatDateJa, formatPrice, formatTimeRange, formatDateShort } from "@/lib/utils";
 import { priceFor } from "@/lib/pricing";
+import { BookingMonth } from "@/components/coaches/BookingMonth";
 import { isNotOver } from "@/lib/dates";
-import { autoSyncBookingToCalendars } from "@/lib/calendar";
 import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
@@ -16,7 +16,6 @@ import { Label, Select, Textarea } from "@/components/ui/Input";
 import {
   AddToCalendarButtons,
   CalendarAutoPrefSelect,
-  CalendarSyncedNote,
 } from "@/components/calendar/AddToCalendar";
 import type { Booking } from "@/types";
 
@@ -39,6 +38,10 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const date = pickedDate && dates.includes(pickedDate) ? pickedDate : (firstOpenDate || dates[0] || "");
   const [slotId, setSlotId] = useState("");
   const [format, setFormat] = useState<LessonFormat>(coach.formats[0]);
+  // In person, the athlete picks one of the coach's venues (if listed).
+  const venues = coach.venues ?? [];
+  const [venue, setVenue] = useState<string>(venues[0] ?? "");
+  const needsVenue = format === "in_person" && venues.length > 0;
   const [packageType, setPackageType] = useState<PackageType>("single");
   const [sessionType, setSessionType] = useState<string>(SESSION_TYPES[1]);
   const [note, setNote] = useState("");
@@ -75,6 +78,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   function openConfirm(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    trackEvent("book_click", { coachId: coach.id }, coach.id);
     if (!user) {
       router.push(`/login?next=/c/${coach.id}`);
       return;
@@ -104,6 +108,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       format,
       packageType,
       price: total,
+      location: needsVenue ? venue : undefined,
       note: composedNote || undefined,
       });
     } catch (err) {
@@ -113,6 +118,8 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         setError(t("booking_slot_taken"));
         setSlotId("");
         setSlotsVersion((v) => v + 1);
+      } else if (code === "INVALID_LOCATION") {
+        setError(t("booking_pick_location"));
       } else {
         setError(t("booking_failed"));
       }
@@ -121,7 +128,6 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
       setSubmitting(false);
     }
     setCreated(booking);
-    autoSyncBookingToCalendars(booking);
     setConfirmOpen(false);
     setDone(true);
   }
@@ -133,10 +139,12 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           {t(isCoachPublishing ? "booking_done_publish" : "booking_done")}
         </p>
         <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-200">
-          {formatDateJa(selected.date, dateLocale)} {selected.startTime}–{selected.endTime}
+          {formatDateJa(selected.date, dateLocale)} {formatTimeRange(selected.startTime, selected.endTime, locale)}
         </p>
         <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-200">{formatPrice(total)}</p>
-        <CalendarSyncedNote />
+        {!isCoachPublishing && (
+          <p className="mt-3 text-sm text-emerald-700 dark:text-emerald-200">{t("booking_done_hint")}</p>
+        )}
         {created && (
           <div className="mt-4">
             <p className="mb-2 text-xs font-semibold text-brand-600">{t("cal_add_manual")}</p>
@@ -162,31 +170,27 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         {t(isCoachPublishing ? "booking_title_publish" : "booking_title")}
       </h3>
 
-      {/* Week-strip date picker (slot-first ordering) */}
+      {/* Month calendar (app style): open / few left / fully booked per day */}
       <div>
         <Label>{t("booking_date")}</Label>
-        <div className="mx-days">
-          {dates.map((d) => {
-            const dObj = new Date(`${d}T00:00:00`);
-            const wd = dObj.toLocaleDateString(dateLocale, { weekday: "short" });
-            const dayNum = dObj.getDate();
-            const on = date === d;
-            return (
-              <button
-                key={d}
-                type="button"
-                onClick={() => {
-                  setDate(d);
-                  setSlotId("");
-                }}
-                className={on ? "mx-day mx-day-on mx-day-dot" : "mx-day mx-day-dot"}
-              >
-                {wd}
-                <b>{dayNum}</b>
-              </button>
-            );
-          })}
-        </div>
+        <BookingMonth
+          slots={slots}
+          value={date}
+          locale={locale}
+          labels={{ open: t("cal_open"), few: t("cal_few_left"), full: t("cal_full") }}
+          onChange={(d) => {
+            setDate(d);
+            setSlotId("");
+          }}
+        />
+        {date ? (
+          <p className="mt-2 flex items-baseline justify-between text-sm">
+            <b className="text-[color:var(--mx-text)]">{formatDateShort(date, locale)}</b>
+            <span className="text-xs text-[color:var(--mx-dim)]">
+              {t("cal_slots_open", { n: daySlots.filter((x) => x.available).length, total: daySlots.length })}
+            </span>
+          </p>
+        ) : null}
       </div>
 
       <div>
@@ -209,7 +213,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               onClick={() => setSlotId(s.id)}
               className={slotId === s.id ? "mx-slot mx-slot-on" : "mx-slot"}
             >
-              {s.startTime}–{s.endTime}
+              {formatTimeRange(s.startTime, s.endTime, locale)}
             </button>
           ))}
         </div>
@@ -250,6 +254,18 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           ))}
         </Select>
       </div>
+      {needsVenue && (
+        <div>
+          <Label htmlFor="venue">{t("booking_location")}</Label>
+          <Select id="venue" value={venue} onChange={(e) => setVenue(e.target.value)}>
+            {venues.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
       <div>
         <Label htmlFor="pkg">{t("booking_plan")}</Label>
         <Select
@@ -316,8 +332,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               <div className="mx-metric">
                 <span>{t("bk_when")}</span>
                 <b>
-                  {formatDateJa(selected.date, dateLocale)} · {selected.startTime}–
-                  {selected.endTime}
+                  {formatDateJa(selected.date, dateLocale)} · {formatTimeRange(selected.startTime, selected.endTime, locale)}
                 </b>
               </div>
               <div className="mx-metric">
@@ -326,6 +341,12 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
                   {sessionType} · {format === "online" ? t("search_online") : t("search_in_person")}
                 </b>
               </div>
+              {needsVenue && (
+                <div className="mx-metric">
+                  <span>{t("booking_location")}</span>
+                  <b>{venue}</b>
+                </div>
+              )}
               <div className="mx-metric">
                 <span>{t("bk_total")}</span>
                 <b className="text-lg font-black">{formatPrice(total)}</b>

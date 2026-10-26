@@ -39,6 +39,8 @@ export function statusLabel(status: BookingStatus): string {
       return "Completed";
     case "cancelled":
       return "Cancelled";
+    case "declined":
+      return "Declined";
   }
 }
 
@@ -50,4 +52,34 @@ export function formatDateJa(dateStr: string, locale = "en-US"): string {
     day: "numeric",
     weekday: "short",
   }).format(d);
+}
+
+const dateLocaleOf = (locale: string) => (locale.startsWith("ja") ? "ja-JP" : locale.startsWith("es") ? "es-US" : "en-US");
+
+/**
+ * "16:00" → "4:00 PM" for English/Spanish (what US families expect, and what
+ * the app shows); Japanese keeps the 24-hour clock.
+ */
+export function formatTime(hhmm: string, locale = "en"): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  if (Number.isNaN(h)) return hhmm;
+  if (locale.startsWith("ja")) return `${h}:${String(m).padStart(2, "0")}`;
+  const suffix = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${suffix}`;
+}
+
+/** "16:00","17:00" → "4:00–5:00 PM" (same half-day) / "11:00 AM–12:00 PM". */
+export function formatTimeRange(start: string, end: string, locale = "en"): string {
+  if (locale.startsWith("ja")) return `${formatTime(start, locale)}–${formatTime(end, locale)}`;
+  const a = formatTime(start, locale);
+  const b = formatTime(end, locale);
+  const [aTime, aSuf] = a.split(" ");
+  return aSuf === b.split(" ")[1] ? `${aTime}–${b}` : `${a}–${b}`;
+}
+
+/** Compact day label: "Mon, Oct 26" / "10月26日(月)". */
+export function formatDateShort(dateStr: string, locale = "en"): string {
+  const d = new Date(`${dateStr}T00:00:00`);
+  return new Intl.DateTimeFormat(dateLocaleOf(locale), { weekday: "short", month: "short", day: "numeric" }).format(d);
 }

@@ -229,6 +229,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               startTime: input.startTime,
               format: input.format,
               packageType: input.packageType,
+              location: input.location,
               note: input.note,
             }),
           });
@@ -245,7 +246,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const booking: Booking = {
         ...input,
         id: `b-${Date.now()}`,
-        status: "confirmed",
+        status: "pending",
         createdAt: new Date().toISOString(),
       };
       setBookings((prev) => [booking, ...prev]);

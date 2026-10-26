@@ -8,6 +8,8 @@ export const defaultFilters: SearchFilters = {
   specialty: "",
   language: "",
   format: "",
+  position: "",
+  level: "",
   minPrice: 0,
   maxPrice: 200,
   verifiedOnly: false,
@@ -38,6 +40,8 @@ export function filterCoaches(
       (!filters.specialty || c.specialties.includes(filters.specialty)) &&
       (!filters.language || c.languages.includes(filters.language)) &&
       (!filters.format || c.formats.includes(filters.format)) &&
+      (!filters.position || (c.positions ?? []).includes(filters.position)) &&
+      (!filters.level || (c.levels ?? []).includes(filters.level)) &&
       c.pricePerHour >= filters.minPrice &&
       c.pricePerHour <= filters.maxPrice &&
       (!filters.verifiedOnly || c.verified)

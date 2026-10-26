@@ -81,7 +81,8 @@ export default function CoachRegisterPage() {
       const data = (await res.json()) as { coach: { id: string } };
       trackEvent("coach_register_complete", { coachId: data.coach.id });
       setSubmitted(true);
-      setTimeout(() => router.push(`/coaches/${data.coach.id}`), 1500);
+      // Next: complete the profile, then open weekly availability.
+      setTimeout(() => router.push("/coach/profile?welcome=1"), 1200);
     } catch {
       setError("REGISTER_FAILED");
     } finally {

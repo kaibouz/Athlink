@@ -14,6 +14,7 @@ import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { useDeferredEffect } from "@/lib/admin/use-deferred-effect";
 import { useLocale } from "@/lib/i18n/provider";
 import type { HealthCheck } from "@/lib/admin/health";
+import { FunnelCard } from "@/components/admin/FunnelCard";
 
 type Overview = {
   signups: { coach: number; athlete: number; total: number; delta7d: number };
@@ -69,6 +70,8 @@ export default function AdminDashboardPage() {
         onRefresh={() => void load()}
         refreshing={refreshing}
       />
+
+      <FunnelCard />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <AdminStatCard

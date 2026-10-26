@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star } from "lucide-react";
+import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star, MessageSquare } from "lucide-react";
 import type { CoachProfile, Review } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
@@ -18,6 +18,7 @@ import { BookingForm } from "@/components/coaches/BookingForm";
 import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 import { VerificationPanel } from "@/components/coaches/VerificationPanel";
+import { LEVELS, POSITIONS, labelFor } from "@/lib/coach-taxonomy";
 
 function regionFromLocation(locStr: string): CaRegionId {
   const l = locStr.toLowerCase();
@@ -47,7 +48,7 @@ export function CoachDetailView({
   }, [coach.id]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 pb-32 pt-8 sm:px-6 lg:pb-8">
       <Link
         href="/me"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800"
@@ -114,6 +115,46 @@ export function CoachDetailView({
                 </Badge>
               ))}
             </div>
+            {(coach.positions?.length || coach.levels?.length) ? (
+              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                {coach.positions?.length ? (
+                  <div>
+                    <dt className="text-brand-500">{t("cprof_positions")}</dt>
+                    <dd className="mt-0.5 font-medium text-brand-900">
+                      {coach.positions.map((id) => labelFor(POSITIONS, id, locale)).join(" · ")}
+                    </dd>
+                  </div>
+                ) : null}
+                {coach.levels?.length ? (
+                  <div>
+                    <dt className="text-brand-500">{t("cprof_levels")}</dt>
+                    <dd className="mt-0.5 font-medium text-brand-900">
+                      {coach.levels.map((id) => labelFor(LEVELS, id, locale)).join(" · ")}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : null}
+            {coach.venues?.length && coach.formats.includes("in_person") ? (
+              <div className="mt-4 text-sm">
+                <p className="text-brand-500">{t("cprof_venues")}</p>
+                <ul className="mt-1 list-inside list-disc text-brand-800">
+                  {coach.venues.map((v) => (
+                    <li key={v}>{v}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {coach.introVideoUrl ? (
+              <a
+                href={coach.introVideoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
+              >
+                ▶ {t("cprof_video").replace(/\s*[（(].*[)）]\s*$/, "")}
+              </a>
+            ) : null}
           </section>
 
           {/* Directly under the profile: a parent decides on trust before price. */}
@@ -183,9 +224,22 @@ export function CoachDetailView({
           </section>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        <aside id="book" className="scroll-mt-24 lg:sticky lg:top-24 lg:self-start">
           <BookingForm coach={coach} />
         </aside>
+      </div>
+
+      {/* Like the app: the booking action is always one tap away on small
+          screens (desktop keeps the form pinned beside the profile). */}
+      <div className={`fixed inset-x-0 z-30 border-t border-white/10 bg-[color:var(--mx-panel)]/95 px-4 py-3 backdrop-blur md:bottom-0 lg:hidden ${user ? "bottom-16" : "bottom-0"}`}>
+        <div className="mx-auto flex max-w-3xl gap-2">
+          <Link href="/messages" aria-label={t("nav_messages")} className="mx-btn mx-btn-ghost !px-4">
+            <MessageSquare className="h-4 w-4" />
+          </Link>
+          <a href="#book" className="mx-btn mx-btn-accent flex-1 border-0">
+            {t("cta_book_session", { price: formatPrice(coach.pricePerHour) })}
+          </a>
+        </div>
       </div>
     </div>
   );

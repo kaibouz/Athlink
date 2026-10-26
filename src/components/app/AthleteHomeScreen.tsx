@@ -6,7 +6,7 @@ import { CalendarDays, MessageSquare, Navigation, Play, Sparkles } from "lucide-
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
-import { formatDateJa } from "@/lib/utils";
+import { formatDateJa, formatTimeRange } from "@/lib/utils";
 import { venueForBooking, venueMapLinks } from "@/lib/lesson-venues";
 import { useApi } from "@/lib/client/use-api";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
@@ -148,7 +148,7 @@ export function AthleteHomeScreen() {
                   <div className="text-[0.95rem] font-bold">{next.coachName}</div>
                   <div className="mt-0.5 text-[0.75rem] text-[var(--mx-dimmer)]">
                     {next.format === "online" ? t("mx_online") : t("mx_in_person")} ·{" "}
-                    {formatDateJa(next.date, dateLocale)} · {next.startTime}–{next.endTime}
+                    {formatDateJa(next.date, dateLocale)} · {formatTimeRange(next.startTime, next.endTime, locale)}
                   </div>
                   <span className={`mx-pill mt-2 ${next.status === "confirmed" ? "mx-pill-green" : "mx-pill-amber"}`}>
                     {next.status === "confirmed" ? t("mx_confirmed") : t("mx_pending")}
@@ -229,7 +229,7 @@ export function AthleteHomeScreen() {
                       <div className="mx-w">
                         <b>{b.coachName}</b>
                         <span>
-                          {b.startTime}–{b.endTime} ·{" "}
+                          {formatTimeRange(b.startTime, b.endTime, locale)} ·{" "}
                           {b.format === "online" ? t("mx_online") : t("mx_in_person")}
                         </span>
                       </div>

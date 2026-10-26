@@ -10,6 +10,7 @@ import { CoachBookRow } from "@/components/coaches/CoachBookRow";
 import { CoachMapView } from "@/components/coaches/CoachMapView";
 import { SearchFiltersPanel } from "@/components/coaches/SearchFiltersPanel";
 import { useLocale } from "@/lib/i18n/provider";
+import { trackEvent } from "@/lib/track-event";
 import { specialtyLabel } from "@/lib/i18n/localize";
 import { CommSwitcher } from "@/components/layout/CommSwitcher";
 import { Button } from "@/components/ui/Button";
@@ -45,6 +46,20 @@ function SearchContent() {
 
   const results = useMemo(() => filterCoaches(filters, coaches), [filters, coaches]);
 
+  // Funnel: one "search" event per settled filter change (debounced).
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      trackEvent("search", {
+        q: filters.query.slice(0, 40),
+        location: filters.location,
+        specialty: filters.specialty,
+        position: filters.position,
+        level: filters.level,
+      });
+    }, 1200);
+    return () => window.clearTimeout(id);
+  }, [filters]);
+
   const activeFilterCount = useMemo(() => {
     let n = 0;
     if (filters.query) n++;
@@ -53,6 +68,8 @@ function SearchContent() {
     if (filters.language) n++;
     if (filters.specialty) n++;
     if (filters.format) n++;
+    if (filters.position) n++;
+    if (filters.level) n++;
     if (filters.verifiedOnly) n++;
     if (filters.maxPrice < defaultFilters.maxPrice) n++;
     if (filters.sortBy !== defaultFilters.sortBy) n++;
@@ -69,7 +86,7 @@ function SearchContent() {
 
       <header className="mx-hdr">
         <div>
-          <h1>{t("nav_book")}</h1>
+          <h1>{t("search_title")}</h1>
           <small>{t("search_sub")}</small>
         </div>
         <Button
@@ -167,9 +184,11 @@ function SearchContent() {
           ) : view === "map" ? (
             <CoachMapView coaches={results} nextSlots={nextSlots} />
           ) : (
-            results.map((coach) => (
-              <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />
-            ))
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
+              {results.map((coach) => (
+                <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />
+              ))}
+            </div>
           )}
         </div>
       </div>
