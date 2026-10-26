@@ -6,7 +6,7 @@ import { MessageSquare, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatTimeRange } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
@@ -159,7 +159,7 @@ export function CoachTodayScreen() {
                   <div className="mx-w">
                     <b>{b.athleteName}</b>
                     <span>
-                      {b.startTime}–{b.endTime}
+                      {formatTimeRange(b.startTime, b.endTime, locale)}
                       {b.note ? ` · ${b.note}` : ""}
                     </span>
                   </div>

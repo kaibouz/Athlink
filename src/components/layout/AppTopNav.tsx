@@ -2,21 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Activity,
-  CalendarDays,
-  CircleDollarSign,
-  Home,
-  MessageSquare,
-  Network,
-  QrCode,
-  Radar,
-  Search,
-  Send,
-  Settings,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { Activity, CalendarDays, CircleDollarSign, Home, MessageSquare, Network, QrCode, Radar, Search, Send, Settings, Sparkles, Users, Video } from "lucide-react";
 import { useState } from "react";
 import { AthlinkProLogo } from "@/components/brand/AthlinkProLogo";
 import { Avatar } from "@/components/ui/Avatar";
@@ -58,8 +44,8 @@ export function AppTopNav() {
 
   const athleteNav: NavItem[] = [
     { href: MARKET_TO_PLATFORM.athleteHome, label: t("nav_home"), icon: Home, match: (p) => p === "/home" },
-    { href: "/search", label: t("nav_book"), icon: Search, match: (p) => p.startsWith("/search") || p.startsWith("/coaches") },
-    { href: "/sns", label: t("nav_feed"), icon: Radar, match: (p) => p.startsWith("/sns") || p.startsWith("/feed") },
+    { href: "/search", label: t("nav_book"), icon: CalendarDays, match: (p) => p.startsWith("/search") || p.startsWith("/coaches") },
+    { href: "/sns", label: t("nav_feed"), icon: Video, match: (p) => p.startsWith("/sns") || p.startsWith("/feed") },
     { href: "/messages", label: t("nav_messages"), icon: MessageSquare, match: (p) => p.startsWith("/messages") },
     { href: "/progress", label: t("nav_progress"), icon: Activity, match: (p) => p.startsWith("/progress") || p.startsWith("/breakdown") },
   ];
@@ -74,7 +60,7 @@ export function AppTopNav() {
 
   const coachTools: NavItem[] = [
     { href: "/sns", label: t("nav_scout"), icon: Radar, match: (p) => p.startsWith("/sns") },
-    { href: "/search", label: t("nav_book"), icon: Search, match: (p) => p.startsWith("/search") },
+    { href: "/search", label: t("nav_find"), icon: Search, match: (p) => p.startsWith("/search") },
     { href: "/coach/feedback", label: t("coach_nav_feedback"), icon: Send, match: (p) => p.startsWith("/coach/feedback") },
     { href: "/coach/qr", label: t("coach_nav_qr"), icon: QrCode, match: (p) => p.startsWith("/coach/qr") },
     { href: "/coach/invite", label: t("coach_nav_invite"), icon: Network, match: (p) => p.startsWith("/coach/invite") },

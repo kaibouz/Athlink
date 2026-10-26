@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Video } from "lucide-react";
 import { useAuth } from "@/lib/store";
-import { formatDateJa, formatPrice } from "@/lib/utils";
+import { formatDateJa, formatPrice, formatTimeRange } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { Badge } from "@/components/ui/Badge";
@@ -87,7 +87,7 @@ export default function BookingsPage() {
                   </Link>
                   <p className="mt-1 flex items-center gap-1.5 text-sm text-brand-600">
                     <Calendar className="h-4 w-4" />
-                    {formatDateJa(b.date, dateLocale)} · {b.startTime}–{b.endTime}
+                    {formatDateJa(b.date, dateLocale)} · {formatTimeRange(b.startTime, b.endTime, locale)}
                   </p>
                 </div>
                 <Badge

@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Activity,
-  CalendarDays,
-  CircleDollarSign,
-  Home,
-  MessageSquare,
-  Radar,
-  Users,
-  Search,
-} from "lucide-react";
+import { Activity, CalendarDays, CircleDollarSign, Home, MessageSquare, Users, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
@@ -93,13 +84,13 @@ export function MobileNav() {
     {
       href: "/search",
       label: t("nav_book"),
-      icon: Search,
+      icon: CalendarDays,
       match: (p) => p.startsWith("/search") || p.startsWith("/coaches"),
     },
     {
       href: "/sns",
       label: t("nav_feed"),
-      icon: Radar,
+      icon: Video,
       match: (p) => p.startsWith("/sns") || p.startsWith("/feed") || p.startsWith("/athletes"),
     },
     {

@@ -167,7 +167,7 @@ export function AthleteProgressScreen() {
         )}
       </div>
 
-      {!isPro ? <ProUpgradeBanner /> : null}
+      {/* The goals gate above already carries the one upgrade prompt. */}
     </div>
   );
 }

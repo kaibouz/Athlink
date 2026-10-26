@@ -86,7 +86,7 @@ function SearchContent() {
 
       <header className="mx-hdr">
         <div>
-          <h1>{t("nav_book")}</h1>
+          <h1>{t("search_title")}</h1>
           <small>{t("search_sub")}</small>
         </div>
         <Button
@@ -184,9 +184,11 @@ function SearchContent() {
           ) : view === "map" ? (
             <CoachMapView coaches={results} nextSlots={nextSlots} />
           ) : (
-            results.map((coach) => (
-              <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />
-            ))
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
+              {results.map((coach) => (
+                <CoachBookRow key={coach.id} coach={coach} nextSlot={nextSlots[coach.id]} />
+              ))}
+            </div>
           )}
         </div>
       </div>

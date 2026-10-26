@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star } from "lucide-react";
+import { ArrowLeft, Clock, Languages, MapPin, ShieldCheck, Star, MessageSquare } from "lucide-react";
 import type { CoachProfile, Review } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/store";
@@ -48,7 +48,7 @@ export function CoachDetailView({
   }, [coach.id]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 pb-32 pt-8 sm:px-6 lg:pb-8">
       <Link
         href="/me"
         className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800"
@@ -224,9 +224,22 @@ export function CoachDetailView({
           </section>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        <aside id="book" className="scroll-mt-24 lg:sticky lg:top-24 lg:self-start">
           <BookingForm coach={coach} />
         </aside>
+      </div>
+
+      {/* Like the app: the booking action is always one tap away on small
+          screens (desktop keeps the form pinned beside the profile). */}
+      <div className={`fixed inset-x-0 z-30 border-t border-white/10 bg-[color:var(--mx-panel)]/95 px-4 py-3 backdrop-blur md:bottom-0 lg:hidden ${user ? "bottom-16" : "bottom-0"}`}>
+        <div className="mx-auto flex max-w-3xl gap-2">
+          <Link href="/messages" aria-label={t("nav_messages")} className="mx-btn mx-btn-ghost !px-4">
+            <MessageSquare className="h-4 w-4" />
+          </Link>
+          <a href="#book" className="mx-btn mx-btn-accent flex-1 border-0">
+            {t("cta_book_session", { price: formatPrice(coach.pricePerHour) })}
+          </a>
+        </div>
       </div>
     </div>
   );

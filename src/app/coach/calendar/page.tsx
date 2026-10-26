@@ -8,7 +8,7 @@ import { CoachGate } from "@/components/coach/CoachGate";
 import { useAuth } from "@/lib/store";
 import { bookingsForCoach } from "@/lib/coach-bookings";
 import { useMyCoach } from "@/lib/use-my-coach";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatTimeRange } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { Badge } from "@/components/ui/Badge";
@@ -240,7 +240,7 @@ function CalendarInner() {
                   <div>
                     <p className="font-semibold text-brand-950">{b.athleteName}</p>
                     <p className="text-sm text-brand-600">
-                      {b.startTime}–{b.endTime} · {formatPrice(b.price)}
+                      {formatTimeRange(b.startTime, b.endTime, locale)} · {formatPrice(b.price)}
                     </p>
                     {b.note && (
                       <p className="mt-1 text-xs text-brand-500">{b.note}</p>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Check, MapPin, Video, X } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
-import { formatDateJa, formatPrice } from "@/lib/utils";
+import { formatDateJa, formatPrice, formatTimeRange } from "@/lib/utils";
 import { isNotOver } from "@/lib/dates";
 import { ONLINE_LOCATION } from "@/lib/coach-taxonomy";
 import type { Booking } from "@/types";
@@ -48,7 +48,7 @@ export function BookingRequestsCard({ bookings }: { bookings: Booking[] }) {
                 <div className="min-w-0">
                   <b className="block text-[0.9rem] text-[color:var(--mx-text)]">{b.athleteName}</b>
                   <span className="block text-[0.78rem] text-[color:var(--mx-dim)]">
-                    {formatDateJa(b.date, dateLocale)} · {b.startTime}–{b.endTime}
+                    {formatDateJa(b.date, dateLocale)} · {formatTimeRange(b.startTime, b.endTime, locale)}
                   </span>
                   <span className="mt-0.5 flex items-center gap-1 text-[0.75rem] text-[color:var(--mx-dimmer)]">
                     {b.format === "online" || b.location === ONLINE_LOCATION ? (

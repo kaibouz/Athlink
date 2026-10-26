@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import type { CoachProfile, LessonFormat, PackageType, TimeSlot } from "@/types";
 import { getSlotsByCoach } from "@/lib/data";
 import { useAuth } from "@/lib/store";
-import { formatDateJa, formatPrice } from "@/lib/utils";
+import { formatDateJa, formatPrice, formatTimeRange, formatDateShort } from "@/lib/utils";
 import { priceFor } from "@/lib/pricing";
+import { BookingMonth } from "@/components/coaches/BookingMonth";
 import { isNotOver } from "@/lib/dates";
 import { trackEvent } from "@/lib/track-event";
 import { useLocale } from "@/lib/i18n/provider";
@@ -138,7 +139,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
           {t(isCoachPublishing ? "booking_done_publish" : "booking_done")}
         </p>
         <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-200">
-          {formatDateJa(selected.date, dateLocale)} {selected.startTime}–{selected.endTime}
+          {formatDateJa(selected.date, dateLocale)} {formatTimeRange(selected.startTime, selected.endTime, locale)}
         </p>
         <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-200">{formatPrice(total)}</p>
         {!isCoachPublishing && (
@@ -169,31 +170,27 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
         {t(isCoachPublishing ? "booking_title_publish" : "booking_title")}
       </h3>
 
-      {/* Week-strip date picker (slot-first ordering) */}
+      {/* Month calendar (app style): open / few left / fully booked per day */}
       <div>
         <Label>{t("booking_date")}</Label>
-        <div className="mx-days">
-          {dates.map((d) => {
-            const dObj = new Date(`${d}T00:00:00`);
-            const wd = dObj.toLocaleDateString(dateLocale, { weekday: "short" });
-            const dayNum = dObj.getDate();
-            const on = date === d;
-            return (
-              <button
-                key={d}
-                type="button"
-                onClick={() => {
-                  setDate(d);
-                  setSlotId("");
-                }}
-                className={on ? "mx-day mx-day-on mx-day-dot" : "mx-day mx-day-dot"}
-              >
-                {wd}
-                <b>{dayNum}</b>
-              </button>
-            );
-          })}
-        </div>
+        <BookingMonth
+          slots={slots}
+          value={date}
+          locale={locale}
+          labels={{ open: t("cal_open"), few: t("cal_few_left"), full: t("cal_full") }}
+          onChange={(d) => {
+            setDate(d);
+            setSlotId("");
+          }}
+        />
+        {date ? (
+          <p className="mt-2 flex items-baseline justify-between text-sm">
+            <b className="text-[color:var(--mx-text)]">{formatDateShort(date, locale)}</b>
+            <span className="text-xs text-[color:var(--mx-dim)]">
+              {t("cal_slots_open", { n: daySlots.filter((x) => x.available).length, total: daySlots.length })}
+            </span>
+          </p>
+        ) : null}
       </div>
 
       <div>
@@ -216,7 +213,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               onClick={() => setSlotId(s.id)}
               className={slotId === s.id ? "mx-slot mx-slot-on" : "mx-slot"}
             >
-              {s.startTime}–{s.endTime}
+              {formatTimeRange(s.startTime, s.endTime, locale)}
             </button>
           ))}
         </div>
@@ -335,8 +332,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
               <div className="mx-metric">
                 <span>{t("bk_when")}</span>
                 <b>
-                  {formatDateJa(selected.date, dateLocale)} · {selected.startTime}–
-                  {selected.endTime}
+                  {formatDateJa(selected.date, dateLocale)} · {formatTimeRange(selected.startTime, selected.endTime, locale)}
                 </b>
               </div>
               <div className="mx-metric">
