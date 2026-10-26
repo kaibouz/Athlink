@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { useApi } from "@/lib/client/use-api";
 import type { ReportCard } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 function FeedbackComposer() {
   const { t, locale } = useLocale();
@@ -25,7 +26,7 @@ function FeedbackComposer() {
   const [studentId, setStudentId] = useState(initialStudent);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [attachAi, setAttachAi] = useState(true);
+  const [attachAi, setAttachAi] = useState(AI_BREAKDOWN_ENABLED);
   const [sentId, setSentId] = useState<string | null>(null);
 
   const student = useMemo(() => getStudentById(studentId), [studentId]);
@@ -120,15 +121,17 @@ function FeedbackComposer() {
               required
             />
           </div>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-brand-800">
-            <input
-              type="checkbox"
-              checked={attachAi}
-              onChange={(e) => setAttachAi(e.target.checked)}
-              className="h-4 w-4 accent-brand-600"
-            />
-            {t("feedback_attach_ai")}
-          </label>
+          {AI_BREAKDOWN_ENABLED && (
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-brand-800">
+              <input
+                type="checkbox"
+                checked={attachAi}
+                onChange={(e) => setAttachAi(e.target.checked)}
+                className="h-4 w-4 accent-brand-600"
+              />
+              {t("feedback_attach_ai")}
+            </label>
+          )}
           <Button type="submit" className="w-full" size="lg">
             {t("feedback_send")}
           </Button>

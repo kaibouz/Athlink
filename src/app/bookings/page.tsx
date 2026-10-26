@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Video } from "lucide-react";
 import { useAuth } from "@/lib/store";
@@ -12,6 +13,7 @@ import {
   AddToCalendarButtons,
   CalendarAutoPrefSelect,
 } from "@/components/calendar/AddToCalendar";
+import { BookingCalendar } from "@/components/calendar/BookingCalendar";
 import { LessonVenuePanel } from "@/components/maps/LessonVenuePanel";
 import type { BookingStatus } from "@/types";
 
@@ -26,6 +28,12 @@ export default function BookingsPage() {
   const { user, bookings, updateBookingStatus } = useAuth();
   const { t, locale } = useLocale();
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
+  // Picking a day on the calendar narrows the list below it; null = show all.
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const visibleBookings = useMemo(
+    () => (selectedDate ? bookings.filter((b) => b.date === selectedDate) : bookings),
+    [bookings, selectedDate],
+  );
 
   if (!user) {
     return (
@@ -44,20 +52,26 @@ export default function BookingsPage() {
       <h1 className="text-2xl font-bold text-brand-950">{t("bookings_title")}</h1>
       <p className="mt-1 text-brand-600">{t("bookings_sub", { name: user.name })}</p>
 
-      <div className="mt-5 rounded-2xl border border-brand-100 bg-surface p-4 shadow-sm">
+      <div className="mt-5">
+        <BookingCalendar bookings={bookings} onSelectDate={setSelectedDate} />
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-brand-100 bg-surface p-4 shadow-sm">
         <CalendarAutoPrefSelect />
       </div>
 
-      {bookings.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-brand-200 bg-surface p-12 text-center">
-          <p className="font-medium text-brand-800">{t("bookings_empty")}</p>
+      {visibleBookings.length === 0 ? (
+        <div className="mt-6 rounded-2xl border border-dashed border-brand-200 bg-surface p-10 text-center">
+          <p className="font-medium text-brand-800">
+            {selectedDate ? t("cal_no_bookings_day") : t("bookings_empty")}
+          </p>
           <Link href="/search" className="mt-4 inline-block">
-            <Button>{t("bookings_find")}</Button>
+            <Button>{t("bookings_book")}</Button>
           </Link>
         </div>
       ) : (
         <div className="mt-6 space-y-4">
-          {bookings.map((b) => (
+          {visibleBookings.map((b) => (
             <article
               key={b.id}
               className="rounded-2xl border border-brand-100 bg-surface p-5 shadow-sm"

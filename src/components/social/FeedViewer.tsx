@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Heart, MessageCircle, Sparkles, UserRound } from "lucide-react";
 import type { SocialPost } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 const TYPE_LABEL: Record<string, string> = {
   form: "Form",
@@ -96,7 +97,7 @@ export function FeedViewer({
               <span className="inline-flex items-center gap-1 text-[0.75rem] text-white/80">
                 <MessageCircle className="h-4 w-4" /> Feedback
               </span>
-              {post.breakdownId && (
+              {AI_BREAKDOWN_ENABLED && post.breakdownId && (
                 <Link
                   href={`/breakdown/${post.breakdownId}`}
                   className="mx-btn mx-btn-accent ml-auto border-0 text-[0.72rem]"

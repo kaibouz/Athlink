@@ -13,9 +13,12 @@ export function ClerkNavAuth({ loginLabel, compact }: ClerkNavAuthProps) {
   return (
     <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
       <Show when="signed-out">
-        <QuickMyPageEntry compact className="mr-1" />
+        {/* On phones the hero already shows the full "continue as …" card. */}
+        <span className="hidden sm:contents">
+          <QuickMyPageEntry compact className="mr-1" />
+        </span>
         <SignInButton mode="redirect">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="whitespace-nowrap">
             {loginLabel}
           </Button>
         </SignInButton>

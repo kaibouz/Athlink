@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured } from "@/db";
@@ -9,6 +10,9 @@ import { processBreakdown } from "@/lib/server/ai-breakdown";
 
 /** Re-run analysis on an existing clip (resets the job to "processing"). */
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!AI_BREAKDOWN_ENABLED) {
+    return NextResponse.json({ error: "FEATURE_DISABLED" }, { status: 404 });
+  }
   const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });

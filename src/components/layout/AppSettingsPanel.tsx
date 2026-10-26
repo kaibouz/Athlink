@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/store";
 import { useLocale } from "@/lib/i18n/provider";
 import { UI_LOCALES, UI_LOCALE_LABELS, type UiLocale } from "@/lib/i18n/messages";
 import { CalendarAutoPrefSelect } from "@/components/calendar/AddToCalendar";
+import { BiometricLoginSettings } from "@/components/auth/BiometricLoginSettings";
+import { AboutSupportSection } from "@/components/layout/AboutSupportSection";
 import { Button } from "@/components/ui/Button";
 import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 
@@ -72,6 +74,10 @@ export function AppSettingsPanel({
           )}
         </div>
       )}
+
+      {user && <BiometricLoginSettings />}
+
+      <AboutSupportSection />
 
       {user && (
         <div className="border-t border-brand-100 pt-4">

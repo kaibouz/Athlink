@@ -9,6 +9,7 @@ import { useApi } from "@/lib/client/use-api";
 import { formatDateJa } from "@/lib/utils";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import type { AthleteProgress, ProgressMetric } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
 
@@ -157,7 +158,7 @@ export function AthleteProgressScreen() {
                 </b>
                 <span>{r.subject}</span>
               </div>
-              {r.aiAttached ? <span className="mx-pill mx-pill-accent">AI</span> : null}
+              {AI_BREAKDOWN_ENABLED && r.aiAttached ? <span className="mx-pill mx-pill-accent">AI</span> : null}
               <span className="text-[var(--mx-dimmer)]">›</span>
             </Link>
           ))

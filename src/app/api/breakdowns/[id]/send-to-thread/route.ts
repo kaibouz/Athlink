@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 import { getRequestUser } from "@/lib/server/current-user";
 import { sendBreakdownToThread } from "@/lib/server/athlete";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!AI_BREAKDOWN_ENABLED) {
+    return NextResponse.json({ error: "FEATURE_DISABLED" }, { status: 404 });
+  }
   const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });

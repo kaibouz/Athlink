@@ -16,13 +16,14 @@ import {
 } from "@/lib/platform-plans";
 import type { PlatformPlanId as UserPlan } from "@/types";
 import { Button } from "@/components/ui/Button";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 const ATHLETE_FEATURES: PlanFeatureKey[] = [
   "book_verified_coaches",
   "message_thread",
   "training_feed",
   "session_history",
-  "ai_breakdowns",
+  ...(AI_BREAKDOWN_ENABLED ? (["ai_breakdowns"] as PlanFeatureKey[]) : []),
   "week_comparisons",
   "full_progress_dashboard",
   "scout_visibility",
@@ -37,7 +38,7 @@ const COACH_FEATURES: PlanFeatureKey[] = [
   "session_history",
   "search_priority",
   "earnings_analytics",
-  "athlete_ai_suite",
+  ...(AI_BREAKDOWN_ENABLED ? (["athlete_ai_suite"] as PlanFeatureKey[]) : []),
   "scout_discovery_tools",
   "featured_badge",
 ];

@@ -135,7 +135,7 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
         <Link
           href={myHref}
           className={cn(
-            "glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40",
+            "glass-panel inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40",
             className,
           )}
         >
@@ -197,7 +197,7 @@ export function QuickMyPageEntry({ className, compact = false }: Props) {
         disabled={busy}
         onClick={() => void tryPasskeyThenMyPage()}
         className={cn(
-          "glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50",
+          "glass-panel inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold text-brand-950 transition hover:border-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50",
           className,
         )}
       >

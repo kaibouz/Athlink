@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 import { after } from "next/server";
 import { getRequestUser } from "@/lib/server/current-user";
 import { remainingAiBreakdowns } from "@/lib/platform-plans";
@@ -7,6 +8,9 @@ import { createBreakdownJob, processBreakdown } from "@/lib/server/ai-breakdown"
 import { audienceForUser, countAiBreakdownsThisMonth, resolveUserPlan } from "@/lib/server/plan";
 
 export async function GET() {
+  if (!AI_BREAKDOWN_ENABLED) {
+    return NextResponse.json({ error: "FEATURE_DISABLED" }, { status: 404 });
+  }
   const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -20,6 +24,9 @@ export async function GET() {
 
 /** Submit a clip for AI analysis. Returns the job immediately (status "processing"). */
 export async function POST(req: Request) {
+  if (!AI_BREAKDOWN_ENABLED) {
+    return NextResponse.json({ error: "FEATURE_DISABLED" }, { status: 404 });
+  }
   const user = await getRequestUser();
   if (!user) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });

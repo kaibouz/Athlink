@@ -11,6 +11,7 @@ import { venueForBooking, venueMapLinks } from "@/lib/lesson-venues";
 import { useApi } from "@/lib/client/use-api";
 import { ProUpgradeBanner, usePlatformPlan } from "@/components/plans/PlanComparison";
 import type { AthleteProgress, Booking, ProgressMetric } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 /** Metrics where a lower value is an improvement (delta arrow flips). */
 const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
@@ -92,7 +93,7 @@ export function AthleteHomeScreen() {
   ).length;
   const monthLabel = new Date().toLocaleDateString(dateLocale, { month: "short" });
   const coachNote = progress?.reportCards?.[0] ?? null;
-  const breakdown = progress?.latestBreakdown ?? null;
+  const breakdown = AI_BREAKDOWN_ENABLED ? (progress?.latestBreakdown ?? null) : null;
 
   return (
     <div className="mx-app mx-route-texture w-full px-4 py-6 sm:px-6 lg:px-8">
@@ -118,10 +119,12 @@ export function AthleteHomeScreen() {
         </Link>
       )}
 
-      <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0 lg:max-w-sm">
-        <Sparkles className="h-4 w-4" />
-        {t("mx_analyze_clip")}
-      </Link>
+      {AI_BREAKDOWN_ENABLED && (
+        <Link href="/breakdown/new" className="mx-btn mx-btn-accent mb-4 w-full border-0 lg:max-w-sm">
+          <Sparkles className="h-4 w-4" />
+          {t("mx_analyze_clip")}
+        </Link>
+      )}
 
       <header className="mx-hdr">
         <div>
@@ -175,7 +178,7 @@ export function AthleteHomeScreen() {
               <div className="mx-t">{t("mx_next_session")}</div>
               <p className="text-sm text-[var(--mx-dim)]">{t("bookings_empty")}</p>
               <Link href="/search" className="mx-btn mx-btn-accent mt-3 inline-flex">
-                {t("bookings_find")}
+                {t("bookings_book")}
               </Link>
             </div>
           )}
@@ -201,7 +204,7 @@ export function AthleteHomeScreen() {
               <div className="flex items-center justify-between gap-3 py-1">
                 <p className="text-[0.8rem] text-[var(--mx-dimmer)]">{t("mx_no_upcoming")}</p>
                 <Link href="/search" className="mx-btn mx-btn-ghost shrink-0 text-[0.75rem]">
-                  {t("bookings_find")}
+                  {t("bookings_book")}
                 </Link>
               </div>
             ) : (
@@ -335,13 +338,13 @@ function MonthMini({
   const todayDay = Number(today.slice(8, 10));
 
   return (
-    <div className="mt-3 max-w-[210px]" aria-hidden>
-      <div className="grid grid-cols-7 gap-[3px] text-center text-[0.55rem] font-semibold text-[var(--mx-dimmer)]">
+    <div className="mt-3" aria-hidden>
+      <div className="grid grid-cols-7 gap-1 text-center text-[0.68rem] font-semibold text-[var(--mx-dim)]">
         {weekdays.map((w, i) => (
           <span key={i}>{w}</span>
         ))}
       </div>
-      <div className="mt-1 grid grid-cols-7 gap-[2px]">
+      <div className="mt-1 grid grid-cols-7 gap-1">
         {cells.map((day, i) => {
           if (day === null) return <span key={`pad-${i}`} />;
           const state = byDay.get(day);
@@ -349,7 +352,7 @@ function MonthMini({
             <span
               key={day}
               className={[
-                "flex h-[18px] items-center justify-center rounded-[4px] text-[0.55rem] tabular-nums",
+                "flex h-7 items-center justify-center rounded-md text-[0.8rem] tabular-nums",
                 state === "done"
                   ? "bg-gradient-to-br from-[var(--mx-blue-1)] to-[var(--mx-blue-2)] font-bold text-white"
                   : state === "upcoming"
@@ -365,7 +368,7 @@ function MonthMini({
           );
         })}
       </div>
-      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[0.6rem] text-[var(--mx-dimmer)]">
+      <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[0.72rem] text-[var(--mx-dim)]">
         <span className="flex items-center gap-1">
           <i className="inline-block h-2 w-2 rounded-[2px] bg-gradient-to-br from-[var(--mx-blue-1)] to-[var(--mx-blue-2)]" />
           {doneLabel}

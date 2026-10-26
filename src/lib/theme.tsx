@@ -1,105 +1,41 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, type ReactNode } from "react";
 
-export type ThemeMode = "light" | "dark";
+/**
+ * AthlinkPro is dark-only, site-wide — the market site and the platform share
+ * the app's --mx-* palette, which has no light values. There is no toggle.
+ *
+ * The API below is kept so existing callers keep compiling; it always reports
+ * "dark". A "light" value left in storage by the old toggle is cleared.
+ */
+export type ThemeMode = "dark";
 
 const STORAGE_KEY = "athlink_theme";
 
-interface ThemeContextValue {
-  theme: ThemeMode;
-  setTheme: (theme: ThemeMode) => void;
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-function applyTheme(theme: ThemeMode) {
+function applyDark() {
   const root = document.documentElement;
-  root.classList.toggle("dark", theme === "dark");
-  root.style.colorScheme = theme;
-}
-
-export function useForceLightTheme() {
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    applyTheme("light");
-    return () => {
-      applyTheme(theme);
-    };
-  }, [theme]);
-}
-
-/**
- * Platform surfaces are dark-only, like the mobile app: the --mx-* design
- * tokens have no light values, so a light page chrome around dark cards just
- * reads as broken. The stored preference is untouched and restored on exit.
- */
-export function useForceDarkTheme() {
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    applyTheme("dark");
-    return () => {
-      applyTheme(theme);
-    };
-  }, [theme]);
+  root.classList.add("dark");
+  root.style.colorScheme = "dark";
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
-  return ctx;
+  return { theme: "dark" as const };
 }
 
-function readStoredTheme(): ThemeMode {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === "light" || saved === "dark") return saved;
-  } catch {
-    /* ignore */
-  }
-  return "dark";
+/** Kept for callers; the whole site is dark already. */
+export function useForceDarkTheme() {
+  useEffect(applyDark, []);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("dark");
-  const [ready, setReady] = useState(false);
-
   useEffect(() => {
-    const initial = readStoredTheme();
-    setThemeState(initial);
-    applyTheme(initial);
-    setReady(true);
-  }, []);
-
-  const setTheme = useCallback((next: ThemeMode) => {
-    setThemeState(next);
-    applyTheme(next);
+    applyDark();
     try {
-      localStorage.setItem(STORAGE_KEY, next);
+      localStorage.removeItem(STORAGE_KEY);
     } catch {
-      /* ignore */
+      /* storage may be blocked */
     }
   }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [setTheme, theme]);
-
-  const value = useMemo(
-    () => ({ theme: ready ? theme : theme, setTheme, toggleTheme }),
-    [theme, ready, setTheme, toggleTheme],
-  );
-
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return <>{children}</>;
 }

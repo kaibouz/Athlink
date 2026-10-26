@@ -5,6 +5,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Check, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Textarea } from "@/components/ui/Input";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 const PRESETS: { label: string; subject: string; body: string }[] = [
   {
@@ -119,15 +120,17 @@ export function CoachReportComposer({
             placeholder="What went well and what to work on…"
           />
         </div>
-        <label className="flex items-center gap-2 text-sm text-brand-700">
-          <input
-            type="checkbox"
-            checked={aiAttached}
-            onChange={(e) => setAiAttached(e.target.checked)}
-            className="rounded border-brand-300"
-          />
-          Attach AI swing trends
-        </label>
+        {AI_BREAKDOWN_ENABLED && (
+          <label className="flex items-center gap-2 text-sm text-brand-700">
+            <input
+              type="checkbox"
+              checked={aiAttached}
+              onChange={(e) => setAiAttached(e.target.checked)}
+              className="rounded border-brand-300"
+            />
+            Attach AI swing trends
+          </label>
+        )}
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button onClick={submit} disabled={sending} className="w-full">
           {sent ? (

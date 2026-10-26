@@ -14,7 +14,6 @@ import { GetTheAppCta } from "@/components/landing/GetTheAppCta";
 import { RoleStartCta } from "@/components/landing/RoleStartCta";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { MarketingThemeToggle } from "@/components/layout/MarketingThemeToggle";
 import { QuickMyPageEntry } from "@/components/auth/QuickMyPageEntry";
 import { destinationFor, shouldEnterOnboarding, joinPathFor } from "@/lib/onboarding";
 import { MARKET_TO_PLATFORM, signInHref } from "@/lib/market-to-platform";
@@ -89,18 +88,17 @@ export function BrandHomeLanding() {
                 priority
               />
               <div className="flex items-center gap-2 sm:gap-3">
-                <a href="#how-it-works" className="landing-nav-link hidden sm:inline-flex">
+                <a href="#how-it-works" className="landing-nav-link hidden lg:inline-flex">
                   {t("how_nav_link")}
                 </a>
-                <a href="#how-it-works-coaches" className="landing-nav-link hidden lg:inline-flex">
+                <a href="#how-it-works-coaches" className="landing-nav-link hidden xl:inline-flex">
                   {t("how_nav_coaches")}
                 </a>
-                <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden sm:inline-flex">
+                <Link href={MARKET_TO_PLATFORM.browse} className="landing-nav-link hidden md:inline-flex">
                   {t("hq_browse_coaches")}
                 </Link>
                 <div className="flex items-center gap-1.5">
                   <ClerkNavAuth loginLabel={t("nav_login")} />
-                  <MarketingThemeToggle />
                   <LocaleSwitcher compact />
                 </div>
               </div>

@@ -6,7 +6,6 @@ import { useLocale } from "@/lib/i18n/provider";
 import { AppTopNav } from "@/components/layout/AppTopNav";
 import { PasskeyEnrollPrompt } from "@/components/auth/PasskeyEnrollPrompt";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { Footer } from "@/components/layout/Footer";
 import { ClerkNavAuth } from "@/components/layout/ClerkNavAuth";
 import { useAuth } from "@/lib/store";
 import { useForceDarkTheme } from "@/lib/theme";
@@ -100,7 +99,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-full min-w-0 flex-1 flex-col">
         <div className="app-canvas flex min-h-full min-w-0 flex-1 flex-col">
           {children}
-          <Footer />
         </div>
       </div>
     </div>

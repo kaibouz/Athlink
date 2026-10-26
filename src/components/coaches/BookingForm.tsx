@@ -32,9 +32,11 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   );
   const [submitting, setSubmitting] = useState(false);
   const dates = useMemo(() => [...new Set(slots.map((s) => s.date))], [slots]);
+  // Open on the first day that still has something bookable.
+  const firstOpenDate = useMemo(() => slots.find((s) => s.available)?.date ?? "", [slots]);
   const [pickedDate, setDate] = useState("");
   // Fall back to the first open day whenever the picked one is gone (slots refreshed).
-  const date = pickedDate && dates.includes(pickedDate) ? pickedDate : (dates[0] ?? "");
+  const date = pickedDate && dates.includes(pickedDate) ? pickedDate : (firstOpenDate || dates[0] || "");
   const [slotId, setSlotId] = useState("");
   const [format, setFormat] = useState<LessonFormat>(coach.formats[0]);
   const [packageType, setPackageType] = useState<PackageType>("single");
@@ -66,7 +68,7 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
   const daySlots = slots.filter((s) => s.date === date);
   // Same table the server charges from — the athlete sees exactly what is billed.
   const total = priceFor(coach.pricePerHour, packageType);
-  const selected: TimeSlot | undefined = daySlots.find((s) => s.id === slotId);
+  const selected: TimeSlot | undefined = daySlots.find((s) => s.id === slotId && s.available);
 
   const dateLocale = locale === "ja" ? "ja-JP" : locale === "es" ? "es-US" : "en-US";
 
@@ -199,6 +201,11 @@ export function BookingForm({ coach }: { coach: CoachProfile }) {
             <button
               key={s.id}
               type="button"
+              // Closed or already-booked times stay visible (so the day reads
+              // as a schedule) but can't be picked — the server would refuse.
+              disabled={!s.available}
+              aria-disabled={!s.available}
+              title={s.available ? undefined : t("booking_slot_unavailable")}
               onClick={() => setSlotId(s.id)}
               className={slotId === s.id ? "mx-slot mx-slot-on" : "mx-slot"}
             >

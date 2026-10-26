@@ -5,6 +5,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Sparkles } from "lucide-react";
 import { useApi } from "@/lib/client/use-api";
 import type { AthleteProgress } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 const LOWER_BETTER = new Set(["pop_time", "sixty_time", "swing_length", "first_step", "transfer"]);
 
@@ -30,7 +31,7 @@ export function CoachAthleteProgressPanel({ studentId }: { studentId: string }) 
   const headline = progress?.headline?.[0] ?? null;
   const goals = progress?.goals ?? [];
   const reportCards = progress?.reportCards ?? [];
-  const breakdown = progress?.latestBreakdown ?? null;
+  const breakdown = AI_BREAKDOWN_ENABLED ? (progress?.latestBreakdown ?? null) : null;
 
   if (!progress && !loading) {
     return (

@@ -100,7 +100,7 @@ export function AppTopNav() {
           <div className="flex items-center gap-1.5">
             <Link
               href={MARKET_TO_PLATFORM.pricing}
-              className="hidden items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs font-semibold text-brand-700 transition hover:text-brand-950 sm:inline-flex"
+              className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 px-2.5 py-1 text-xs font-semibold text-brand-700 transition hover:text-brand-950 sm:inline-flex"
             >
               <Sparkles className="h-3.5 w-3.5 text-[color:var(--mx-blue-2)]" />
               {/* Signed out there is no plan yet — this is just the way to pricing. */}

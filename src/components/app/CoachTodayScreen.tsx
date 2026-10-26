@@ -11,6 +11,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/Button";
 import { useApi } from "@/lib/client/use-api";
 import type { AthleteProgress, Booking, StudentAthlete } from "@/types";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 function initials(name: string) {
   return name
@@ -74,7 +75,7 @@ export function CoachTodayScreen() {
   const { data: firstProgress } = useApi<{ progress: AthleteProgress | null }>(
     firstStudent ? `/api/coach/students/${firstStudent.id}/progress` : null,
   );
-  const preBreakdown = firstProgress?.progress?.latestBreakdown ?? null;
+  const preBreakdown = AI_BREAKDOWN_ENABLED ? (firstProgress?.progress?.latestBreakdown ?? null) : null;
 
   if (coachLoading) {
     return (

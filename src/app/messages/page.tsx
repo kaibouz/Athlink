@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Film, Paperclip, Sparkles } from "lucide-react";
+import { Film, MessageSquare, Paperclip, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/store";
 import { useSocial } from "@/lib/social-store";
 import type { AiBreakdown, MessageThread, ThreadMessage } from "@/types";
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CommSwitcher } from "@/components/layout/CommSwitcher";
 import { useApi } from "@/lib/client/use-api";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 type ThreadRow = MessageThread;
 
@@ -25,18 +26,16 @@ export default function MessagesPage() {
     user ? "/api/messages" : null,
   );
   const { data: bdData } = useApi<{ breakdowns: AiBreakdown[] }>(
-    user?.role === "athlete" ? "/api/breakdowns" : null,
+    AI_BREAKDOWN_ENABLED && user?.role === "athlete" ? "/api/breakdowns" : null,
   );
 
   const threads = useMemo(() => data?.threads ?? [], [data]);
-  const [activeId, setActiveId] = useState("");
+  const [pickedId, setActiveId] = useState("");
   const [draft, setDraft] = useState("");
   const [attachOpen, setAttachOpen] = useState(false);
 
-  useEffect(() => {
-    if (!activeId && threads.length > 0) setActiveId(threads[0].id);
-  }, [threads, activeId]);
-
+  // Until a thread is picked, show the most recent one.
+  const activeId = pickedId || threads[0]?.id || "";
   const activeThread = threads.find((th) => th.id === activeId);
   const threadMessages = useMemo(
     () =>
@@ -98,11 +97,30 @@ export default function MessagesPage() {
         </div>
       </header>
 
+      {!loading && threads.length === 0 ? (
+        // A brand-new member has no threads yet: say what this page is for and
+        // how a conversation starts, instead of "Select a thread" twice.
+        <div className="flex flex-col items-center rounded-[14px] border border-[color:var(--mx-border)] bg-[color:var(--mx-panel)] px-6 py-16 text-center">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--mx-accent-soft)] text-[color:var(--mx-blue-2)]">
+            <MessageSquare className="h-6 w-6" />
+          </span>
+          <h2 className="mt-4 text-lg font-bold text-[color:var(--mx-text)]">{t("messages_empty_title")}</h2>
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-[color:var(--mx-dim)]">
+            {user.role === "coach" ? t("messages_empty_body_coach") : t("messages_empty_body")}
+          </p>
+          <Link
+            href={user.role === "coach" ? "/coach/qr" : "/search"}
+            className="mx-btn mx-btn-accent mt-6 border-0"
+          >
+            {user.role === "coach" ? t("messages_empty_cta_coach") : t("messages_empty_cta")}
+          </Link>
+        </div>
+      ) : (
       <div className="grid overflow-hidden rounded-[14px] border border-[color:var(--mx-border)] bg-[color:var(--mx-panel)] md:h-[600px] md:grid-cols-[280px_1fr]">
         <aside className="border-b border-[color:var(--mx-border)] md:border-r md:border-b-0">
           {threads.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-[color:var(--mx-dim)]">
-              {loading ? "Loading…" : t("messages_pick")}
+              {t("loading")}
             </div>
           )}
           {threads.map((thread) => (
@@ -163,7 +181,7 @@ export default function MessagesPage() {
                               playsInline
                               controls
                             />
-                            {m.breakdownId && (
+                            {AI_BREAKDOWN_ENABLED && m.breakdownId && (
                               <Link
                                 href={`/breakdown/${m.breakdownId}`}
                                 className="flex items-center gap-1 bg-black/40 px-2 py-1 text-[0.68rem] text-white"
@@ -257,6 +275,7 @@ export default function MessagesPage() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
