@@ -18,6 +18,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { MARKET_TO_PLATFORM, signUpHref } from "@/lib/market-to-platform";
 import { joinPathFor } from "@/lib/onboarding";
 import "./how-athlink-works.css";
+import { AI_BREAKDOWN_ENABLED } from "@/lib/features";
 
 export type HowWorksAudience = "athlete" | "coach";
 
@@ -134,13 +135,21 @@ export function HowAthlinkWorks({
           desc: t("how_step_3_desc"),
           pro: t("how_step_3_pro"),
         },
-        {
-          icon: Activity,
-          label: t("how_step_4_label"),
-          title: t("how_step_4_title"),
-          desc: t("how_step_4_desc"),
-          pro: t("how_step_4_pro"),
-        },
+        AI_BREAKDOWN_ENABLED
+          ? {
+              icon: Activity,
+              label: t("how_step_4_label"),
+              title: t("how_step_4_title"),
+              desc: t("how_step_4_desc"),
+              pro: t("how_step_4_pro"),
+            }
+          : {
+              icon: Activity,
+              label: t("how_step_4p_label"),
+              title: t("how_step_4p_title"),
+              desc: t("how_step_4p_desc"),
+              pro: t("how_step_4p_pro"),
+            },
       ];
 
   const freeBreakdowns = free.limits.aiBreakdownsPerMonth;
@@ -203,6 +212,7 @@ export function HowAthlinkWorks({
             <p>{isCoach ? t("how_pro_coach_body") : t("how_pro_athlete_body")}</p>
           </div>
 
+          {AI_BREAKDOWN_ENABLED && (
           <div className="how-pro-meter" aria-hidden>
             <div className="how-pro-meter-row">
               <span className="how-pro-meter-label">{t("plan_free")}</span>
@@ -218,6 +228,7 @@ export function HowAthlinkWorks({
               <span className="how-pro-meter-value">{t("how_pro_unlimited")}</span>
             </div>
           </div>
+          )}
 
           <div className="how-pro-price">
             <span className="how-pro-price-amount">${pro.priceUsdMonthly}</span>

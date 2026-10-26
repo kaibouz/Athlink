@@ -1,0 +1,359 @@
+/*
+ * Market site design layer (.mk) — "trust + aspiration".
+ *
+ * Deep-navy base, frosted-glass surfaces and a cyan → violet gradient that
+ * reads as forward motion; neon green only for positive signals (verified,
+ * open slots). Headings in Space Grotesk, body in DM Sans, Japanese falls
+ * back to Noto Sans JP. Scoped to .mk so the platform keeps the app look.
+ */
+.mk {
+  --mk-bg: #0a0e17;
+  --mk-bg-alt: #111827;
+  --mk-glass: rgba(255, 255, 255, 0.05);
+  --mk-glass-strong: rgba(255, 255, 255, 0.08);
+  --mk-border: rgba(255, 255, 255, 0.1);
+  --mk-border-hover: rgba(255, 255, 255, 0.2);
+  --mk-primary: #00d4ff;
+  --mk-secondary: #7b61ff;
+  --mk-success: #00ff88;
+  --mk-text: #ffffff;
+  --mk-text-2: #e2e8f0;
+  --mk-muted: #94a3b8;
+  --mk-grad: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-secondary) 100%);
+  --mk-heading: var(--font-mk-heading), var(--font-noto-sans-jp), system-ui, sans-serif;
+  --mk-body: var(--font-mk-body), var(--font-noto-sans-jp), system-ui, sans-serif;
+
+  background: var(--mk-bg);
+  color: var(--mk-text);
+  font-family: var(--mk-body);
+}
+
+.mk h1,
+.mk h2,
+.mk h3,
+.mk h4 {
+  font-family: var(--mk-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ── type ─────────────────────────────────────────── */
+.mk-h1 {
+  font-size: clamp(2.4rem, 5.5vw, 3.75rem);
+  line-height: 1.05;
+  color: var(--mk-text);
+}
+.mk-h2 {
+  font-size: clamp(1.9rem, 3.6vw, 2.5rem);
+  line-height: 1.12;
+  color: var(--mk-text);
+}
+.mk-lead {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--mk-muted);
+}
+.mk-gradient-text {
+  background: var(--mk-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.mk-eyebrow {
+  font-family: var(--mk-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mk-primary);
+}
+
+/* ── surfaces ─────────────────────────────────────── */
+.mk-section {
+  position: relative;
+  padding: 96px 0;
+}
+.mk-section-alt {
+  background: var(--mk-bg-alt);
+}
+.mk-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.mk-card {
+  background: var(--mk-glass);
+  border: 1px solid var(--mk-border);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(16px);
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.mk-card:hover {
+  border-color: var(--mk-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+}
+.mk-icon {
+  display: inline-flex;
+  height: 48px;
+  width: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--mk-primary);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 97, 255, 0.2));
+}
+.mk-glow {
+  box-shadow: 0 0 60px rgba(0, 212, 255, 0.2);
+}
+.mk-orb {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.35;
+}
+.mk-orb-a {
+  width: 480px;
+  height: 480px;
+  background: var(--mk-primary);
+  opacity: 0.16;
+}
+.mk-orb-b {
+  width: 420px;
+  height: 420px;
+  background: var(--mk-secondary);
+  opacity: 0.18;
+}
+
+/* ── controls ─────────────────────────────────────── */
+.mk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-family: var(--mk-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+.mk-btn-primary {
+  background: var(--mk-grad);
+  color: #fff;
+}
+.mk-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+.mk-btn-secondary {
+  background: var(--mk-glass);
+  color: var(--mk-text);
+  border: 1px solid var(--mk-border);
+}
+.mk-btn-secondary:hover {
+  border-color: var(--mk-primary);
+}
+.mk-badge,
+.mk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 50px;
+  border: 1px solid var(--mk-border);
+  background: var(--mk-glass);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mk-text);
+}
+.mk-badge {
+  padding: 6px 14px;
+}
+.mk-chip {
+  padding: 8px 16px;
+  transition: border-color 0.2s;
+}
+.mk-chip:hover {
+  border-color: var(--mk-primary);
+}
+.mk-dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  background: var(--mk-success);
+  box-shadow: 0 0 10px var(--mk-success);
+}
+
+/* ── header ───────────────────────────────────────── */
+.mk-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(10, 14, 23, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--mk-border);
+}
+.mk .landing-nav-link {
+  color: var(--mk-muted);
+  font-family: var(--mk-heading);
+  font-weight: 500;
+}
+.mk .landing-nav-link:hover {
+  color: var(--mk-text);
+  background: transparent;
+}
+
+/* ── existing sections re-skinned ─────────────────── */
+.mk .how-works {
+  --how-accent-1: var(--mk-primary);
+  --how-accent-2: var(--mk-secondary);
+  --how-ic-bg: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 97, 255, 0.2));
+  --how-ic-border: rgba(0, 212, 255, 0.25);
+  --how-ic-color: var(--mk-primary);
+  background: var(--mk-bg);
+  padding: 96px 0;
+}
+.mk .how-works[data-audience="coach"] {
+  background: var(--mk-bg-alt);
+}
+.mk .how-works::before,
+.mk .how-works::after {
+  opacity: 0.5;
+}
+.mk .how-works-eyebrow {
+  font-family: var(--mk-heading);
+  color: var(--mk-primary);
+  border-color: var(--mk-border);
+  background: var(--mk-glass);
+}
+.mk .how-works-head h2 {
+  font-family: var(--mk-heading);
+  color: var(--mk-text);
+}
+.mk .how-works-head p,
+.mk .how-step p {
+  color: var(--mk-muted);
+}
+.mk .how-step {
+  background: var(--mk-glass);
+  border: 1px solid var(--mk-border);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(16px);
+  box-shadow: none;
+}
+.mk .how-step:hover {
+  border-color: var(--mk-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+}
+.mk .how-step h3 {
+  font-family: var(--mk-heading);
+  color: var(--mk-text);
+}
+.mk .how-step-ic {
+  border-radius: 12px;
+}
+.mk .how-step-pro-tag,
+.mk .how-pro-eyebrow {
+  font-family: var(--mk-heading);
+}
+.mk .how-pro-band {
+  background: var(--mk-glass);
+  border: 1px solid var(--mk-border);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+}
+.mk .how-pro-copy h3,
+.mk .how-pro-price-amount {
+  font-family: var(--mk-heading);
+}
+.mk .how-pro-meter-fill {
+  background: var(--mk-grad);
+}
+.mk .how-pro-cta,
+.mk .how-works-cta,
+.mk .how-works-teaser-cta {
+  background: var(--mk-grad);
+  border-radius: 12px;
+  font-family: var(--mk-heading);
+  border: 0;
+}
+.mk .how-pro-cta:hover,
+.mk .how-works-cta:hover,
+.mk .how-works-teaser-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+.mk .how-works-cta-ghost {
+  border-radius: 12px;
+  background: var(--mk-glass);
+  border: 1px solid var(--mk-border);
+  font-family: var(--mk-heading);
+}
+
+.mk .landing-band {
+  background: var(--mk-bg-alt);
+  border-block: 1px solid var(--mk-border);
+  color: var(--mk-text-2);
+}
+
+@media (max-width: 640px) {
+  .mk-section {
+    padding: 64px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-card,
+  .mk-btn,
+  .mk-chip,
+  .mk .how-step {
+    transition: none;
+  }
+  .mk-card:hover,
+  .mk-btn-primary:hover,
+  .mk .how-step:hover {
+    transform: none;
+  }
+}
+
+/* App walkthrough + video band, re-skinned */
+.mk .hiw-walk {
+  background: var(--mk-bg);
+}
+.mk .hiw-walk-eyebrow {
+  font-family: var(--mk-heading);
+  color: var(--mk-primary);
+  background: var(--mk-glass);
+  border-color: var(--mk-border);
+}
+.mk .hiw-walk-head h2 {
+  font-family: var(--mk-heading);
+  color: var(--mk-text);
+}
+.mk .hiw-walk-cta {
+  background: var(--mk-grad);
+  border: 0;
+  border-radius: 12px;
+  font-family: var(--mk-heading);
+}
+.mk .hiw-walk-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+.mk .hiw-walk-cta-ghost {
+  font-family: var(--mk-heading);
+  color: var(--mk-muted);
+}
+.mk .hiw-walk-cta-ghost:hover {
+  color: var(--mk-text);
+}
+
+/* Market type on pages that live inside the platform frame (e.g. /pricing). */
+.mk.mk-inline {
+  background: transparent;
+}

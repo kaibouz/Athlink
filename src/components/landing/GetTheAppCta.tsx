@@ -40,7 +40,7 @@ export function GetTheAppCta({ className }: { className?: string }) {
           size="lg"
           variant="ghost"
           disabled
-          className="btn-premium h-12 min-w-64 rounded-xl px-7 sm:h-14"
+          className="mk-btn mk-btn-secondary min-w-64"
         >
           <Smartphone className="h-4 w-4" />
           {t("app_get_the_app")}
@@ -56,7 +56,7 @@ export function GetTheAppCta({ className }: { className?: string }) {
         <Button
           size="lg"
           variant="ghost"
-          className="btn-premium h-12 min-w-64 rounded-xl px-7 sm:h-14"
+          className="mk-btn mk-btn-secondary min-w-64"
         >
           <Icon className="h-4 w-4" />
           {t("app_get_the_app")}

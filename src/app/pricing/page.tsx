@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/i18n/provider";
 import { Badge } from "@/components/ui/Badge";
 import type { PlanAudience } from "@/lib/platform-plans";
 import { cn } from "@/lib/utils";
+import "@/components/landing/market.css";
 
 export default function PricingPage() {
   const { t } = useLocale();
@@ -15,7 +16,7 @@ export default function PricingPage() {
   const [audience, setAudience] = useState<PlanAudience>(roleAudience);
 
   return (
-    <PageContainer>
+    <PageContainer className="mk mk-inline">
       <PageHeader title={t("plan_page_title")} description={t("plan_page_sub")} />
 
       {user ? (

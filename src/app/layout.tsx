@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { Manrope, Noto_Sans_JP } from "next/font/google";
+import { DM_Sans, Manrope, Noto_Sans_JP, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "@/lib/store";
@@ -21,6 +21,20 @@ import { MARKET_TO_PLATFORM } from "@/lib/market-to-platform";
 /** Variable axes — brand/display Latin */
 const manrope = Manrope({
   variable: "--font-manrope",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
+
+/** Market site headings — geometric, forward-looking (see market.css). */
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-mk-heading",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
+
+/** Market site body — calm, highly legible. */
+const dmSans = DM_Sans({
+  variable: "--font-mk-body",
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -63,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${manrope.variable} ${notoSansJp.variable} h-full antialiased`}
+      className={`dark ${manrope.variable} ${notoSansJp.variable} ${spaceGrotesk.variable} ${dmSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body
