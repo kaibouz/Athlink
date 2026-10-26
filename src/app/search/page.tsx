@@ -53,6 +53,8 @@ function SearchContent() {
     if (filters.language) n++;
     if (filters.specialty) n++;
     if (filters.format) n++;
+    if (filters.position) n++;
+    if (filters.level) n++;
     if (filters.verifiedOnly) n++;
     if (filters.maxPrice < defaultFilters.maxPrice) n++;
     if (filters.sortBy !== defaultFilters.sortBy) n++;

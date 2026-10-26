@@ -225,7 +225,7 @@ export function CoachTodayScreen() {
 
       {/* Calendar and QR live in the tab bar / top menu already. */}
       <div className="mt-2 flex">
-        <Link href="/me" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
+        <Link href="/coach/profile" className="mx-btn mx-btn-accent flex-1 text-[0.75rem]">
           {t("dash_edit")}
         </Link>
       </div>

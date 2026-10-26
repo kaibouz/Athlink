@@ -1,8 +1,6 @@
-import { randomBytes } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
 import { NextResponse } from "next/server";
 import { getRequestUser } from "@/lib/server/current-user";
+import { storeUpload } from "@/lib/server/storage";
 
 const MAX_BYTES = 40 * 1024 * 1024; // 40MB
 const ALLOWED = new Set([
@@ -15,7 +13,7 @@ const ALLOWED = new Set([
 ]);
 
 /**
- * Store a member-uploaded clip/poster under public/uploads/sns/.
+ * Store a member-uploaded clip/poster (Vercel Blob in production, public/uploads locally).
  * Returns a public URL usable in social_posts.video_url / poster_url.
  */
 export async function POST(req: Request) {
@@ -61,13 +59,15 @@ export async function POST(req: Request) {
               ? "jpg"
               : "mp4";
 
-  const dir = path.join(process.cwd(), "public", "uploads", "sns");
-  await mkdir(dir, { recursive: true });
-  const name = `${user.id.slice(0, 12)}-${Date.now()}-${randomBytes(4).toString("hex")}.${ext}`;
-  const buf = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(dir, name), buf);
-
-  const url = `/uploads/sns/${name}`;
+  let url: string;
+  try {
+    url = await storeUpload(file, "sns", user.id, ext);
+  } catch (err) {
+    if (err instanceof Error && err.message === "STORAGE_NOT_CONFIGURED") {
+      return NextResponse.json({ error: "STORAGE_NOT_CONFIGURED" }, { status: 503 });
+    }
+    throw err;
+  }
   return NextResponse.json({
     url,
     kind: mime.startsWith("image/") ? "image" : "video",

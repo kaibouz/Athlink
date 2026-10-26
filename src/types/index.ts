@@ -134,6 +134,10 @@ export interface SearchFilters {
   specialty: string;
   language: string;
   format: "" | LessonFormat;
+  /** POSITIONS id, "" = any */
+  position: string;
+  /** LEVELS id, "" = any */
+  level: string;
   minPrice: number;
   maxPrice: number;
   verifiedOnly: boolean;

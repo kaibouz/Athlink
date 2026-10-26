@@ -18,6 +18,7 @@ import { BookingForm } from "@/components/coaches/BookingForm";
 import { CoachAvatar } from "@/components/coaches/CoachAvatar";
 import type { CaRegionId } from "@/lib/dashboard-analytics";
 import { VerificationPanel } from "@/components/coaches/VerificationPanel";
+import { LEVELS, POSITIONS, labelFor } from "@/lib/coach-taxonomy";
 
 function regionFromLocation(locStr: string): CaRegionId {
   const l = locStr.toLowerCase();
@@ -114,6 +115,46 @@ export function CoachDetailView({
                 </Badge>
               ))}
             </div>
+            {(coach.positions?.length || coach.levels?.length) ? (
+              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                {coach.positions?.length ? (
+                  <div>
+                    <dt className="text-brand-500">{t("cprof_positions")}</dt>
+                    <dd className="mt-0.5 font-medium text-brand-900">
+                      {coach.positions.map((id) => labelFor(POSITIONS, id, locale)).join(" · ")}
+                    </dd>
+                  </div>
+                ) : null}
+                {coach.levels?.length ? (
+                  <div>
+                    <dt className="text-brand-500">{t("cprof_levels")}</dt>
+                    <dd className="mt-0.5 font-medium text-brand-900">
+                      {coach.levels.map((id) => labelFor(LEVELS, id, locale)).join(" · ")}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : null}
+            {coach.venues?.length && coach.formats.includes("in_person") ? (
+              <div className="mt-4 text-sm">
+                <p className="text-brand-500">{t("cprof_venues")}</p>
+                <ul className="mt-1 list-inside list-disc text-brand-800">
+                  {coach.venues.map((v) => (
+                    <li key={v}>{v}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {coach.introVideoUrl ? (
+              <a
+                href={coach.introVideoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
+              >
+                ▶ {t("cprof_video").replace(/\s*[（(].*[)）]\s*$/, "")}
+              </a>
+            ) : null}
           </section>
 
           {/* Directly under the profile: a parent decides on trust before price. */}

@@ -3,6 +3,7 @@
 import type { SearchFilters } from "@/types";
 import { LANGUAGES, LOCATIONS, SPECIALTIES, SPORTS } from "@/lib/data";
 import { defaultFilters } from "@/lib/search";
+import { LEVELS, POSITIONS, labelFor } from "@/lib/coach-taxonomy";
 import { formatPrice } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/provider";
 import { languageLabel, specialtyLabel, sportLabel } from "@/lib/i18n/localize";
@@ -19,7 +20,7 @@ export function SearchFiltersPanel({
   onChange: (next: SearchFilters) => void;
   resultCount: number;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const set = <K extends keyof SearchFilters>(key: K, value: SearchFilters[K]) =>
     onChange({ ...filters, [key]: value });
 
@@ -94,6 +95,28 @@ export function SearchFiltersPanel({
           {SPECIALTIES.map((s) => (
             <option key={s} value={s}>
               {specialtyLabel(t, s)}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="position">{t("cprof_positions")}</Label>
+        <Select id="position" value={filters.position} onChange={(e) => set("position", e.target.value)}>
+          <option value="">{t("search_all")}</option>
+          {POSITIONS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {labelFor(POSITIONS, p.id, locale)}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="level">{t("cprof_levels")}</Label>
+        <Select id="level" value={filters.level} onChange={(e) => set("level", e.target.value)}>
+          <option value="">{t("search_all")}</option>
+          {LEVELS.map((l) => (
+            <option key={l.id} value={l.id}>
+              {labelFor(LEVELS, l.id, locale)}
             </option>
           ))}
         </Select>

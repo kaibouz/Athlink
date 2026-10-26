@@ -4,7 +4,7 @@ import { getDb, isDatabaseConfigured } from "@/db";
 import { summarize, type VerificationRecord } from "@/lib/verification";
 import { addDaysToKey, isNotOver, todayKey } from "@/lib/dates";
 import { isPackageType, priceFor } from "@/lib/pricing";
-import { ONLINE_LOCATION } from "@/lib/coach-taxonomy";
+import { LEVELS, ONLINE_LOCATION, POSITIONS } from "@/lib/coach-taxonomy";
 import {
   coachAvailability,
   coachVerifications,
@@ -27,6 +27,9 @@ import {
   getCoachById as getStaticCoachById,
   getReviewsByCoach as getStaticReviewsByCoach,
   getSlotsByCoach as getStaticSlotsByCoach,
+  LANGUAGES,
+  LOCATIONS,
+  SPECIALTIES,
 } from "@/lib/data";
 import type {
   AthletePublicProfile,
@@ -548,6 +551,95 @@ export async function getCoachByUserId(userId: string): Promise<CoachProfile | u
   } catch {
     return undefined;
   }
+}
+
+export type UpdateCoachInput = {
+  name?: string;
+  bio?: string;
+  experienceYears?: number;
+  pricePerHour?: number;
+  location?: string;
+  specialties?: string[];
+  positions?: string[];
+  levels?: string[];
+  languages?: string[];
+  formats?: Booking["format"][];
+  venues?: string[];
+  introVideoUrl?: string | null;
+  avatarUrl?: string;
+};
+
+/**
+ * Coach edits their own profile. Every field is validated against the shared
+ * vocabularies; unknown values are rejected rather than stored.
+ */
+export async function updateCoachProfile(userId: string, input: UpdateCoachInput): Promise<CoachProfile> {
+  if (!isDatabaseConfigured()) throw new Error("DATABASE_NOT_CONFIGURED");
+  const coach = await getCoachByUserId(userId);
+  if (!coach) throw new Error("NOT_FOUND");
+  const bad = (m: string) => { throw new Error(`INVALID_${m}`); };
+  const subset = (vals: unknown, allowed: readonly string[], field: string) => {
+    if (!Array.isArray(vals) || vals.some((v) => typeof v !== "string" || !allowed.includes(v))) bad(field);
+    return [...new Set(vals as string[])];
+  };
+  const set: Partial<typeof coachProfiles.$inferInsert> = { updatedAt: new Date() };
+
+  if (input.name !== undefined) {
+    const n = String(input.name).trim();
+    if (n.length < 2 || n.length > 80) bad("NAME");
+    set.name = n;
+  }
+  if (input.bio !== undefined) {
+    const b = String(input.bio).trim().slice(0, 1200);
+    set.bio = { en: b, ja: b, es: b };
+  }
+  if (input.experienceYears !== undefined) {
+    const y = Number(input.experienceYears);
+    if (!Number.isInteger(y) || y < 0 || y > 60) bad("EXPERIENCE");
+    set.experienceYears = y;
+  }
+  if (input.pricePerHour !== undefined) {
+    const pr = Number(input.pricePerHour);
+    if (!Number.isFinite(pr) || pr < 20 || pr > 500) bad("PRICE");
+    set.pricePerHour = Math.round(pr);
+  }
+  if (input.location !== undefined) {
+    if (!(LOCATIONS as readonly string[]).includes(input.location)) bad("LOCATION");
+    Object.assign(set, { location: `${input.location}, CA`, city: input.location, prefecture: input.location });
+  }
+  if (input.specialties !== undefined) {
+    set.specialties = subset(input.specialties, SPECIALTIES, "SPECIALTIES");
+    if (!set.specialties.length) bad("SPECIALTIES");
+  }
+  if (input.positions !== undefined) set.positions = subset(input.positions, POSITIONS.map((x) => x.id), "POSITIONS");
+  if (input.levels !== undefined) set.levels = subset(input.levels, LEVELS.map((x) => x.id), "LEVELS");
+  if (input.languages !== undefined) {
+    set.languages = subset(input.languages, LANGUAGES as unknown as string[], "LANGUAGES");
+    if (!set.languages.length) bad("LANGUAGES");
+  }
+  if (input.formats !== undefined) {
+    set.formats = subset(input.formats, ["in_person", "online"], "FORMATS") as Booking["format"][];
+    if (!set.formats.length) bad("FORMATS");
+  }
+  if (input.venues !== undefined) {
+    if (!Array.isArray(input.venues)) bad("VENUES");
+    const v = [...new Set(input.venues.map((x) => String(x).trim()).filter(Boolean))];
+    if (v.length > 6 || v.some((x) => x.length > 140)) bad("VENUES");
+    set.venues = v;
+  }
+  if (input.introVideoUrl !== undefined) {
+    const u = input.introVideoUrl ? String(input.introVideoUrl).trim() : "";
+    if (u && !/^https:\/\/[^\s]+$/.test(u)) bad("VIDEO_URL");
+    set.introVideoUrl = u || null;
+  }
+  if (input.avatarUrl !== undefined) {
+    const u = String(input.avatarUrl).trim();
+    if (!/^(https:\/\/|\/uploads\/avatars\/)[^\s]+$/.test(u)) bad("AVATAR");
+    set.avatarUrl = u;
+  }
+
+  const [row] = await getDb().update(coachProfiles).set(set).where(eq(coachProfiles.id, coach.id)).returning();
+  return mapCoach(row);
 }
 
 export async function createCoachProfile(
