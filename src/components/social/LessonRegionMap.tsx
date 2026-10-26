@@ -148,7 +148,6 @@ function RegionPills({
 
 export function LessonRegionMap({
   counts,
-  max: _max,
   regionHint,
   records,
   selected: selectedProp,

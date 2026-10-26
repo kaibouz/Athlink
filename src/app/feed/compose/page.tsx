@@ -22,7 +22,7 @@ const SAMPLE_VIDEOS = [
 export default function ComposePostPage() {
   const { t } = useLocale();
   const { user } = useAuth();
-  const { addPost, getMyProfile, profiles, createProfile, refresh, apiEnabled } = useSocial();
+  const { addPost, getMyProfile, createProfile, refresh, apiEnabled } = useSocial();
   const router = useRouter();
 
   const [type, setType] = useState<SocialPostType>("practice");
@@ -40,7 +40,7 @@ export default function ComposePostPage() {
   const profile = useMemo(() => {
     if (!user) return undefined;
     return getMyProfile(user.id);
-  }, [user, getMyProfile, profiles]);
+  }, [user, getMyProfile]);
 
   // Ensure a local profile exists for compose autofill (API also ensures DB row on publish).
   useEffect(() => {
